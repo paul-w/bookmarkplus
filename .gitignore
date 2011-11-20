@@ -1,4 +1,5 @@
 # Files to ignore from source control.
 *.DS_Store
+*.orig
 *.pyc
 *.swp
