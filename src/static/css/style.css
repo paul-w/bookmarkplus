@@ -7,9 +7,40 @@
  */
 
 /* HTML Tags. */
-
 body{
   background-color:#FFC
 }
 
 /* Classes. */
+div.landing_container {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 300px;
+  padding: 20px;
+  background-color: orange;
+  border: solid black 1px;
+}
+
+div.text_container {
+  position: relative;
+  overflow: visible;
+}
+
+span.holder {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 1;
+  color: gray;
+}
+
+input.e-mail {
+  width: 300px;
+}
+
+/* IDs. */
+#sign_in {
+  margin-top: 75px;
+  margin-bottom: 75px;
+}

@@ -1,6 +1,42 @@
 {% extends "html/base.html" %}
+
 {% block scripts %}
-<script type="text/javascript" src="{{ url_for('landing_js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('landing_js') }}"></script>
 {% endblock %}
+
 {% block body %}
+  <div class="landing_container" id="sign_in">
+    <form method="post">
+      <div class="text_container">
+        <span class="holder">E-mail</span>
+        <input type="text" class="e-mail" />
+      </div>
+      <div class="text_container">
+        <span class="holder">Password</span>
+        <input type="password" class="password" />
+      </div>
+      <div class="submit">
+        <input type="submit" value="Sign in" />
+      </div>
+    </form>
+  </div>
+  <div class="landing_container" id="sign_up">
+    <form method="post">
+      <div class="text_container">
+        <span class="holder">E-mail</span>
+        <input type="text" class="e-mail" />
+      </div>
+      <div class="text_container">
+        <span class="holder">Password</span>
+        <input type="password" class="password" />
+      </div>
+      <div class="text_container">
+        <span class="holder">Re-enter password</span>
+        <input type="password" class="password" />
+      </div>
+      <div class="submit">
+        <input type="submit" value="Sing up" />
+      </div>
+    <form>
+  </div>
 {% endblock %}
