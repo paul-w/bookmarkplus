@@ -9,9 +9,14 @@ __author__ = (
 )
 
 from flask import Flask
+from flask import render_template
+from flask import url_for
 
-app = Flask(__name__)
+# Folder containing html template files
+TEMPLATE_FOLDER = 'templates/html'
+
+app = Flask(__name__, template_folder=TEMPLATE_FOLDER)
 
 @app.route('/', methods=['GET'])
 def home():
-  return 'Hello world!'
+  return render_template('landing.html')
