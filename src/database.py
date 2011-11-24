@@ -8,6 +8,7 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
+from utils import get_hashed_password
 from models.User import User
 from flaskext.mongokit import MongoKit
 
@@ -68,7 +69,7 @@ class Database():
     """
     return self._mk.User.find_one({'email':email, 'password':password})
 
-  def make_user(self, name, email, password):
+  def make_user(self, name, email, raw_password):
     """
     Takes in a user's information and makes a document in the table
     representing the user. Requires not user_exists(email). Returns the user.
@@ -78,7 +79,7 @@ class Database():
     new_user = self._mk.User()
     new_user.name = name
     new_user.email = email
-    # TODO(jven): salt and hash the password
+    password = get_hashed_password(raw_password)
     new_user.password = password
     new_user.save()
     return new_user
