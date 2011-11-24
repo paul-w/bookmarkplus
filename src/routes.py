@@ -13,9 +13,14 @@ from config import MONGODB_HOST
 from config import MONGODB_PORT
 from database import Database
 from flask import Flask
+from flask import render_template
+from flask import url_for
 from flaskext.mongokit import MongoKit
 
-app = Flask(__name__)
+# Folder containing html template files
+TEMPLATE_FOLDER = 'templates/html'
+
+app = Flask(__name__, template_folder=TEMPLATE_FOLDER)
 app.config['MONGODB_DATABASE'] = MONGODB_DATABASE
 app.config['MONGODB_HOST'] = MONGODB_HOST
 app.config['MONGODB_PORT'] = MONGODB_PORT
@@ -23,7 +28,7 @@ db = Database(app)
 
 @app.route('/', methods=['GET'])
 def home():
-  return 'Hello world!'
+  return render_template('landing.html')
 
 # TODO(jven): This is just an example of using database.py.
 @app.route('/register/<name>/<email>', methods=['GET'])
