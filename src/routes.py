@@ -40,3 +40,50 @@ def register(name, email):
     return 'User with e-mail \'%s\' exists!' % email
   user = db.make_user(name, email, u'password')
   return 'Hi, %s!' % user.name
+
+
+# methods related to interaction with main.js
+
+@app.route('/bookmarks', methods = ['POST'])
+def create_bookmark():
+    pass
+
+@app.route('/bookmarks/<url>', methods = ['DELETE'])
+def delete_bookmark():
+    pass
+
+@app.route('/bookmarks/<url>', methods = ['PUT'])
+def update_bookmark():
+    pass
+
+@app.route('/circles', methods = ['POST'])
+def create_circle():
+    pass
+
+@app.route('/circles', methods = ['GET'])
+def get_circles():
+    pass
+
+@app.route('/circles/<id>', methods = ['DELETE'])
+def delete_circle():
+    pass
+
+@app.route('/circles/<id>', methods = ['PUT'])
+def update_circle():
+    pass
+
+# for now, as if circles have bookmarks (as opposed to other way around)
+@app.route('/circles/<id>/bookmarks', methods = ['POST'])
+def add_bookmark_to_circle():
+    pass
+
+@app.route('/circles/<id>/bookmarks', methods = ['GET'])
+def get_bookmarks_given_circle():
+    pass
+
+@app.route('/circles/bookmarks/<url>', methods = ['DELETE'])
+def remove_bookmark_from_circle():
+    pass
+
+
+
