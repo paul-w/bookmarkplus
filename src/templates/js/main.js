@@ -24,37 +24,49 @@ sorting just re-queries the db with a different sorting parameter
 
 $(document).ready(function() {
 
-    var sortBy = 0;
     var selectedCircle = 0;
+    var sortBy = 0;
 
-    // draw circles and bookmarks initially
-    drawCirclesFromServer()
-    drawBookmarksFromServer()
+    // populates bookmark elements and attaches listeners
+    // called
+    // 1) when document ready initially
+    // 2) after a user interaction that modifies the circles
+    var drawCirclesFromServer = function(sortType) {
+        $.getJSON('/?action=getcircles', function(data) {
+            document.write(data);
+            $.each(data, function(i, o) {
+                var circle = new Circle(o[0]);
+                div = $('<div>');
+                div.text(circle.getName());
+                $('#circles_container').append(div);
+            });
+        });
+    };
+
+    // populates circle elements and attaches listeners
+    // called:
+    // 1) when document ready initially
+    // 2) when the selected circle changes
+    // 3) when bookmarks are re-sorted
+    // 4) after a user interaction that modifies bookmarks
+    var drawBookmarksFromServer = function() {
+        $.getJSON('/?action=getbookmarks&circle='+selectedCircle,
+            function(data) {
+                $.each(data, function(i, o) {
+                    var bookmark = new Bookmark(o[0]);
+                    div = $('<div>');
+                    div.text(bookmark.getURI());
+                    bookmark.click(function() {
+                        window.open(bookmarks[i].getURI()); 
+                    });
+                    $('#bookmarks_container').append(div);
+            });
+        });
+    };
+
+    drawBookmarksFromServer();
+    drawCirclesFromServer();
+
+
 
 });
-
-// contains elements for bookmarks for currently selected circle
-var bookmarkElemens = []
-
-// contains all elements for all circles 
-var circleElements = []
-
-// populates bookmark elements and attaches listeners
-// called
-// 1) when document ready initially
-// 2) after a user interaction that modifies the circles
-var getCirclesFromServer = function(var sortType) {
-    // uses global variable selectedCircle
-};
-
-// populates circle elements and attaches listeners
-// called
-// 1) when document ready initially
-// 2) when the selected circle changes
-// 3) when bookmarks are re-sorted
-// 4) after a user interaction that modifies bookmarks
-var getBookmarksFromServer = function(var circleID, var sortBy) {
-    // uses global variables selectedCircle and sortBy 
-};
-
-

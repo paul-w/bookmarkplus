@@ -32,6 +32,27 @@ def landing_js():
   return render_template('js/landing.js',
       message='This is the landing page!')
 
+
+# added for main
+@app.route('/main_js.js', methods=['GET'])
+def main_js():
+  return render_template('js/main.js', 
+      message='This is the main page!')
+
+@app.route('/adts_js.js', methods=['GET'])
+def adts_js():
+  return render_template('js/adts.js')
+
+@app.route('/logout_html.html', methods=['GET'])
+def logout_html():
+  return render_template('html/landing.html')
+
+# added temporarily to test main
+@app.route('/main', methods=['GET'])
+def main():
+  return render_template('html/main.html')
+     
+
 # TODO(jven): This is just an example of using database.py.
 @app.route('/register/<name>/<email>', methods=['GET'])
 def register(name, email):
@@ -44,46 +65,19 @@ def register(name, email):
 
 # methods related to interaction with main.js
 
-@app.route('/bookmarks', methods = ['POST'])
-def create_bookmark():
-    pass
-
-@app.route('/bookmarks/<url>', methods = ['DELETE'])
-def delete_bookmark():
-    pass
-
-@app.route('/bookmarks/<url>', methods = ['PUT'])
-def update_bookmark():
-    pass
-
-@app.route('/circles', methods = ['POST'])
-def create_circle():
-    pass
-
-@app.route('/circles', methods = ['GET'])
-def get_circles():
-    pass
-
-@app.route('/circles/<id>', methods = ['DELETE'])
-def delete_circle():
-    pass
-
-@app.route('/circles/<id>', methods = ['PUT'])
-def update_circle():
-    pass
-
-# for now, as if circles have bookmarks (as opposed to other way around)
-@app.route('/circles/<id>/bookmarks', methods = ['POST'])
-def add_bookmark_to_circle():
-    pass
-
-@app.route('/circles/<id>/bookmarks', methods = ['GET'])
-def get_bookmarks_given_circle():
-    pass
-
-@app.route('/circles/bookmarks/<url>', methods = ['DELETE'])
-def remove_bookmark_from_circle():
-    pass
+@app.route('/?action=getcircles', methods = ['GET'])
+def get_circles(circle_id):
+    # for testing
+    circles = {}
+    for i in xrange(10):
+        circles[i] = ('Circle' + i)
+    return jsonify(circles)  
 
 
-
+@app.route('/?action=getbookmarks&circle=<circle_id>', methods = ['POST'])
+def get_bookmarks(circle_id):
+    # for testing
+    bookmarks = {}
+    for i in xrange(12):
+        bookmarks[i] = ('http://www.google.com/search?hl=en&q='+i)
+    return jsonify(bookmarks)  
