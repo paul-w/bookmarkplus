@@ -17,7 +17,7 @@ from flask import render_template
 from flask import url_for
 from flaskext.wtf import Form, TextField, validators
 from flaskext.mongokit import MongoKit
-from forms import CreateBookmarkForm, CreateCircleForm, AddBookmarkToCircleForm
+from models.forms import CreateBookmarkForm, CreateCircleForm, AddBookmarkToCircleForm
 
 app = Flask(__name__)
 app.config['MONGODB_DATABASE'] = MONGODB_DATABASE
