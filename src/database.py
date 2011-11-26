@@ -8,8 +8,11 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
+from datetime import datetime
 from utils import get_hashed_password
-from models.User import User
+from models.bookmark import Bookmark
+from models.circle import Circle
+from models.user import User
 from flaskext.mongokit import MongoKit
 
 # TODO(jven): each model must be registered here
@@ -62,12 +65,16 @@ class Database():
     """
     return self._mk.User.find_one({'email':email}) is not None
 
-  def get_user(self, email, password):
+  def get_user_and_login(self, email, password):
     """
     Takes in an e-mail address and password and checks if a User exists with
-    this combination. Returns None otherwise.
+    this combinatio and updates date_last_login. Returns None otherwise.
     """
-    return self._mk.User.find_one({'email':email, 'password':password})
+    user = self._mk.User.find_one({'email':email, 'password':password})
+    if user is not None:
+      user.date_last_login = datetime.utcnow()
+      user.save()
+    return user
 
   def make_user(self, name, email, raw_password):
     """
@@ -83,3 +90,90 @@ class Database():
     new_user.password = password
     new_user.save()
     return new_user
+
+  def bookmark_exists(self, user, url):
+    """
+    Takes in a user and a url and checks if the user has a bookmark with the
+    url.
+    """
+    return self._mk.Bookmark.find_one(
+        {'owner':user._id, 'url':url}) is not None
+
+  def get_bookmark_and_click(self, user, url):
+    """
+    Get a bookmark and record a click.
+    """
+    bookmark = self._mk.Bookmark.find_one(
+        {'owner':user._id, 'url':url})
+    if bookmark is not None:
+      bookmark.clicks += 1
+      bookmark.date_last_clicked = datetime.utcnow()
+      bookmark.save()
+    return bookmark
+
+  def get_all_bookmarks(self, user):
+    """
+    Get a user's bookmarks.
+    """
+    return self._mk.Bookmark.find({'owner':user._id})
+
+  def make_bookmark(self, user, url):
+    """
+    Makes a bookmark for the given user with the given url.
+    Requires not bookmark_exists(user, url). Returns the bookmark.
+    """
+    assert not self.bookmark_exists(user, url)
+    new_bookmark = self._mk.Bookmark()
+    new_bookmark.url = url
+    new_bookmark.owner = user._id
+    new_bookmark.save()
+    return new_bookmark
+
+  def circle_exists(self, user, name):
+    """
+    Takes in a user and a circle name and checks if the user has a circle with
+    the name.
+    """
+    return self._mk.Circle.find_one(
+        {'owner':user._id, 'name':name}) is not None
+
+  def get_circle(self, user, name):
+    """
+    Get a circle.
+    """
+    return self._mk.Circle.find_one(
+        {'owner':user._id, 'name':name})
+
+  def get_all_circles(self, user):
+    """
+    Get a user's circles.
+    """
+    return self._mk.Circle.find({'owner':user._id})
+
+  def make_circle(self, user, name):
+    """
+    Makes a circle for the given user with the given name.
+    Requires not circle_exists(user, name). Returns the circle.
+    """
+    assert not self.circle_exists(user, name)
+    new_circle = self._mk.Circle()
+    new_circle.name = name
+    new_circle.owner = user._id
+    new_circle.save()
+    return new_circle
+
+  def get_bookmarks_in_circle(self, circle):
+    """
+    Get all the bookmarks in the circle.
+    """
+    return [self._mk.Bookmark.find_one(
+        bookmark_id) for bookmark_id in circle.bookmarks]
+
+  def add_bookmark_to_circle(self, bookmark, circle):
+    """
+    Takes in a bookmark and circle and adds the bookmark to the circle.
+    """
+    bookmark.circles.append(circle._id)
+    bookmark.save()
+    circle.bookmarks.append(bookmark._id)
+    circle.save()

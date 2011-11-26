@@ -1,5 +1,5 @@
 """
-Document model for User.
+Document model for Circle.
 """
 
 __author__ = (
@@ -10,18 +10,14 @@ __author__ = (
 
 from datetime import datetime
 from flaskext.mongokit import Document
+from pymongo.objectid import ObjectId
 
-class User(Document):
-  __collection__ = 'users'
+class Circle(Document):
+  __collection__ = 'circles'
   structure = {
       'name':unicode,
-      'email':unicode,
-      'password':unicode,
+      'owner':ObjectId,
       'date_created':datetime,
-      'date_last_login':datetime
+      'bookmarks':[ObjectId]
   }
   use_dot_notation = True
-  default_values = {
-      'date_created':datetime.utcnow,
-      'date_last_login':datetime.utcnow
-  }
