@@ -1,43 +1,38 @@
 {% extends "html/base.html" %}
+{% from "html/_formhelpers.html" import render_field %}
 
 {% block scripts %}
   <script type="text/javascript" src="{{ url_for('adts_js') }}"></script>
   <script type="text/javascript" src="{{ url_for('main_js') }}"></script>
 {% endblock %}
 
+
 {% block body %}
     <div class="logout" id="logout"> 
        <a href="{{ url_for('logout_html') }}">Logout</a> 
     </div>
  
-    <div class="add_bookmark" id="add_bookmark">
-        <form method="post" action="/addbookmark">
-            <div class="text_container">
-                <span class="holder"></span>
-                <input type="text" />
-            </div>
-            <div class="submit">
-                <input type="submit" value="Add Bookmark" />
-            </div>
-        </form>
-    </div>
+<form method="post" action="/createbookmark">
+    <dl>
+        {{ render_field(create_bookmark_form.uri) }}
+    </dl>
+    <p><input type=submit value=CreateBookmark>
+</form>
 
-    <div class="add_bookmark_to_circle" id="add_bookmark_to_circle">
-        <form method="post" action="/addbookmarktocircle">
-            <div class="text_container">
-                <span class="holder"></span>
-                <input type="text" />
-            </div>
-            <div class="text_container">
-                <span class="holder"></span>
-                <input type="text" />
-            </div>
+<form method="post" action="/createcircle">
+    <dl>
+        {{ render_field(create_circle_form.name) }}
+    </dl>
+    <p><input type=submit value=CreateCircle>
+</form>
 
-            <div class="submit">
-                <input type="submit" value="Add Bookmark to Circle" />
-            </div>
-        </form>
-   </div>
+<form method="post" action="/addbookmarktocircle">
+    <dl>
+        {{ render_field(add_form.uri) }}
+        {{ render_field(add_form.name) }}
+    </dl>
+    <p><input type=submit value=AddBookmarkToCircle>
+</form>
 
   <div class="bookmarks_container" id="bookmarks_container">
   </div>

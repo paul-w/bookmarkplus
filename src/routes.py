@@ -12,15 +12,22 @@ from config import MONGODB_DATABASE
 from config import MONGODB_HOST
 from config import MONGODB_PORT
 from database import Database
-from flask import Flask
+from flask import Flask, request
 from flask import render_template
 from flask import url_for
+from flaskext.wtf import Form, TextField, validators
 from flaskext.mongokit import MongoKit
+from forms import CreateBookmarkForm, CreateCircleForm, AddBookmarkToCircleForm
 
 app = Flask(__name__)
 app.config['MONGODB_DATABASE'] = MONGODB_DATABASE
 app.config['MONGODB_HOST'] = MONGODB_HOST
 app.config['MONGODB_PORT'] = MONGODB_PORT
+
+# TODO(pauL):  make more secret
+app.secret_key = ( 
+'\xa5\xee\xd4\x1a\\\x8aQ\xa4\x1a\xa5\x9f\xe3\xdeT=\xb5\xbd\xa6\x93\xb3\x9a' )
+
 db = Database(app)
 
 @app.route('/', methods=['GET'])
@@ -47,10 +54,20 @@ def adts_js():
 def logout_html():
   return render_template('html/landing.html')
 
-# added temporarily to test main
+
+
+
 @app.route('/main', methods=['GET'])
 def main():
-  return render_template('html/main.html')
+  # added for testing of main.js
+  create_bookmark_form = CreateBookmarkForm(request.form)
+  create_circle_form = CreateCircleForm(request.form)
+  add_bookmark_to_circle_form = AddBookmarkToCircleForm(request.form)
+  return render_template('html/main.html', 
+        create_bookmark_form = create_bookmark_form,
+        create_circle_form = create_circle_form,
+        add_form = add_bookmark_to_circle_form
+  )
      
 
 # TODO(jven): This is just an example of using database.py.
@@ -65,7 +82,23 @@ def register(name, email):
 
 # methods related to interaction with main.js
 
-@app.route('/?action=getcircles', methods = ['GET'])
+@app.route('/createbookmark?uri=<uri>', methods = ['POST'])
+def create_bookmark(uri):
+  # update to database
+  pass
+
+@app.route('/createcircle?name=<name>', methods = ['POST'])
+def create_circle(name):
+  # update to database
+  pass
+
+@app.route('/addbookmarktocircle?uri=<uri>?name=<name>', 
+                  methods = ['POST'])
+def add_bookmark_to_circle(uri, name):
+  # update database
+  pass
+
+@app.route('/getcircles', methods = ['GET'])
 def get_circles(circle_id):
     # for testing
     circles = {}
@@ -74,7 +107,7 @@ def get_circles(circle_id):
     return jsonify(circles)  
 
 
-@app.route('/?action=getbookmarks&circle=<circle_id>', methods = ['POST'])
+@app.route('/getbookmarks&circle=<circle_id>', methods = ['POST'])
 def get_bookmarks(circle_id):
     # for testing
     bookmarks = {}
