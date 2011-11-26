@@ -31,7 +31,7 @@ $(document).ready(function() {
     // called
     // 1) when document ready initially
     // 2) after a user interaction that modifies the circles
-    var drawCirclesFromServer = function(sortType) {
+    var drawCirclesFromServer = function() {
         $.getJSON('/?action=getcircles', function(data) {
             document.write(data);
             $.each(data, function(i, o) {
