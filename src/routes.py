@@ -12,9 +12,10 @@ from config import MONGODB_DATABASE
 from config import MONGODB_HOST
 from config import MONGODB_PORT
 from database import Database
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask import render_template
 from flask import url_for
+from flask import session
 from flaskext.wtf import Form, TextField, validators
 from flaskext.mongokit import MongoKit
 from models.forms import CreateBookmarkForm, CreateCircleForm, AddBookmarkToCircleForm
@@ -59,6 +60,8 @@ def logout_html():
 
 @app.route('/main', methods=['GET'])
 def main():
+  # TODO(pauL): take out once user session finished 
+  session['user_id'] = 0 
   # added for testing of main.js
   create_bookmark_form = CreateBookmarkForm(request.form)
   create_circle_form = CreateCircleForm(request.form)
@@ -86,32 +89,45 @@ def register(name, email):
 def create_bookmark():
   # update to database
   uri = request.form.get('uri')
+  db.make_bookmark(session['user_id'], uri)
   return uri
 
-@app.route('/createcircle?name=<name>', methods = ['POST'])
-def create_circle(name):
-  # update to database
-  pass
+@app.route('/createcircle', methods = ['POST'])
+def create_circle():
+  name = request.form.get('name')
+  db.make_circle(session['user_id'], name)
+  return name
 
-@app.route('/addbookmarktocircle?uri=<uri>?name=<name>', 
-                  methods = ['POST'])
-def add_bookmark_to_circle(uri, name):
-  # update database
-  pass
+@app.route('/addbookmarktocircle', methods = ['POST'])
+def add_bookmark_to_circle():
+  uri = request.form.get('uri')
+  name = request.form.get('name')
+  return uri + name
 
 @app.route('/getcircles', methods = ['GET'])
-def get_circles(circle_id):
+def get_circles():
+    circles = db.get_all_bookmarks(session['user_id'])
+    return jsonify(circles)
+
+    '''
     # for testing
     circles = {}
     for i in xrange(10):
-        circles[i] = ('Circle' + i)
+        circles[i] = ('Circle' + str(i))
     return jsonify(circles)  
+    '''
 
 
-@app.route('/getbookmarks&circle=<circle_id>', methods = ['POST'])
-def get_bookmarks(circle_id):
+@app.route('/getbookmarks', methods = ['GET'])
+def get_bookmarks():
+   
+    bookmarks = db.get_all_bookmarks(session['user_id'])
+    return jsonify(bookmarks)
+
+    '''
     # for testing
     bookmarks = {}
     for i in xrange(12):
-        bookmarks[i] = ('http://www.google.com/search?hl=en&q='+i)
+        bookmarks[i] = ('http://www.google.com/search?hl=en&q='+str(i))
     return jsonify(bookmarks)  
+    '''

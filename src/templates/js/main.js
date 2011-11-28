@@ -27,11 +27,33 @@ $(document).ready(function() {
     // bind create_bookmark button
     $('#create_bookmark').click(function(event) {
         $.post("{{ url_for('create_bookmark') }}", {
-            'uri':$('#bookmark_uri').val()
+            'uri':$('#create_bookmark_uri').val()
         }, function(response) {
             alert(response);
         });
     });
+
+    // bind create_circle button
+    $('#create_circle').click(function(event) {
+        $.post("{{ url_for('create_circle') }}", {
+            'name':$('#create_circle_name').val()
+        }, function(response) {
+            alert(response);
+        });
+    });
+
+  // bind add_bookmark_to_circle button
+    $('#add_bookmark').click(function(event) {
+        alert('hi');
+        $.post("{{ url_for('add_bookmark_to_circle') }}", {
+            'uri':$('#add_bookmark_uri').val(),
+            'name':$('#add_bookmark_name').val()
+        }, function(response) {
+            alert(response);
+        });
+    });
+
+
 
     var selectedCircle = 0;
     var sortBy = 0;
@@ -41,10 +63,9 @@ $(document).ready(function() {
     // 1) when document ready initially
     // 2) after a user interaction that modifies the circles
     var drawCirclesFromServer = function() {
-        $.getJSON('/?action=getcircles', function(data) {
-            document.write(data);
+        $.getJSON('/getcircles', function(data) {
             $.each(data, function(i, o) {
-                var circle = new Circle(o[0]);
+                var circle = new Circle(o);
                 div = $('<div>');
                 div.text(circle.getName());
                 $('#circles_container').append(div);
@@ -59,14 +80,14 @@ $(document).ready(function() {
     // 3) when bookmarks are re-sorted
     // 4) after a user interaction that modifies bookmarks
     var drawBookmarksFromServer = function() {
-        $.getJSON('/?action=getbookmarks&circle='+selectedCircle,
+        $.getJSON('/getbookmarks',
             function(data) {
                 $.each(data, function(i, o) {
-                    var bookmark = new Bookmark(o[0]);
+                    var bookmark = new Bookmark(o);
                     div = $('<div>');
                     div.text(bookmark.getURI());
-                    bookmark.click(function() {
-                        window.open(bookmarks[i].getURI()); 
+                    div.click(function() {
+                        window.open(bookmark.getURI()); 
                     });
                     $('#bookmarks_container').append(div);
             });

@@ -12,30 +12,16 @@
        <a href="{{ url_for('logout_html') }}">Logout</a> 
     </div>
  
-    <!--
-<form method="post" action="{{ url_for('create_bookmark') }}">
-    <dl>
-        {{ render_field(create_bookmark_form.uri) }}
-    </dl>
-    -->
-    URI: <input id="bookmark_uri" type="text"></input>
-<!--/form-->
-    <button id="create_bookmark">Bookmark!</button>
-
-<form method="post" action="/createcircle">
-    <dl>
-        {{ render_field(create_circle_form.name) }}
-    </dl>
-    <p><input type=submit value=CreateCircle>
-</form>
-
-<form method="post" action="/addbookmarktocircle">
-    <dl>
-        {{ render_field(add_form.uri) }}
-        {{ render_field(add_form.name) }}
-    </dl>
-    <p><input type=submit value=AddBookmarkToCircle>
-</form>
+    URL: <input id="create_bookmark_uri" type="text"></input>
+    <button id="create_bookmark">Add Bookmark</button>
+    </br>
+    Name: <input id="create_circle_name" type="text"></input>
+    <button id="create_circle">Create Circle</button>
+    </br>
+    URL: <input id="add_bookmark_uri" type="text"></input>
+    Name: <input id="add_bookmark_name" type="text"></input>
+    <button id="add_bookmark">Add to Circle</button>
+    </br>
 
   <div class="bookmarks_container" id="bookmarks_container">
   </div>

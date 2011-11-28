@@ -91,74 +91,74 @@ class Database():
     new_user.save()
     return new_user
 
-  def bookmark_exists(self, user, url):
+  def bookmark_exists(self, user_id, url):
     """
     Takes in a user and a url and checks if the user has a bookmark with the
     url.
     """
     return self._mk.Bookmark.find_one(
-        {'owner':user._id, 'url':url}) is not None
+        {'owner':user_id, 'url':url}) is not None
 
-  def get_bookmark_and_click(self, user, url):
+  def get_bookmark_and_click(self, user_id, url):
     """
     Get a bookmark and record a click.
     """
     bookmark = self._mk.Bookmark.find_one(
-        {'owner':user._id, 'url':url})
+        {'owner':user_id, 'url':url})
     if bookmark is not None:
       bookmark.clicks += 1
       bookmark.date_last_clicked = datetime.utcnow()
       bookmark.save()
     return bookmark
 
-  def get_all_bookmarks(self, user):
+  def get_all_bookmarks(self, user_id):
     """
     Get a user's bookmarks.
     """
-    return self._mk.Bookmark.find({'owner':user._id})
+    return self._mk.Bookmark.find({'owner':user_id})
 
-  def make_bookmark(self, user, url):
+  def make_bookmark(self, user_id, url):
     """
     Makes a bookmark for the given user with the given url.
     Requires not bookmark_exists(user, url). Returns the bookmark.
     """
-    assert not self.bookmark_exists(user, url)
+    assert not self.bookmark_exists(user_id, url)
     new_bookmark = self._mk.Bookmark()
     new_bookmark.url = url
-    new_bookmark.owner = user._id
+    new_bookmark.owner = user_id
     new_bookmark.save()
     return new_bookmark
 
-  def circle_exists(self, user, name):
+  def circle_exists(self, user_id, name):
     """
     Takes in a user and a circle name and checks if the user has a circle with
     the name.
     """
     return self._mk.Circle.find_one(
-        {'owner':user._id, 'name':name}) is not None
+        {'owner':user_id, 'name':name}) is not None
 
-  def get_circle(self, user, name):
+  def get_circle(self, user_id, name):
     """
     Get a circle.
     """
     return self._mk.Circle.find_one(
-        {'owner':user._id, 'name':name})
+        {'owner':user_id, 'name':name})
 
-  def get_all_circles(self, user):
+  def get_all_circles(self, user_id):
     """
     Get a user's circles.
     """
-    return self._mk.Circle.find({'owner':user._id})
+    return self._mk.Circle.find({'owner':user_id})
 
-  def make_circle(self, user, name):
+  def make_circle(self, user_id, name):
     """
     Makes a circle for the given user with the given name.
     Requires not circle_exists(user, name). Returns the circle.
     """
-    assert not self.circle_exists(user, name)
+    assert not self.circle_exists(user_id, name)
     new_circle = self._mk.Circle()
     new_circle.name = name
-    new_circle.owner = user._id
+    new_circle.owner = user_id
     new_circle.save()
     return new_circle
 
