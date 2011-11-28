@@ -82,10 +82,11 @@ def register(name, email):
 
 # methods related to interaction with main.js
 
-@app.route('/createbookmark?uri=<uri>', methods = ['POST'])
-def create_bookmark(uri):
+@app.route('/createbookmark', methods = ['POST'])
+def create_bookmark():
   # update to database
-  pass
+  uri = request.form.get('uri')
+  return uri
 
 @app.route('/createcircle?name=<name>', methods = ['POST'])
 def create_circle(name):

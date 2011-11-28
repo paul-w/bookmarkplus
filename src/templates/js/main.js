@@ -24,6 +24,15 @@ sorting just re-queries the db with a different sorting parameter
 
 $(document).ready(function() {
 
+    // bind create_bookmark button
+    $('#create_bookmark').click(function(event) {
+        $.post("{{ url_for('create_bookmark') }}", {
+            'uri':$('#bookmark_uri').val()
+        }, function(response) {
+            alert(response);
+        });
+    });
+
     var selectedCircle = 0;
     var sortBy = 0;
 

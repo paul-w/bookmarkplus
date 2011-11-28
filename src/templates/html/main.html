@@ -12,12 +12,15 @@
        <a href="{{ url_for('logout_html') }}">Logout</a> 
     </div>
  
-<form method="post" action="/createbookmark">
+    <!--
+<form method="post" action="{{ url_for('create_bookmark') }}">
     <dl>
         {{ render_field(create_bookmark_form.uri) }}
     </dl>
-    <p><input type=submit value=CreateBookmark>
-</form>
+    -->
+    URI: <input id="bookmark_uri" type="text"></input>
+<!--/form-->
+    <button id="create_bookmark">Bookmark!</button>
 
 <form method="post" action="/createcircle">
     <dl>
