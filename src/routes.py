@@ -43,7 +43,7 @@ def landing_js():
 # added for main
 @app.route('/main_js.js', methods=['GET'])
 def main_js():
-  return render_template('js/main.js', 
+  return render_template('js/main.js',
       message='This is the main page!')
 
 @app.route('/adts_js.js', methods=['GET'])
@@ -63,7 +63,7 @@ def main():
   create_bookmark_form = CreateBookmarkForm(request.form)
   create_circle_form = CreateCircleForm(request.form)
   add_bookmark_to_circle_form = AddBookmarkToCircleForm(request.form)
-  return render_template('html/main.html', 
+  return render_template('html/main.html',
         create_bookmark_form = create_bookmark_form,
         create_circle_form = create_circle_form,
         add_form = add_bookmark_to_circle_form
@@ -93,7 +93,7 @@ def create_circle(name):
   # update to database
   pass
 
-@app.route('/addbookmarktocircle?uri=<uri>?name=<name>', 
+@app.route('/addbookmarktocircle?uri=<uri>?name=<name>',
                   methods = ['POST'])
 def add_bookmark_to_circle(uri, name):
   # update database
@@ -105,7 +105,7 @@ def get_circles(circle_id):
     circles = {}
     for i in xrange(10):
         circles[i] = ('Circle' + i)
-    return jsonify(circles)  
+    return jsonify(circles)
 
 
 @app.route('/getbookmarks&circle=<circle_id>', methods = ['POST'])
@@ -114,4 +114,4 @@ def get_bookmarks(circle_id):
     bookmarks = {}
     for i in xrange(12):
         bookmarks[i] = ('http://www.google.com/search?hl=en&q='+i)
-    return jsonify(bookmarks)  
+    return jsonify(bookmarks)
