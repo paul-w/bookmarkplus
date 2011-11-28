@@ -12,7 +12,7 @@ from datetime import datetime
 from utils import get_hashed_password
 from models.bookmark import Bookmark
 from models.circle import Circle
-from models.user import User
+from models.User import User
 from flaskext.mongokit import MongoKit
 
 # TODO(jven): each model must be registered here
@@ -65,11 +65,14 @@ class Database():
     """
     return self._mk.User.find_one({'email':email}) is not None
 
-  def get_user_and_login(self, email, password):
+  def get_user_and_login(self, email, raw_password):
     """
     Takes in an e-mail address and password and checks if a User exists with
     this combinatio and updates date_last_login. Returns None otherwise.
     """
+    # TODO(mikemeko, jven): yo J, I changed this to hash |raw_password| first
+    #   and then check.
+    password = get_hashed_password(raw_password)
     user = self._mk.User.find_one({'email':email, 'password':password})
     if user is not None:
       user.date_last_login = datetime.utcnow()
