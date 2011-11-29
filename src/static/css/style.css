@@ -54,6 +54,15 @@ span.holder {
   color: gray;
 }
 
+span.circle {
+  background-color: #FFC;
+  border: 2px solid black;
+}
+
+span.selected {
+  font-weight: bold;
+}
+
 input.identity {
   width: 300px;
 }

@@ -93,16 +93,27 @@ $(document).ready(function() {
         $('#circles_container').html('');
         $.post("{{ url_for('get_circles') }}", function(data) {
             $.each(data.circles, function(idx, circle) {
-                var div = $('<div>');
-                div.text(circle.name + ' (' + circle.id + ')');
-                div.click(function() {
-                    if (selectedCircle != circle.id) {
-                      selectedCircle = circle.id;
-                    } else {
-                      selectedCircle = '';
-                    }
-                    drawBookmarksFromServer(selectedCircle);
+                var div = $('<div/>');
+                var span1 = $('<span/>');
+                span1.attr('class', 'circle');
+                span1.text(circle.name);
+                span1.appendTo(div);
+                span1.click(function() {
+                  if (selectedCircle != circle.id) {
+                    selectedCircle = circle.id;
+                    $('.circle').each(function (idx, elt) {
+                      $(elt).removeClass('selected');
+                    });
+                    span1.addClass('selected');
+                  } else {
+                    selectedCircle = '';
+                    span1.removeClass('selected');
+                  }
+                  drawBookmarksFromServer(selectedCircle);
                 });
+                var span2 = $('<span/>');
+                span2.text('    (' + circle.id + ')');
+                span2.appendTo(div);
                 $('#circles_container').append(div);
             });
         });
@@ -128,9 +139,6 @@ $(document).ready(function() {
                     var span = $('<span/>');
                     span.text('    (' + bookmark.id + ')');
                     span.appendTo(div);
-                    div.click(function() {
-                        window.open(bookmark.url);
-                    });
                     $('#bookmarks_container').append(div);
             });
         });
