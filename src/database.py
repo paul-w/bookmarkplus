@@ -80,9 +80,11 @@ class Database():
 
   def get_user_by_id(self, user_id):
     """
-    Takes a user id (unicode) and returns the User corresponding to that id.
-    A user with this user id should exist in the User table.
+    Takes a user id (unicode) and returns the User corresponding to that id,
+    or None if no such User exists.
     """
+    if type(user_id) != unicode:
+      return None
     return self._mk.User.find_one(ObjectId(user_id))
 
   def make_user(self, name, email, raw_password):

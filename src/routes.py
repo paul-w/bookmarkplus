@@ -46,8 +46,11 @@ def before_request():
   """
   if "user_id" in session:
     g.user = db.get_user_by_id(session.get("user_id"))
-    # TODO(mikemeko): this is an example, remove
-    print "hi", g.user.name
+    if g.user is None:
+      session.pop('user_id', None)
+    else:
+      # TODO(mikemeko): this is an example, remove
+      print "hi", g.user.name
 
 @app.teardown_request
 def teardown_request(exception):
