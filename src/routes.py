@@ -178,26 +178,32 @@ def create_bookmark():
   if db.bookmark_exists(session['user_id'], uri):
     return jsonify({'type':'error', 'message':'A bookmark with that URL '
         'already exists.'})
-  else:
-    db.make_bookmark(session['user_id'], uri)
-    return jsonify({'type':'success'})
+  db.make_bookmark(session['user_id'], uri)
+  return jsonify({'type':'success'})
 
 @app.route('/createcircle', methods = ['POST'])
 def create_circle():
   name = request.form.get('name')
+  # TODO(jven): better validation
+  if not name:
+    return jsonify({'type':'error', 'message':'Invalid circle name.'})
   if db.circle_exists(session['user_id'], name):
     return jsonify({'type':'error', 'message':'A circle with that name '
         'already exists.'})
-  else:
-    db.make_circle(session['user_id'], name)
-    return jsonify({'type':'success'})
+  db.make_circle(session['user_id'], name)
+  return jsonify({'type':'success'})
 
 @app.route('/addbookmarktocircle', methods = ['POST'])
 def add_bookmark_to_circle():
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
+  # TODO(jven): better validation
+  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
+  if not circle_id or db.get_circle(circle_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid circle ID.'})
   db.add_bookmark_to_circle(bookmark_id, circle_id)
-  return 'sup'
+  return jsonify({'type':'success'})
 
 @app.route('/getcircles', methods = ['POST'])
 def get_circles():

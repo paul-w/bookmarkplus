@@ -127,7 +127,11 @@ class Database():
     """
     if type(bookmark_id) != unicode:
       return None
-    bookmark = self._mk.Bookmark.find_one(ObjectId(bookmark_id))
+    try:
+      bookmark = self._mk.Bookmark.find_one(ObjectId(bookmark_id))
+    except:
+      # TODO(jven): catch InvalidId exception specifically
+      return None
     return bookmark
 
   def get_all_bookmarks(self, user_id):
@@ -163,7 +167,11 @@ class Database():
     """
     if type(circle_id) != unicode:
       return None
-    circle = self._mk.Circle.find_one(ObjectId(circle_id))
+    try:
+      circle = self._mk.Circle.find_one(ObjectId(circle_id))
+    except:
+      # TODO(jven): catch InvalidId exception specifically
+      return None
     return circle
 
   def get_all_circles(self, user_id):

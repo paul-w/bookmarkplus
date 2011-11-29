@@ -64,16 +64,25 @@ $(document).ready(function() {
 
   // bind add_bookmark_to_circle button
     $('#add_bookmark').click(function(event) {
-        // TODO(jven): make sure inputs are non-empty
-        $.post("{{ url_for('add_bookmark_to_circle') }}", {
-            'bookmark_id':$('#add_bookmark_id').val(),
-            'circle_id':$('#add_circle_id').val()
-        }, function(response) {
-            drawBookmarksFromServer(selectedCircle);
-            drawCirclesFromServer();
-            $('#add_bookmark_id').val('');
-            $('#add_circle_id').val('');
-        });
+        if ($('#add_bookmark_id').val() == '') {
+          alert('You must provide a bookmark ID.');
+        } else if ($('#add_circle_id').val() == '') {
+          alert('You must provide a circle ID.');
+        } else {
+          $.post("{{ url_for('add_bookmark_to_circle') }}", {
+              'bookmark_id':$('#add_bookmark_id').val(),
+              'circle_id':$('#add_circle_id').val()
+          }, function(response) {
+              if (response.type == 'error') {
+                alert(response.message);
+              } else if (response.type == 'success') {
+                drawBookmarksFromServer(selectedCircle);
+                drawCirclesFromServer();
+                $('#add_bookmark_id').val('');
+                $('#add_circle_id').val('');
+              }
+          });
+        }
     });
 
     // populates bookmark elements and attaches listeners
