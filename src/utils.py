@@ -66,4 +66,3 @@ def check_password(password, repassword):
     return "password must be at least %d characters" % MIN_PASSWORD_LENGTH
   # TODO(mikemeko): more requirements
   return None
->>>>>>> 2612b7d8a2d944e2c22524e6d0a6d78745a69975

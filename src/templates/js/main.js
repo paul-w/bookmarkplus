@@ -29,7 +29,7 @@ $(document).ready(function() {
         $.post("{{ url_for('create_bookmark') }}", {
             'uri':$('#create_bookmark_uri').val()
         }, function(response) {
-            alert(response);
+            drawBookmarksFromServer();
         });
     });
 
@@ -38,7 +38,7 @@ $(document).ready(function() {
         $.post("{{ url_for('create_circle') }}", {
             'name':$('#create_circle_name').val()
         }, function(response) {
-            alert(response);
+            drawCirclesFromServer();
         });
     });
 
@@ -46,10 +46,11 @@ $(document).ready(function() {
     $('#add_bookmark').click(function(event) {
         alert('hi');
         $.post("{{ url_for('add_bookmark_to_circle') }}", {
-            'uri':$('#add_bookmark_uri').val(),
-            'name':$('#add_bookmark_name').val()
+            'bookmark_id':$('#add_bookmark_id').val(),
+            'circle_id':$('#add_circle_id').val()
         }, function(response) {
-            alert(response);
+            drawBookmarksFromServer();
+            drawCirclesFromServer();
         });
     });
 
@@ -63,11 +64,11 @@ $(document).ready(function() {
     // 1) when document ready initially
     // 2) after a user interaction that modifies the circles
     var drawCirclesFromServer = function() {
+        $('#circles_container').html('');
         $.getJSON('/getcircles', function(data) {
-            $.each(data, function(i, o) {
-                var circle = new Circle(o);
-                div = $('<div>');
-                div.text(circle.getName());
+            $.each(data.circles, function(idx, circle) {
+                var div = $('<div>');
+                div.text(circle.name + ' (' + circle.id + ')');
                 $('#circles_container').append(div);
             });
         });
@@ -80,14 +81,14 @@ $(document).ready(function() {
     // 3) when bookmarks are re-sorted
     // 4) after a user interaction that modifies bookmarks
     var drawBookmarksFromServer = function() {
+        $('#bookmarks_container').html('');
         $.getJSON('/getbookmarks',
             function(data) {
-                $.each(data, function(i, o) {
-                    var bookmark = new Bookmark(o);
-                    div = $('<div>');
-                    div.text(bookmark.getURI());
+                $.each(data.bookmarks, function(idx, bookmark) {
+                    var div = $('<div>');
+                    div.text(bookmark.url + ' (' + bookmark.id + ')');
                     div.click(function() {
-                        window.open(bookmark.getURI()); 
+                        window.open(bookmark.url);
                     });
                     $('#bookmarks_container').append(div);
             });

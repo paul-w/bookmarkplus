@@ -9,7 +9,6 @@ __author__ = (
 )
 
 from flaskext.mongokit import Document
-from pymongo.objectid import ObjectId
 
 class Circle(Document):
   __collection__ = 'circles'

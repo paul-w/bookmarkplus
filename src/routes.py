@@ -45,7 +45,7 @@ def before_request():
 
   """
   # TODO(mikemeko): store user id in session and store user object in g
-  pass
+  session['user_id'] = 0
 
 @app.teardown_request
 def teardown_request(exception):
@@ -100,8 +100,6 @@ def logout_html():
 
 @app.route('/main', methods=['GET'])
 def main():
-  # TODO(pauL): take out once user session finished 
-  session['user_id'] = 0
   return render_template('html/main.html')
   # added for testing of main.js
   create_bookmark_form = CreateBookmarkForm(request.form)
@@ -202,21 +200,23 @@ def create_circle():
 
 @app.route('/addbookmarktocircle', methods = ['POST'])
 def add_bookmark_to_circle():
-  uri = request.form.get('uri')
-  name = request.form.get('name')
-  return uri + name
+  bookmark_id = request.form.get('bookmark_id')
+  circle_id = request.form.get('circle_id')
+  db.add_bookmark_to_circle(bookmark_id, circle_id)
+  return 'sup'
 
 @app.route('/getcircles', methods = ['GET'])
 def get_circles():
-    circles = db.get_all_bookmarks(session['user_id'])
-    o = {}
-    i = 0
-    for circle in circles:
-      o[i] = circle
-      i+=1
-    return jsonify(o)
+  return jsonify(circles=[{
+      'id':unicode(circle._id),
+      'name':circle.name,
+      'bookmarks':circle.bookmarks
+      } for circle in db.get_all_circles(session['user_id'])])
 
 @app.route('/getbookmarks', methods = ['GET'])
 def get_bookmarks():
-    bookmarks = db.get_all_bookmarks(session['user_id'])
-    return jsonify(bookmarks)
+  return jsonify(bookmarks=[{
+      'id':unicode(bookmark._id),
+      'url':bookmark.url,
+      'circles':bookmark.circles
+      } for bookmark in db.get_all_bookmarks(session['user_id'])])

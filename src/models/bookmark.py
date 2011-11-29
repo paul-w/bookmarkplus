@@ -10,7 +10,6 @@ __author__ = (
 
 from datetime import datetime
 from flaskext.mongokit import Document
-from pymongo.objectid import ObjectId
 
 class Bookmark(Document):
   __collection__ = 'bookmarks'
