@@ -23,6 +23,10 @@ sorting just re-queries the db with a different sorting parameter
 */
 
 $(document).ready(function() {
+    // clear inputs
+    $('input').val('');
+
+    // set variables
     var selectedCircle = '';
     var sortBy = 0;
 
@@ -83,6 +87,28 @@ $(document).ready(function() {
               }
           });
         }
+    });
+
+    // bind enter key on inputs
+    $('#create_bookmark_uri').keydown(function(event) {
+      if (event.keyCode == 13) {
+        $('#create_bookmark').click();
+      }
+    });
+    $('#create_circle_name').keydown(function(event) {
+      if (event.keyCode == 13) {
+        $('#create_circle').click();
+      }
+    });
+    $('#add_bookmark_id').keydown(function(event) {
+      if (event.keyCode == 13) {
+        $('#add_bookmark').click();
+      }
+    });
+    $('#add_circle_id').keydown(function(event) {
+      if (event.keyCode == 13) {
+        $('#add_bookmark').click();
+      }
     });
 
     // populates bookmark elements and attaches listeners
