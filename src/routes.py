@@ -13,15 +13,20 @@ from config import MONGODB_HOST
 from config import MONGODB_PORT
 from database import Database
 from flask import Flask
+from flask import g
 from flask import jsonify
-from flask import request
+from flask import redirect
 from flask import render_template
-from flask import url_for
+from flask import request
 from flask import session
+from flask import url_for
 from flaskext.mongokit import MongoKit
 from models.forms import AddBookmarkToCircleForm
 from models.forms import CreateBookmarkForm
 from models.forms import CreateCircleForm
+from utils import check_email
+from utils import check_name
+from utils import check_password
 
 app = Flask(__name__)
 app.config['MONGODB_DATABASE'] = MONGODB_DATABASE
@@ -34,17 +39,39 @@ app.secret_key = (
 
 db = Database(app)
 
+@app.before_request
+def before_request():
+  """
+
+  """
+  # TODO(mikemeko): store user id in session and store user object in g
+  pass
+
+@app.teardown_request
+def teardown_request(exception):
+  """
+
+  """
+  # TODO(mikemeko): free g from user object
+  pass
+
 @app.route('/', methods=['GET'])
 def home():
-  return render_template('html/landing.html')
+  """
+  Home page.
+  """
+  if "user" in session:
+    return redirect(url_for('main'))
+  else:
+    return redirect(url_for('landing'))
+
+# JS templates
 
 @app.route('/landing_js.js', methods=['GET'])
 def landing_js():
   return render_template('js/landing.js',
       message='This is the landing page!')
 
-
-# added for main
 @app.route('/main_js.js', methods=['GET'])
 def main_js():
   return render_template('js/main.js',
@@ -54,11 +81,21 @@ def main_js():
 def adts_js():
   return render_template('js/adts.js')
 
-@app.route('/logout_html.html', methods=['GET'])
-def logout_html():
+# Routes
+
+@app.route('/landing', methods=['GET'])
+def landing():
+  """
+  Landing page for login and register.
+  """
   return render_template('html/landing.html')
 
-
+@app.route('/logout_html.html', methods=['GET'])
+def logout_html():
+  # TODO(mikemeko, jven): we need to store id's of users so that we store
+  #   id in session and put corresponding user object in g at every request
+  session.pop("user")
+  return redirect(url_for('landing'))
 
 
 @app.route('/main', methods=['GET'])
@@ -66,15 +103,88 @@ def main():
   # TODO(pauL): take out once user session finished 
   session['user_id'] = 0
   return render_template('html/main.html')
+  # added for testing of main.js
+  create_bookmark_form = CreateBookmarkForm(request.form)
+  create_circle_form = CreateCircleForm(request.form)
+  add_bookmark_to_circle_form = AddBookmarkToCircleForm(request.form)
+  return render_template('html/main.html',
+        create_bookmark_form = create_bookmark_form,
+        create_circle_form = create_circle_form,
+        add_form = add_bookmark_to_circle_form
+  )
+
 
 # TODO(jven): This is just an example of using database.py.
-@app.route('/register/<name>/<email>', methods=['GET'])
+@app.route('/register/<name>/<email>', methods=['POST'])
 def register(name, email):
   user_exists = db.user_exists(email)
   if user_exists:
     return 'User with e-mail \'%s\' exists!' % email
   user = db.make_user(name, email, u'password')
   return 'Hi, %s!' % user.name
+
+@app.route('/login', methods=['POST'])
+def login():
+  """
+  Handle a user login attempt.
+  """
+  email = request.form["email"]
+  password = request.form["password"]
+
+  if not db.user_exists(email):
+    error = "unknown e-mail"
+    return jsonify({"type": "error", "error": error})
+
+  user = db.get_user_and_login(email, password)
+  if user == None:
+    error = "incorrect password"
+    return jsonify({"type": "error", "error": error})
+
+  session["user"] = user.email
+  return jsonify({"type": "redirect", "url": url_for("main")})
+
+@app.route('/register', methods=['POST'])
+def register():
+  """
+  Handle a user register attempt.
+  """
+  name = request.form["name"]
+  email = request.form["email"]
+  password = request.form["password"]
+  repassword = request.form["repassword"]
+
+  name_error = check_name(name)
+  if name_error != None:
+    # malformed name
+    return jsonify({"type": "error", "error": name_error})
+
+  email_error = check_email(email)
+  if email_error != None:
+    # malformed e-mail
+    return jsonify({"type": "error", "error": email_error})
+
+  password_error = check_password(password, repassword)
+  if password_error != None:
+    # malformed password
+    return jsonify({"type": "error", "error": password_error})
+
+  user_exists = db.user_exists(email)
+  if user_exists:
+    # user with this e-mail already exists
+    error = "a user with this e-mail already exists"
+    return jsonify({"type": "error", "error": error})
+
+  user = db.make_user(name, email, password)
+
+  session["user"] = user.email
+  return jsonify({"type": "redirect", "url": url_for("main")})
+
+@app.route("/help", methods = ["GET"])
+def help():
+  """
+  Help page.
+  """
+  return render_template("html/help.html")
 
 # methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])

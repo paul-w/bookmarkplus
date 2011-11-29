@@ -5,38 +5,56 @@
 {% endblock %}
 
 {% block body %}
-  <div class="landing_container" id="sign_in">
-    <form method="post">
+
+  <div class="landing_container" id="login">
+    <form id="login_form" method="post">
       <div class="text_container">
         <span class="holder">E-mail</span>
-        <input type="text" class="e-mail" />
+        <input type="text" id="login_email" class="identity" />
       </div>
       <div class="text_container">
         <span class="holder">Password</span>
-        <input type="password" class="password" />
+        <input class="password" id="login_password" type="password" />
       </div>
-      <div class="submit">
-        <input type="submit" value="Sign in" />
-      </div>
+      <input class = "submit_button" type="submit" value="Log in" />
     </form>
+    <div class="error">
+      {% if not login_error == None %}
+        <span id="login_error">{{ login_error }}</span>
+      {% endif %}
+    </div>
   </div>
-  <div class="landing_container" id="sign_up">
-    <form method="post">
+
+  <div class="landing_container" id="register">
+    <form id="register_form" method="post">
+      <div class="text_container">
+        <span class="holder">Name</span>
+        <input class="identity" id="register_name" type="text" />
+      </div>
       <div class="text_container">
         <span class="holder">E-mail</span>
-        <input type="text" class="e-mail" />
+        <input class="identity" id="register_email" type="text" />
       </div>
       <div class="text_container">
         <span class="holder">Password</span>
-        <input type="password" class="password" />
+        <input class="password" id="register_password" type="password" />
       </div>
       <div class="text_container">
         <span class="holder">Re-enter password</span>
-        <input type="password" class="password" />
+        <input class="password" id="register_repassword" type="password" />
       </div>
-      <div class="submit">
-        <input type="submit" value="Sign up" />
-      </div>
-    <form>
+      <input class="submit_button" type="submit" value="Register" />
+    </form>
+    <div class="error">
+      {% if not register_error == None %}
+        <span id="register_error">{{ register_error }}</span>
+      {% endif %}
+    </div>
   </div>
+
+  <div class="landing_container" id="help">
+    <!-- TODO(mikemeko) set up help page -->
+    <a href="{{ url_for('help') }}">help</a>
+  </div>
+
 {% endblock %}

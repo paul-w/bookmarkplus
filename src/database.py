@@ -12,7 +12,7 @@ from utils import get_hashed_password
 from utils import get_unicode_datetime
 from models.bookmark import Bookmark
 from models.circle import Circle
-from models.user import User
+from models.User import User
 from flaskext.mongokit import MongoKit
 from flaskext.mongokit import ObjectId
 
