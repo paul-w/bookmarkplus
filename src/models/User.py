@@ -17,11 +17,7 @@ class User(Document):
       'name':unicode,
       'email':unicode,
       'password':unicode,
-      'date_created':datetime,
-      'date_last_login':datetime
+      'date_created':unicode,
+      'date_last_login':unicode
   }
   use_dot_notation = True
-  default_values = {
-      'date_created':datetime.utcnow,
-      'date_last_login':datetime.utcnow
-  }

@@ -8,9 +8,13 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
+from datetime import datetime
 from hashlib import sha256
 
 SALT = 'w59eSNVAE9ZpB29QF4A1'
 
 def get_hashed_password(raw_password):
   return unicode(sha256(raw_password + SALT).hexdigest())
+
+def get_unicode_datetime():
+  return unicode(datetime.utcnow().isoformat())

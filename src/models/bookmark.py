@@ -16,11 +16,10 @@ class Bookmark(Document):
   __collection__ = 'bookmarks'
   structure = {
       'url':unicode,
-      'circles':[ObjectId],
-      'owner':ObjectId,
-      'date_created':datetime,
-      'date_last_clicked':datetime,
+      'circles':[unicode],
+      'owner':unicode,
+      'date_created':unicode,
+      'date_last_clicked':unicode,
       'clicks':int
   }
   use_dot_notation = True
-  default_values = {'date_created':datetime.utcnow}

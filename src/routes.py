@@ -99,7 +99,12 @@ def add_bookmark_to_circle():
 @app.route('/getcircles', methods = ['GET'])
 def get_circles():
     circles = db.get_all_bookmarks(session['user_id'])
-    return jsonify(circles)
+    o = {}
+    i = 0
+    for circle in circles:
+      o[i] = circle
+      i+=1
+    return jsonify(o)
 
 @app.route('/getbookmarks', methods = ['GET'])
 def get_bookmarks():

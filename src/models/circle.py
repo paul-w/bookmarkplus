@@ -8,7 +8,6 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
-from datetime import datetime
 from flaskext.mongokit import Document
 from pymongo.objectid import ObjectId
 
@@ -16,8 +15,8 @@ class Circle(Document):
   __collection__ = 'circles'
   structure = {
       'name':unicode,
-      'owner':ObjectId,
-      'date_created':datetime,
-      'bookmarks':[ObjectId]
+      'owner':unicode,
+      'date_created':unicode,
+      'bookmarks':[unicode]
   }
   use_dot_notation = True
