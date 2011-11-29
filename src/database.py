@@ -78,6 +78,13 @@ class Database():
       user.save()
     return user
 
+  def get_user_by_id(self, user_id):
+    """
+    Takes a user id (unicode) and returns the User corresponding to that id.
+    A user with this user id should exist in the User table.
+    """
+    return self._mk.User.find_one(ObjectId(user_id))
+
   def make_user(self, name, email, raw_password):
     """
     Takes in a user's information and makes a document in the table

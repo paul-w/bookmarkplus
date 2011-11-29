@@ -53,6 +53,8 @@ $(document).ready(function() {
                $("span#register_error").text(response.error);
              } else if (response.type === "redirect") {
                window.location.replace(response.url);
+             } else {
+               // We should never get here
              }
            });
     return false;

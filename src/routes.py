@@ -42,17 +42,15 @@ db = Database(app)
 @app.before_request
 def before_request():
   """
-
+  If a user is logged in, store the current User in g using user id in session.
   """
-  # TODO(mikemeko): store user id in session and store user object in g
-  session['user_id'] = 0
+  if "user_id" in session:
+    g.user = db.get_user_by_id(session.get("user_id"))
+    # TODO(mikemeko): this is an example, remove
+    print "hi", g.user.name
 
 @app.teardown_request
 def teardown_request(exception):
-  """
-
-  """
-  # TODO(mikemeko): free g from user object
   pass
 
 @app.route('/', methods=['GET'])
@@ -60,7 +58,7 @@ def home():
   """
   Home page.
   """
-  if "user" in session:
+  if "user_id" in session:
     return redirect(url_for('main'))
   else:
     return redirect(url_for('landing'))
@@ -92,25 +90,12 @@ def landing():
 
 @app.route('/logout_html.html', methods=['GET'])
 def logout_html():
-  # TODO(mikemeko, jven): we need to store id's of users so that we store
-  #   id in session and put corresponding user object in g at every request
-  session.pop("user")
+  session.pop("user_id")
   return redirect(url_for('landing'))
-
 
 @app.route('/main', methods=['GET'])
 def main():
   return render_template('html/main.html')
-  # added for testing of main.js
-  create_bookmark_form = CreateBookmarkForm(request.form)
-  create_circle_form = CreateCircleForm(request.form)
-  add_bookmark_to_circle_form = AddBookmarkToCircleForm(request.form)
-  return render_template('html/main.html',
-        create_bookmark_form = create_bookmark_form,
-        create_circle_form = create_circle_form,
-        add_form = add_bookmark_to_circle_form
-  )
-
 
 # TODO(jven): This is just an example of using database.py.
 @app.route('/register/<name>/<email>', methods=['POST'])
@@ -138,7 +123,7 @@ def login():
     error = "incorrect password"
     return jsonify({"type": "error", "error": error})
 
-  session["user"] = user.email
+  session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("main")})
 
 @app.route('/register', methods=['POST'])
@@ -174,7 +159,7 @@ def register():
 
   user = db.make_user(name, email, password)
 
-  session["user"] = user.email
+  session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("main")})
 
 @app.route("/help", methods = ["GET"])
