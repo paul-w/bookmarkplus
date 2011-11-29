@@ -95,10 +95,6 @@ def main_js():
   return render_template('js/main.js',
       message='This is the main page!')
 
-@app.route('/adts_js.js', methods=['GET'])
-def adts_js():
-  return render_template('js/adts.js')
-
 # Routes
 
 @app.route('/landing', methods=['GET'])
@@ -118,15 +114,6 @@ def logout_html():
 @requires_login
 def main():
   return render_template('html/main.html')
-
-# TODO(jven): This is just an example of using database.py.
-@app.route('/register/<name>/<email>', methods=['POST'])
-def register(name, email):
-  user_exists = db.user_exists(email)
-  if user_exists:
-    return 'User with e-mail \'%s\' exists!' % email
-  user = db.make_user(name, email, u'password')
-  return 'Hi, %s!' % user.name
 
 @app.route('/login', methods=['POST'])
 def login():
