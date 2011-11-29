@@ -13,6 +13,7 @@ from config import MONGODB_HOST
 from config import MONGODB_PORT
 from database import Database
 from flask import Flask
+from flask import flash
 from flask import g
 from flask import jsonify
 from flask import redirect
@@ -21,6 +22,7 @@ from flask import request
 from flask import session
 from flask import url_for
 from flaskext.mongokit import MongoKit
+from functools import wraps
 from models.forms import AddBookmarkToCircleForm
 from models.forms import CreateBookmarkForm
 from models.forms import CreateCircleForm
@@ -38,6 +40,21 @@ app.secret_key = (
 '\xa5\xee\xd4\x1a\\\x8aQ\xa4\x1a\xa5\x9f\xe3\xdeT=\xb5\xbd\xa6\x93\xb3\x9a')
 
 db = Database(app)
+
+
+"""Adapted from tipster example"""
+def access_denied(): 
+       flash('To access that page, please log in first') 
+       return redirect(url_for('landing'))
+
+def requires_login(f):
+    """Decorator to be applied to actions that require login."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+           if 'user' not in dir(g):
+              return access_denied()
+           return f(*args, **kwargs)
+    return decorated
 
 @app.before_request
 def before_request():
@@ -92,11 +109,13 @@ def landing():
   return render_template('html/landing.html')
 
 @app.route('/logout_html.html', methods=['GET'])
+@requires_login
 def logout_html():
   session.pop("user_id")
   return redirect(url_for('landing'))
 
 @app.route('/main', methods=['GET'])
+@requires_login
 def main():
   return render_template('html/main.html')
 
