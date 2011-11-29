@@ -80,11 +80,9 @@ class Database():
 
   def get_user_by_id(self, user_id):
     """
-    Takes a user id (unicode) and returns the User corresponding to that id,
-    or None if no such User exists.
+    Takes a user id (unicode) and returns the User corresponding to that id.
+    A user with this user id should exist in the User table.
     """
-    if type(user_id) != unicode:
-      return None
     return self._mk.User.find_one(ObjectId(user_id))
 
   def make_user(self, name, email, raw_password):
@@ -123,6 +121,15 @@ class Database():
     bookmark.save()
     return bookmark
 
+  def get_bookmark(self, bookmark_id):
+    """
+    Get a bookmark.
+    """
+    if type(bookmark_id) != unicode:
+      return None
+    bookmark = self._mk.Bookmark.find_one(ObjectId(bookmark_id))
+    return bookmark
+
   def get_all_bookmarks(self, user_id):
     """
     Get a user's bookmarks.
@@ -154,8 +161,9 @@ class Database():
     """
     Get a circle.
     """
-    circle = self._mk.Circle.find_one(circle_id)
-    assert circle is not None
+    if type(circle_id) != unicode:
+      return None
+    circle = self._mk.Circle.find_one(ObjectId(circle_id))
     return circle
 
   def get_all_circles(self, user_id):

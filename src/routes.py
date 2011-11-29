@@ -193,18 +193,23 @@ def add_bookmark_to_circle():
   db.add_bookmark_to_circle(bookmark_id, circle_id)
   return 'sup'
 
-@app.route('/getcircles', methods = ['GET'])
+@app.route('/getcircles', methods = ['POST'])
 def get_circles():
   return jsonify(circles=[{
-      'id':unicode(circle._id),
-      'name':circle.name,
-      'bookmarks':circle.bookmarks
+          'id':unicode(circle._id),
+          'name':circle.name,
+          'bookmarks':circle.bookmarks
       } for circle in db.get_all_circles(session['user_id'])])
 
-@app.route('/getbookmarks', methods = ['GET'])
+@app.route('/getbookmarks', methods = ['POST'])
 def get_bookmarks():
+  circle_id = request.form.get('circle_id')
+  if not circle_id:
+    bookmarks = db.get_all_bookmarks(session['user_id'])
+  else:
+    bookmarks = db.get_bookmarks_in_circle(circle_id)
   return jsonify(bookmarks=[{
-      'id':unicode(bookmark._id),
-      'url':bookmark.url,
-      'circles':bookmark.circles
-      } for bookmark in db.get_all_bookmarks(session['user_id'])])
+          'id':unicode(bookmark._id),
+          'url':bookmark.url,
+          'circles':bookmark.circles
+      } for bookmark in bookmarks])

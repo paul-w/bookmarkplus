@@ -23,13 +23,15 @@ sorting just re-queries the db with a different sorting parameter
 */
 
 $(document).ready(function() {
+    var selectedCircle = '';
+    var sortBy = 0;
 
     // bind create_bookmark button
     $('#create_bookmark').click(function(event) {
         $.post("{{ url_for('create_bookmark') }}", {
             'uri':$('#create_bookmark_uri').val()
         }, function(response) {
-            drawBookmarksFromServer();
+            drawBookmarksFromServer(selectedCircle);
         });
     });
 
@@ -49,15 +51,10 @@ $(document).ready(function() {
             'bookmark_id':$('#add_bookmark_id').val(),
             'circle_id':$('#add_circle_id').val()
         }, function(response) {
-            drawBookmarksFromServer();
+            drawBookmarksFromServer(selectedCircle);
             drawCirclesFromServer();
         });
     });
-
-
-
-    var selectedCircle = 0;
-    var sortBy = 0;
 
     // populates bookmark elements and attaches listeners
     // called
@@ -65,10 +62,18 @@ $(document).ready(function() {
     // 2) after a user interaction that modifies the circles
     var drawCirclesFromServer = function() {
         $('#circles_container').html('');
-        $.getJSON('/getcircles', function(data) {
+        $.post("{{ url_for('get_circles') }}", function(data) {
             $.each(data.circles, function(idx, circle) {
                 var div = $('<div>');
                 div.text(circle.name + ' (' + circle.id + ')');
+                div.click(function() {
+                    if (selectedCircle != circle.id) {
+                      selectedCircle = circle.id;
+                    } else {
+                      selectedCircle = '';
+                    }
+                    drawBookmarksFromServer(selectedCircle);
+                });
                 $('#circles_container').append(div);
             });
         });
@@ -80,10 +85,11 @@ $(document).ready(function() {
     // 2) when the selected circle changes
     // 3) when bookmarks are re-sorted
     // 4) after a user interaction that modifies bookmarks
-    var drawBookmarksFromServer = function() {
+    var drawBookmarksFromServer = function(circle_id) {
         $('#bookmarks_container').html('');
-        $.getJSON('/getbookmarks',
-            function(data) {
+        $.post("{{ url_for('get_bookmarks') }}", {
+                'circle_id':circle_id
+            }, function(data) {
                 $.each(data.bookmarks, function(idx, bookmark) {
                     var div = $('<div>');
                     div.text(bookmark.url + ' (' + bookmark.id + ')');
@@ -95,9 +101,7 @@ $(document).ready(function() {
         });
     };
 
-    drawBookmarksFromServer();
+    drawBookmarksFromServer(selectedCircle);
     drawCirclesFromServer();
-
-
 
 });
