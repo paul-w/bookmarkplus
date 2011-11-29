@@ -14,7 +14,7 @@ from models.bookmark import Bookmark
 from models.circle import Circle
 from models.User import User
 from flaskext.mongokit import MongoKit
-from flaskext.mongokit import ObjectId
+from pymongo.objectid import ObjectId
 
 # TODO(jven): each model must be registered here
 MODELS = [Bookmark, Circle, User]
@@ -77,6 +77,13 @@ class Database():
       user.date_last_login = get_unicode_datetime()
       user.save()
     return user
+
+  def get_user_by_id(self, user_id):
+    """
+    Takes a user id (unicode) and returns the User corresponding to that id.
+    A user with this user id should exist in the User table.
+    """
+    return self._mk.User.find_one(ObjectId(user_id))
 
   def make_user(self, name, email, raw_password):
     """
