@@ -14,9 +14,9 @@ At any given point, this code only knows about:
 4)  How the bookmarks from the selected are being sorted
 
 When the document is first ready:
-0 ) get/draw circles + bookmarks initially from 
+0 ) get/draw circles + bookmarks initially from
 On user interaction:
-1)  call function on server to modify circles + bookmarks 
+1)  call function on server to modify circles + bookmarks
 2)  if function was modifying, get circles + bookmarks from server and immediately redraw
 
 sorting just re-queries the db with a different sorting parameter
@@ -28,27 +28,37 @@ $(document).ready(function() {
 
     // bind create_bookmark button
     $('#create_bookmark').click(function(event) {
+        // TODO(jven): make sure input is non-empty
         $.post("{{ url_for('create_bookmark') }}", {
             'uri':$('#create_bookmark_uri').val()
         }, function(response) {
-            drawBookmarksFromServer(selectedCircle);
-            $('#create_bookmark_uri').val('');
+            if (response.type == 'error') {
+              alert(response.message);
+            } else if (response.type == 'success') {
+              drawBookmarksFromServer(selectedCircle);
+              $('#create_bookmark_uri').val('');
+            }
         });
     });
 
     // bind create_circle button
     $('#create_circle').click(function(event) {
+        // TODO(jven): make sure input is non-empty
         $.post("{{ url_for('create_circle') }}", {
             'name':$('#create_circle_name').val()
         }, function(response) {
-            drawCirclesFromServer();
-            $('#create_circle_name').val('');
+            if (response.type == 'error') {
+              alert(response.message);
+            } else if (response.type == 'success') {
+              drawCirclesFromServer();
+              $('#create_circle_name').val('');
+            }
         });
     });
 
   // bind add_bookmark_to_circle button
     $('#add_bookmark').click(function(event) {
-        alert('hi');
+        // TODO(jven): make sure inputs are non-empty
         $.post("{{ url_for('add_bookmark_to_circle') }}", {
             'bookmark_id':$('#add_bookmark_id').val(),
             'circle_id':$('#add_circle_id').val()
