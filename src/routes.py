@@ -11,9 +11,10 @@ __author__ = (
 from config import MONGODB_DATABASE
 from config import MONGODB_HOST
 from config import MONGODB_PORT
+from config import SECRET_KEY
 from database import Database
-from flask import Flask
 from flask import flash
+from flask import Flask
 from flask import g
 from flask import jsonify
 from flask import redirect
@@ -34,17 +35,13 @@ app = Flask(__name__)
 app.config['MONGODB_DATABASE'] = MONGODB_DATABASE
 app.config['MONGODB_HOST'] = MONGODB_HOST
 app.config['MONGODB_PORT'] = MONGODB_PORT
-
-# TODO(pauL):  make more secret
-app.secret_key = (
-'\xa5\xee\xd4\x1a\\\x8aQ\xa4\x1a\xa5\x9f\xe3\xdeT=\xb5\xbd\xa6\x93\xb3\x9a')
+app.config['SECRET_KEY'] = SECRET_KEY
 
 db = Database(app)
 
-
 """Adapted from tipster example"""
-def access_denied(): 
-       flash('To access that page, please log in first') 
+def access_denied():
+       flash('To access that page, please log in first')
        return redirect(url_for('landing'))
 
 def requires_login(f):
