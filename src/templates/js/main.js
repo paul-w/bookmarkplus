@@ -94,6 +94,7 @@ $(document).ready(function() {
         $.post("{{ url_for('get_circles') }}", function(data) {
             $.each(data.circles, function(idx, circle) {
                 var div = $('<div/>');
+                div.css('margin-bottom', '10px');
                 var span1 = $('<span/>');
                 span1.attr('class', 'circle');
                 span1.text(circle.name);
