@@ -32,6 +32,7 @@ $(document).ready(function() {
             'uri':$('#create_bookmark_uri').val()
         }, function(response) {
             drawBookmarksFromServer(selectedCircle);
+            $('#create_bookmark_uri').val('');
         });
     });
 
@@ -41,6 +42,7 @@ $(document).ready(function() {
             'name':$('#create_circle_name').val()
         }, function(response) {
             drawCirclesFromServer();
+            $('#create_circle_name').val('');
         });
     });
 
@@ -53,6 +55,8 @@ $(document).ready(function() {
         }, function(response) {
             drawBookmarksFromServer(selectedCircle);
             drawCirclesFromServer();
+            $('#add_bookmark_id').val('');
+            $('#add_circle_id').val('');
         });
     });
 
