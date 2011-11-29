@@ -28,32 +28,38 @@ $(document).ready(function() {
 
     // bind create_bookmark button
     $('#create_bookmark').click(function(event) {
-        // TODO(jven): make sure input is non-empty
-        $.post("{{ url_for('create_bookmark') }}", {
-            'uri':$('#create_bookmark_uri').val()
-        }, function(response) {
-            if (response.type == 'error') {
-              alert(response.message);
-            } else if (response.type == 'success') {
-              drawBookmarksFromServer(selectedCircle);
-              $('#create_bookmark_uri').val('');
-            }
-        });
+        if ($('#create_bookmark_uri').val() == '') {
+          alert('You must provide a bookmark URL.');
+        } else {
+          $.post("{{ url_for('create_bookmark') }}", {
+              'uri':$('#create_bookmark_uri').val()
+          }, function(response) {
+              if (response.type == 'error') {
+                alert(response.message);
+              } else if (response.type == 'success') {
+                drawBookmarksFromServer(selectedCircle);
+                $('#create_bookmark_uri').val('');
+              }
+          });
+        }
     });
 
     // bind create_circle button
     $('#create_circle').click(function(event) {
-        // TODO(jven): make sure input is non-empty
-        $.post("{{ url_for('create_circle') }}", {
-            'name':$('#create_circle_name').val()
-        }, function(response) {
-            if (response.type == 'error') {
-              alert(response.message);
-            } else if (response.type == 'success') {
-              drawCirclesFromServer();
-              $('#create_circle_name').val('');
-            }
-        });
+        if ($('#create_circle_name').val() == '') {
+          alert('You must provide a circle name.');
+        } else {
+          $.post("{{ url_for('create_circle') }}", {
+              'name':$('#create_circle_name').val()
+          }, function(response) {
+              if (response.type == 'error') {
+                alert(response.message);
+              } else if (response.type == 'success') {
+                drawCirclesFromServer();
+                $('#create_circle_name').val('');
+              }
+          });
+        }
     });
 
   // bind add_bookmark_to_circle button

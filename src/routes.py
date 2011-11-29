@@ -169,8 +169,12 @@ def help():
 # methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])
 def create_bookmark():
-  # update to database
   uri = request.form.get('uri')
+  # TODO(jven): better validation
+  if not uri:
+    return jsonify({'type':'error', 'message':'Invalid URL.'})
+  if '://' not in uri:
+    uri = 'http://%s' % uri
   if db.bookmark_exists(session['user_id'], uri):
     return jsonify({'type':'error', 'message':'A bookmark with that URL '
         'already exists.'})
