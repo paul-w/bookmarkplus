@@ -65,20 +65,12 @@ def before_request():
     else:
       # TODO(mikemeko): this is an example, remove
       print "hi", g.user.name
+  else:
+    g.user = None
 
 @app.teardown_request
 def teardown_request(exception):
   pass
-
-@app.route('/', methods=['GET'])
-def home():
-  """
-  Home page.
-  """
-  if "user_id" in session:
-    return redirect(url_for('main'))
-  else:
-    return redirect(url_for('landing'))
 
 # JS templates
 
@@ -94,23 +86,22 @@ def main_js():
 
 # Routes
 
-@app.route('/landing', methods=['GET'])
-def landing():
+@app.route('/', methods=['GET'])
+def home():
   """
-  Landing page for login and register.
+  If user is logged in, returns the main page. If not, returns the landing
+  page.
   """
-  return render_template('html/landing.html')
+  if g.user is not None:
+    return render_template('html/main.html')
+  else:
+    return render_template('html/landing.html')
 
-@app.route('/logout_html.html', methods=['GET'])
+@app.route('/logout', methods=['GET'])
 @requires_login
-def logout_html():
+def logout():
   session.pop("user_id")
-  return redirect(url_for('landing'))
-
-@app.route('/main', methods=['GET'])
-@requires_login
-def main():
-  return render_template('html/main.html')
+  return redirect(url_for('home'))
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -130,7 +121,7 @@ def login():
     return jsonify({"type": "error", "error": error})
 
   session["user_id"] = unicode(user._id)
-  return jsonify({"type": "redirect", "url": url_for("main")})
+  return jsonify({"type": "redirect", "url": url_for("home")})
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -166,7 +157,7 @@ def register():
   user = db.make_user(name, email, password)
 
   session["user_id"] = unicode(user._id)
-  return jsonify({"type": "redirect", "url": url_for("main")})
+  return jsonify({"type": "redirect", "url": url_for("home")})
 
 @app.route("/help", methods = ["GET"])
 def help():
