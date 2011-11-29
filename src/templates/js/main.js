@@ -120,8 +120,14 @@ $(document).ready(function() {
                 'circle_id':circle_id
             }, function(data) {
                 $.each(data.bookmarks, function(idx, bookmark) {
-                    var div = $('<div>');
-                    div.text(bookmark.url + ' (' + bookmark.id + ')');
+                    var div = $('<div/>');
+                    var a = $('<a/>');
+                    a.attr('href', bookmark.url);
+                    a.text(bookmark.url);
+                    a.appendTo(div);
+                    var span = $('<span/>');
+                    span.text('    (' + bookmark.id + ')');
+                    span.appendTo(div);
                     div.click(function() {
                         window.open(bookmark.url);
                     });
