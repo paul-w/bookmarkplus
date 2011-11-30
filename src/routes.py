@@ -178,8 +178,8 @@ def create_bookmark():
   if db.bookmark_exists(session['user_id'], uri):
     return jsonify({'type':'error', 'message':'A bookmark with that URL '
         'already exists.'})
-  db.make_bookmark(session['user_id'], uri)
-  return jsonify({'type':'success'})
+  new_bookmark = db.make_bookmark(session['user_id'], uri)
+  return jsonify({'type':'success', 'bookmark_id':unicode(new_bookmark._id)})
 
 @app.route('/createcircle', methods = ['POST'])
 def create_circle():
@@ -190,8 +190,8 @@ def create_circle():
   if db.circle_exists(session['user_id'], name):
     return jsonify({'type':'error', 'message':'A circle with that name '
         'already exists.'})
-  db.make_circle(session['user_id'], name)
-  return jsonify({'type':'success'})
+  new_circle = db.make_circle(session['user_id'], name)
+  return jsonify({'type':'success', 'circle_id':unicode(new_circle._id)})
 
 @app.route('/addbookmarktocircle', methods = ['POST'])
 def add_bookmark_to_circle():

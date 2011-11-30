@@ -43,6 +43,21 @@ $(document).ready(function() {
               } else if (response.type == 'success') {
                 drawBookmarksFromServer(selectedCircle);
                 $('#create_bookmark_uri').val('');
+                if (selectedCircle != '') {
+                  // add bookmark to selected circle
+                  $.post("{{ url_for('add_bookmark_to_circle') }}", {
+                      'bookmark_id':response.bookmark_id,
+                      'circle_id':selectedCircle
+                  }, function(response) {
+                      if (response.type == 'error') {
+                        alert(response.message);
+                      } else if (response.type == 'success') {
+                        refreshElements();
+                        $('#add_bookmark_id').val('');
+                        $('#add_circle_id').val('');
+                      }
+                  });
+                }
               }
           });
         }
@@ -59,7 +74,7 @@ $(document).ready(function() {
               if (response.type == 'error') {
                 alert(response.message);
               } else if (response.type == 'success') {
-                drawCirclesFromServer();
+                refreshElements();
                 $('#create_circle_name').val('');
               }
           });
@@ -80,8 +95,7 @@ $(document).ready(function() {
               if (response.type == 'error') {
                 alert(response.message);
               } else if (response.type == 'success') {
-                drawBookmarksFromServer(selectedCircle);
-                drawCirclesFromServer();
+                refreshElements();
                 $('#add_bookmark_id').val('');
                 $('#add_circle_id').val('');
               }
@@ -122,6 +136,7 @@ $(document).ready(function() {
                 var div = $('<div/>');
                 div.css('margin-bottom', '10px');
                 var span1 = $('<span/>');
+                span1.attr('id', circle.id);
                 span1.attr('class', 'circle');
                 span1.text(circle.name);
                 span1.appendTo(div);
@@ -143,6 +158,10 @@ $(document).ready(function() {
                 span2.appendTo(div);
                 $('#circles_container').append(div);
             });
+            // select the selected circle
+            if (selectedCircle != '') {
+              $('#' + selectedCircle).addClass('selected');
+            }
         });
     };
 
@@ -171,7 +190,12 @@ $(document).ready(function() {
         });
     };
 
-    drawBookmarksFromServer(selectedCircle);
-    drawCirclesFromServer();
+    // refresh the bookmarks and circles
+    var refreshElements = function() {
+        drawBookmarksFromServer(selectedCircle);
+        drawCirclesFromServer();
+    };
 
+    // make initial call to refreshElements
+    refreshElements();
 });
