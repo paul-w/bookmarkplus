@@ -69,6 +69,7 @@ span.holder {
 }
 
 span.circle {
+  padding: 2px;
   background-color: #FFC;
   border: 2px solid black;
 }
@@ -87,7 +88,7 @@ input.password {
 
 /* IDs */
 div#messages {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 10px;
   z-index: 1;
