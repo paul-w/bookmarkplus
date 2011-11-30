@@ -18,11 +18,6 @@
       </div>
       <input class = "submit_button" type="submit" value="Log in" />
     </form>
-    <div class="error">
-      {% if not login_error == None %}
-        <span id="login_error">{{ login_error }}</span>
-      {% endif %}
-    </div>
   </div>
   <div class="landing_container" id="register">
     <form id="register_form" method="post">
@@ -44,11 +39,6 @@
       </div>
       <input class="submit_button" type="submit" value="Register" />
     </form>
-    <div class="error">
-      {% if not register_error == None %}
-        <span id="register_error">{{ register_error }}</span>
-      {% endif %}
-    </div>
   </div>
   <div class="link">
   <a id="about_link">About</a>

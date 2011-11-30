@@ -9,9 +9,11 @@
     <script type="text/javascript"
             src="{{ url_for('static', filename='js/jquery-1.7.1.min.js') }}">
     </script>
+    <script type="text/javascript" src="{{ url_for('util_js') }}"></script>
     {% block scripts %}{% endblock %}
   </head>
   <body>
+    <div id="messages"></div>
     <div class="column">
     <div class="header">
     Bookmark+

@@ -7,6 +7,13 @@
  */
 
 $(document).ready(function() {
+
+  // TODO(mikemeko): this same exact block of code is in main.js, refactor
+  // show all flash messages
+  {% for message in get_flashed_messages() %}
+    UTILS.showMessage("{{ message }}");
+  {% endfor %}
+
   // When login form is submitted, make an ajax call to '/login'.
   // On success, redirect to main page.
   // On failure, report the error.
@@ -20,7 +27,7 @@ $(document).ready(function() {
            },
            function (response) {
              if (response.type === "error") {
-               $("span#login_error").text(response.error);
+               UTILS.showMessage(response.error);
              } else if (response.type === "redirect") {
                window.location.replace(response.url);
              } else {
@@ -47,7 +54,7 @@ $(document).ready(function() {
            },
            function (response) {
              if (response.type === "error") {
-               $("span#register_error").text(response.error);
+               UTILS.showMessage(response.error);
              } else if (response.type === "redirect") {
                window.location.replace(response.url);
              } else {

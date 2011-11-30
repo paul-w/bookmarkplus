@@ -30,6 +30,11 @@ $(document).ready(function() {
     var selectedCircle = '';
     var sortBy = 0;
 
+    // show all flash messages
+    {% for message in get_flashed_messages() %}
+      UTILS.showMessage("{{ message }}");
+    {% endfor %}
+
     // bind create_bookmark button
     $('#create_bookmark').click(function(event) {
         if ($('#create_bookmark_uri').val() == '') {

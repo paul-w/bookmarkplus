@@ -59,9 +59,6 @@ def before_request():
     g.user = db.get_user_by_id(session.get("user_id"))
     if g.user is None:
       session.pop('user_id', None)
-    else:
-      # TODO(mikemeko): this is an example, remove
-      print "hi", g.user.name
   else:
     g.user = None
 
@@ -80,6 +77,10 @@ def landing_js():
 def main_js():
   return render_template('js/main.js')
 
+@app.route('/util_js.js', methods=['GET'])
+def util_js():
+  return render_template('js/util.js')
+
 # Routes
 
 @app.route('/', methods=['GET'])
@@ -96,6 +97,7 @@ def home():
 @app.route('/logout', methods=['GET'])
 @requires_login
 def logout():
+  flash("Goodbye %s" % g.user.name)
   session.pop("user_id")
   return redirect(url_for('home'))
 
@@ -115,6 +117,8 @@ def login():
   if user == None:
     error = "incorrect password"
     return jsonify({"type": "error", "error": error})
+
+  flash("Welcome %s" % user.name)
 
   session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("home")})
@@ -151,6 +155,8 @@ def register():
     return jsonify({"type": "error", "error": error})
 
   user = db.make_user(name, email, password)
+
+  flash("Welcome to Bookmark+ %s!" % user.name)
 
   session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("home")})
