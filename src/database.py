@@ -110,11 +110,11 @@ class Database():
     return self._mk.Bookmark.find_one(
         {'owner':unicode(user_id), 'url':url}) is not None
 
-  def get_bookmark_and_click(self, bookmark_id):
+  def click_bookmark(self, bookmark_id):
     """
     Get a bookmark and record a click.
     """
-    bookmark = self._mk.Bookmark.find_one(bookmark_id)
+    bookmark = self.get_bookmark(bookmark_id)
     assert bookmark is not None
     bookmark.clicks += 1
     bookmark.date_last_clicked = get_unicode_datetime()
@@ -199,15 +199,34 @@ class Database():
     for each url in circle.bookmarks.
     """
     circle = self.get_circle(circle_id)
+    if circle is None:
+      return []
     return [self._mk.Bookmark.find_one(ObjectId(bookmark_id))
         for bookmark_id in circle.bookmarks]
+
+  def is_bookmark_in_circle(self, bookmark_id, circle_id):
+    """
+    Checks if a bookmark is in a circle.
+    """
+    bookmark = self.get_bookmark(bookmark_id)
+    circle = self.get_circle(circle_id)
+    if bookmark is None or circle is None:
+      return False
+    if (unicode(bookmark._id) in circle.bookmarks or
+        unicode(circle._id) in bookmark.circles):
+      return True
+    else:
+      return False
 
   def add_bookmark_to_circle(self, bookmark_id, circle_id):
     """
     Takes in a bookmark and circle and adds the bookmark to the circle.
     """
+    assert not self.is_bookmark_in_circle(bookmark_id, circle_id)
     bookmark = self.get_bookmark(bookmark_id)
     circle = self.get_circle(circle_id)
+    if bookmark is None or circle is None:
+      return
     bookmark.circles.append(unicode(circle_id))
     bookmark.save()
     circle.bookmarks.append(unicode(bookmark_id))

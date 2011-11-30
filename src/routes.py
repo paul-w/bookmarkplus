@@ -202,6 +202,9 @@ def add_bookmark_to_circle():
     return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
   if not circle_id or db.get_circle(circle_id) is None:
     return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  if db.is_bookmark_in_circle(bookmark_id, circle_id):
+    return jsonify({'type':'error', 'message':'That bookmark is already in '
+        'that circle.'})
   db.add_bookmark_to_circle(bookmark_id, circle_id)
   return jsonify({'type':'success'})
 
