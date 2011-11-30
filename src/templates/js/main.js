@@ -38,13 +38,13 @@ $(document).ready(function() {
     // bind create_bookmark button
     $('#create_bookmark').click(function(event) {
         if ($('#create_bookmark_uri').val() == '') {
-          alert('You must provide a bookmark URL.');
+          UTILS.showMessage('You must provide a bookmark URL.');
         } else {
           $.post("{{ url_for('create_bookmark') }}", {
               'uri':$('#create_bookmark_uri').val()
           }, function(response) {
               if (response.type == 'error') {
-                alert(response.message);
+                UTILS.showMessage(response.message);
               } else if (response.type == 'success') {
                 drawBookmarksFromServer(selectedCircle);
                 $('#create_bookmark_uri').val('');
@@ -55,7 +55,7 @@ $(document).ready(function() {
                       'circle_id':selectedCircle
                   }, function(response) {
                       if (response.type == 'error') {
-                        alert(response.message);
+                        UTILS.showMessage(response.message);
                       } else if (response.type == 'success') {
                         refreshElements();
                         $('#add_bookmark_id').val('');
@@ -71,13 +71,13 @@ $(document).ready(function() {
     // bind create_circle button
     $('#create_circle').click(function(event) {
         if ($('#create_circle_name').val() == '') {
-          alert('You must provide a circle name.');
+          UTILS.showMessage('You must provide a circle name.');
         } else {
           $.post("{{ url_for('create_circle') }}", {
               'name':$('#create_circle_name').val()
           }, function(response) {
               if (response.type == 'error') {
-                alert(response.message);
+                UTILS.showMessage(response.message);
               } else if (response.type == 'success') {
                 refreshElements();
                 $('#create_circle_name').val('');
@@ -89,16 +89,16 @@ $(document).ready(function() {
   // bind add_bookmark_to_circle button
     $('#add_bookmark').click(function(event) {
         if ($('#add_bookmark_id').val() == '') {
-          alert('You must provide a bookmark ID.');
+          UTILS.showMessage('You must provide a bookmark ID.');
         } else if ($('#add_circle_id').val() == '') {
-          alert('You must provide a circle ID.');
+          UTILS.showMessage('You must provide a circle ID.');
         } else {
           $.post("{{ url_for('add_bookmark_to_circle') }}", {
               'bookmark_id':$('#add_bookmark_id').val(),
               'circle_id':$('#add_circle_id').val()
           }, function(response) {
               if (response.type == 'error') {
-                alert(response.message);
+                UTILS.showMessage(response.message);
               } else if (response.type == 'success') {
                 refreshElements();
                 $('#add_bookmark_id').val('');
