@@ -76,6 +76,7 @@ def landing_js():
   return render_template('js/landing.js')
 
 @app.route('/main_js.js', methods=['GET'])
+@requires_login
 def main_js():
   return render_template('js/main.js')
 
@@ -156,6 +157,7 @@ def register():
 
 # methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])
+@requires_login
 def create_bookmark():
   uri = request.form.get('uri')
   # TODO(jven): better validation
@@ -170,6 +172,7 @@ def create_bookmark():
   return jsonify({'type':'success', 'bookmark_id':unicode(new_bookmark._id)})
 
 @app.route('/createcircle', methods = ['POST'])
+@requires_login
 def create_circle():
   name = request.form.get('name')
   # TODO(jven): better validation
@@ -182,6 +185,7 @@ def create_circle():
   return jsonify({'type':'success', 'circle_id':unicode(new_circle._id)})
 
 @app.route('/addbookmarktocircle', methods = ['POST'])
+@requires_login
 def add_bookmark_to_circle():
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
@@ -197,6 +201,7 @@ def add_bookmark_to_circle():
   return jsonify({'type':'success'})
 
 @app.route('/getcircles', methods = ['POST'])
+@requires_login
 def get_circles():
   return jsonify(circles=[{
       'id':unicode(circle._id),
@@ -205,6 +210,7 @@ def get_circles():
   } for circle in db.get_all_circles(session['user_id'])])
 
 @app.route('/getbookmarks', methods = ['POST'])
+@requires_login
 def get_bookmarks():
   circle_id = request.form.get('circle_id')
   if not circle_id:
