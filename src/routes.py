@@ -24,9 +24,6 @@ from flask import session
 from flask import url_for
 from flaskext.mongokit import MongoKit
 from functools import wraps
-from models.forms import AddBookmarkToCircleForm
-from models.forms import CreateBookmarkForm
-from models.forms import CreateCircleForm
 from utils import check_email
 from utils import check_name
 from utils import check_password
@@ -39,19 +36,19 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 db = Database(app)
 
-"""Adapted from tipster example"""
 def access_denied():
-       flash('To access that page, please log in first')
-       return redirect(url_for('landing'))
+  """Adapted from tipster example"""
+  flash('To access that page, please log in first')
+  return redirect(url_for('landing'))
 
 def requires_login(f):
-    """Decorator to be applied to actions that require login."""
-    @wraps(f)
-    def decorated(*args, **kwargs):
-           if 'user' not in dir(g):
-              return access_denied()
-           return f(*args, **kwargs)
-    return decorated
+  """Decorator to be applied to actions that require login."""
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    if 'user' not in dir(g):
+       return access_denied()
+    return f(*args, **kwargs)
+  return decorated
 
 @app.before_request
 def before_request():
@@ -211,10 +208,10 @@ def add_bookmark_to_circle():
 @app.route('/getcircles', methods = ['POST'])
 def get_circles():
   return jsonify(circles=[{
-          'id':unicode(circle._id),
-          'name':circle.name,
-          'bookmarks':circle.bookmarks
-      } for circle in db.get_all_circles(session['user_id'])])
+      'id':unicode(circle._id),
+      'name':circle.name,
+      'bookmarks':circle.bookmarks
+  } for circle in db.get_all_circles(session['user_id'])])
 
 @app.route('/getbookmarks', methods = ['POST'])
 def get_bookmarks():
@@ -224,7 +221,7 @@ def get_bookmarks():
   else:
     bookmarks = db.get_bookmarks_in_circle(circle_id)
   return jsonify(bookmarks=[{
-          'id':unicode(bookmark._id),
-          'url':bookmark.url,
-          'circles':bookmark.circles
-      } for bookmark in bookmarks])
+      'id':unicode(bookmark._id),
+      'url':bookmark.url,
+      'circles':bookmark.circles
+  } for bookmark in bookmarks])
