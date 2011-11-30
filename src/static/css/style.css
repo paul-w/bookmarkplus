@@ -42,6 +42,13 @@ div.landing_container {
   border: solid black 1px;
 }
 
+div.link {
+  cursor: pointer;
+  margin-top: 5px;
+  text-align: center;
+  text-decoration: underline;
+}
+
 div.text_container {
   position: relative;
   overflow: visible;
@@ -75,4 +82,3 @@ input.identity {
 input.password {
   width: 150px;
 }
-

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-
+<div id="register_login">
   <div class="landing_container" id="login">
     <form id="login_form" method="post">
       <div class="text_container">
@@ -24,7 +24,6 @@
       {% endif %}
     </div>
   </div>
-
   <div class="landing_container" id="register">
     <form id="register_form" method="post">
       <div class="text_container">
@@ -51,10 +50,17 @@
       {% endif %}
     </div>
   </div>
-
-  <div class="landing_container" id="help">
-    <!-- TODO(mikemeko) set up help page -->
-    <a href="{{ url_for('help') }}">help</a>
+  <div class="link">
+  <a id="about_link">About</a>
   </div>
-
+</div>
+<div id="about">
+<!-- TODO(jven): take out inline css-->
+<p style="text-align:center">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris aliquet, diam a feugiat semper, lacus nibh placerat sem, a blandit ipsum ipsum vel sem. Integer molestie imperdiet mauris eu blandit. Cras nibh tortor, vulputate id imperdiet id, molestie id massa. Mauris in arcu orci. Praesent elementum dignissim sem, id rhoncus nunc ullamcorper quis. Vestibulum vestibulum adipiscing odio sed eleifend. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque a sapien ac quam elementum suscipit. Suspendisse consequat volutpat quam vel pretium. Fusce arcu turpis, sagittis venenatis scelerisque id, ullamcorper sed eros. Nunc porta pretium mauris, vel posuere massa pharetra id. Curabitur tristique odio ac nibh tincidunt nec fermentum turpis tincidunt. Vestibulum eu enim quis dui congue aliquam. Fusce adipiscing leo justo, a lacinia mauris.
+</p>
+<div class="link">
+<a id="back_link">Back</a>
+</div>
+</div>
 {% endblock %}

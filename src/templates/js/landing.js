@@ -7,9 +7,6 @@
  */
 
 $(document).ready(function() {
-  // TODO(jven): take me out of here!
-  //alert('{{ message }}');
-
   // When login form is submitted, make an ajax call to '/login'.
   // On success, redirect to main page.
   // On failure, report the error.
@@ -89,5 +86,16 @@ $(document).ready(function() {
       }
     }($(input_), $(holder_)));
   }
+
+  // Hide the about div and bind the links.
+  $('#about').hide();
+  $('#about_link').click(function() {
+    $('#register_login').slideUp();
+    $('#about').slideDown();
+  });
+  $('#back_link').click(function() {
+    $('#about').slideUp();
+    $('#register_login').slideDown();
+  });
 
 });

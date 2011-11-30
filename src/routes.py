@@ -73,13 +73,11 @@ def teardown_request(exception):
 
 @app.route('/landing_js.js', methods=['GET'])
 def landing_js():
-  return render_template('js/landing.js',
-      message='This is the landing page!')
+  return render_template('js/landing.js')
 
 @app.route('/main_js.js', methods=['GET'])
 def main_js():
-  return render_template('js/main.js',
-      message='This is the main page!')
+  return render_template('js/main.js')
 
 # Routes
 
@@ -155,13 +153,6 @@ def register():
 
   session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("home")})
-
-@app.route("/help", methods = ["GET"])
-def help():
-  """
-  Help page.
-  """
-  return render_template("html/help.html")
 
 # methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])
