@@ -38,8 +38,8 @@ db = Database(app)
 
 def access_denied():
   """Adapted from tipster example"""
-  flash('To access that page, please log in first')
-  return redirect(url_for('landing'))
+  flash('To access that page, please log in first.')
+  return redirect(url_for('home'))
 
 def requires_login(f):
   """Decorator to be applied to actions that require login."""
