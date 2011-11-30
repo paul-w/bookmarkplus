@@ -4,30 +4,28 @@
   <script type="text/javascript" src="{{ url_for('main_js') }}"></script>
 {% endblock %}
 
-
 {% block body %}
-    <div class="logout" id="logout">
-       <a href="{{ url_for('logout') }}">Logout</a>
-    </div>
-
-    URL: <input id="create_bookmark_uri" type="text"></input>
-    <button id="create_bookmark">Add Bookmark</button>
-    </br>
-    Name: <input id="create_circle_name" type="text"></input>
-    <button id="create_circle">Create Circle</button>
-    </br>
-    Bookmark ID: <input id="add_bookmark_id" type="text"></input>
-    Circle ID: <input id="add_circle_id" type="text"></input>
-    <button id="add_bookmark">Add to Circle</button>
-    </br>
-
+  <div class="logout" id="logout">
+     <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+  <hr />
+  <div>
+  <p><input id="create_bookmark_uri" type="text"></input></p>
+  <p><button id="create_bookmark">Add Bookmark</button></p>
+  </div>
+  <div>
+  <p><input id="create_circle_name" type="text"></input></p>
+  <p><button id="create_circle">Create Circle</button></p>
+  </div>
+  <div>
+  <p><input id="add_bookmark_id" type="text"></input></p>
+  <p><input id="add_circle_id" type="text"></input></p>
+  <p><button id="add_bookmark">Add Bookmark to Circle</button></p>
+  </div>
   <hr />
   <div class="bookmarks_container" id="bookmarks_container">
   </div>
   <hr />
   <div class="circles_container" id="circles_container">
   </div>
-
-
-
 {% endblock %}
