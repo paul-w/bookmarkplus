@@ -28,8 +28,8 @@ MIN_PASSWORD_LENGTH = 6
 
 BOOKMARK_SORT_OPTIONS = {
     unicode('url') : 'URL',
-    unicode('clicks'): 'Most Visited',
-    unicode('date_last_clicked'): 'Most Recently Visited'
+    unicode('clicks'): 'TotalVisits',
+    unicode('date_last_clicked'): 'LastVisited'
 }
 
 BOOKMARK_SORT_OPTIONS_REVERSE =  dict(

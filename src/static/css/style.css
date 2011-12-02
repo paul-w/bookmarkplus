@@ -72,6 +72,7 @@ div.link {
 }
 
 div.logout{
+  float:right;
 }
 
 div.text_container {
@@ -94,9 +95,8 @@ span.holder {
 }
 
 div.sort {
-    margin-left:15px;
-    margin-right:15px;
-    float:right;
+    margin-right:10px;
+    float:left;
 }
 
 
