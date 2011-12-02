@@ -20,6 +20,27 @@ EMAIL_RE = compile(r"\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b")
 NAME_RE = compile(r"\b[a-zA-Z0-9 ]+\b")
 MIN_PASSWORD_LENGTH = 6
 
+# defines which parameters of the Bookmark structure are sortable 
+# Bookmark structure --> user facing text
+# the Bookmark structure paramters should not be exposed to 
+# the front end and the database should not be aware of the
+# user facing text
+
+BOOKMARK_SORT_OPTIONS = {
+    unicode('url') : 'URL',
+    unicode('clicks'): 'Most Visited',
+    unicode('date_last_clicked'): 'Most Recently Visited'
+}
+
+BOOKMARK_SORT_OPTIONS_REVERSE =  dict(
+    [(val, key) for (key, val) in BOOKMARK_SORT_OPTIONS.iteritems()]) 
+
+# for now, the first option is the default
+DEFAULT_BOOKMARK_SORT_KEY = BOOKMARK_SORT_OPTIONS.keys()[0]
+
+# descending by default
+DEFAULT_BOOKMARK_SORT_ORDER = -1
+
 def get_hashed_password(raw_password):
   return unicode(sha256(raw_password + SALT).hexdigest())
 
