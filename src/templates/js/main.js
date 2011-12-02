@@ -28,12 +28,37 @@ $(document).ready(function() {
 
     // set variables
     var selectedCircle = '';
-    var sortBy = 0;
+
+    b_options_div = $('#bookmark_sort_options')
+    {% for option in bookmark_sort_options %}
+        div = $('<div/>');
+        div.text("{{ option }}");
+        div.addClass('sort');
+        div.click(function() {
+             text =  $(this).text();
+             if(text ===  sortBookmarksBy){
+                 bAscending = -bAscending;
+             }
+             else{ 
+                 bAscending = -1;
+                 sortBookmarksBy =  text
+             }
+             drawBookmarksFromServer(selectedCircle);
+        });
+        b_options_div.append(div)
+    {% endfor %}
+
+    var sortBookmarksBy = "{{ bookmark_sort_key }}";
+    // 1 indicaets ascending, -1 descending
+    var bAscending = "{{ bookmark_sort_order }}"; 
 
     // show all flash messages
     {% for message in get_flashed_messages() %}
       UTILS.showMessage("{{ message }}");
     {% endfor %}
+
+    // bind sort option toggler
+     
 
     // bind create_bookmark button
     $('#create_bookmark').click(function(event) {
@@ -202,7 +227,9 @@ $(document).ready(function() {
     var drawBookmarksFromServer = function(circle_id) {
         $('#bookmarks_container').html('');
         $.post("{{ url_for('get_bookmarks') }}", {
-                'circle_id':circle_id
+                'circle_id':circle_id,
+                'sort_by': sortBookmarksBy,
+                'ascending': bAscending
             }, function(data) {
                 $.each(data.bookmarks, function(idx, bookmark) {
                     var div = $('<div/>');

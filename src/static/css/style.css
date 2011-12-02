@@ -75,6 +75,10 @@ div.link {
   text-decoration: underline;
 }
 
+div.logout{
+  float:right;
+}
+
 div.text_container {
   position: relative;
   overflow: visible;
@@ -93,6 +97,12 @@ span.holder {
   z-index: 1;
   color: gray;
 }
+
+div.sort {
+    margin-right:10px;
+    float:left;
+}
+
 
 span.circle {
   padding: 2px;

@@ -24,6 +24,8 @@ from flask import session
 from flask import url_for
 from flaskext.mongokit import MongoKit
 from functools import wraps
+from utils import BOOKMARK_SORT_OPTIONS 
+from utils import BOOKMARK_SORT_OPTIONS_REVERSE
 from utils import check_email
 from utils import check_name
 from utils import check_password
@@ -75,7 +77,16 @@ def landing_js():
 @app.route('/main_js.js', methods=['GET'])
 @requires_login
 def main_js():
-  return render_template('js/main.js')
+  bookmark_sort_options = []
+  for option in BOOKMARK_SORT_OPTIONS.values():
+      bookmark_sort_options.append(option)
+
+  return render_template('js/main.js',
+            bookmark_sort_options = bookmark_sort_options,
+            bookmark_sort_key = BOOKMARK_SORT_OPTIONS[
+                                    g.user.bookmark_sort_key],
+            bookmark_sort_order = g.user.bookmark_sort_order
+            )
 
 @app.route('/util_js.js', methods=['GET'])
 def util_js():
@@ -229,10 +240,15 @@ def get_circles():
 @requires_login
 def get_bookmarks():
   circle_id = request.form.get('circle_id')
+  sort_by = request.form.get('sort_by')
+  ascending = request.form.get('ascending')
+  sort_params = (
+    BOOKMARK_SORT_OPTIONS_REVERSE[sort_by], int(ascending))  
+     
   if not circle_id:
-    bookmarks = db.get_all_bookmarks(session['user_id'])
+    bookmarks = db.get_all_bookmarks(session['user_id'], sort_params)
   else:
-    bookmarks = db.get_bookmarks_in_circle(circle_id)
+    bookmarks = db.get_bookmarks_in_circle(circle_id, sort_params)
   return jsonify(bookmarks=[{
       'id':unicode(bookmark._id),
       'url':bookmark.url,

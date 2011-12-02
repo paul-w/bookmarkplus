@@ -8,6 +8,8 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
+from utils import DEFAULT_BOOKMARK_SORT_KEY
+from utils import DEFAULT_BOOKMARK_SORT_ORDER
 from utils import get_hashed_password
 from utils import get_unicode_datetime
 from models.bookmark import Bookmark
@@ -60,6 +62,31 @@ class Database():
         else:
           print '%d documents' % collection.count()
 
+  # Added for debugging 
+  # TODO(pauL):  remove
+  def _show_contents_lengthy(self):
+    """
+    Show the contents of the current MongoDB connection.
+    """
+    for database_name in self._mk.connection.database_names():
+      print 'DATABASE: %s\n' % database_name
+      db = self._mk.connection[database_name]
+      for collection_name in db.collection_names():
+        print 'COLLECTION: %s' % collection_name
+        collection = db[collection_name]
+        count = collection.count()
+        curs = collection.find()
+        for row in curs:
+            for key in row:
+                print key, ':', row[key]
+            print '\n'
+                
+        '''if count == 1:
+          print '%d document' % collection.count()
+        else:
+          print '%d documents' % collection.count()
+        '''
+
   def user_exists(self, email):
     """
     Takes in an e-mail address and checks if a User exists with that address.
@@ -99,6 +126,8 @@ class Database():
     new_user.password = password
     new_user.date_created = get_unicode_datetime()
     new_user.date_last_login = get_unicode_datetime()
+    new_user.bookmark_sort_key = DEFAULT_BOOKMARK_SORT_KEY
+    new_user.bookmark_sort_order = DEFAULT_BOOKMARK_SORT_ORDER
     new_user.save()
     return new_user
 
@@ -134,11 +163,13 @@ class Database():
       return None
     return bookmark
 
-  def get_all_bookmarks(self, user_id):
+  def get_all_bookmarks(self, user_id, sort_by):
     """
     Get a user's bookmarks.
     """
-    return self._mk.Bookmark.find({'owner':unicode(user_id)})
+    user = self.get_user_by_id(user_id)
+    user.bookmark_sort_key, user.bookmark_sort_order = sort_by 
+    return self._mk.Bookmark.find({'owner':unicode(user_id)}).sort([sort_by])
 
   def make_bookmark(self, user_id, url):
     """
@@ -206,15 +237,16 @@ class Database():
     new_circle.save()
     return new_circle
 
-  def get_bookmarks_in_circle(self, circle_id):
+  def get_bookmarks_in_circle(self, circle_id, sort_by):
     """
     Get all the bookmarks in the circle. Requires bookmark_exists(url)
     for each url in circle.bookmarks.
     """
+    user.bookmark_sort_key, user.bookmark_sort_order = sort_by 
     circle = self.get_circle(circle_id)
     if circle is None:
       return []
-    return [self._mk.Bookmark.find_one(ObjectId(bookmark_id))
+    return [self._mk.Bookmark.find_one(ObjectId(bookmark_id)).sort([sort_by])
         for bookmark_id in circle.bookmarks]
 
   def is_bookmark_in_circle(self, bookmark_id, circle_id):
