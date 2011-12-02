@@ -130,6 +130,30 @@ $(document).ready(function() {
       }
     });
 
+    // TODO(mikemeko)
+    var makeDraggable = function (element) {
+      element.draggable({
+        revert: true
+      });
+    }
+
+    // TODO(mikemeko)
+    var makeDroppable = function (element) {
+      element.droppable({
+        drop: function (event, ui) {
+          // TODO(mikemeko)
+          alert('whad up');
+        },
+        over: function (event, ui) {
+          // TODO(mikemeko)
+        },
+        out: function (event, ui) {
+          // TODO
+        },
+        tolerance: 'touch'
+      });
+    }
+
     // populates bookmark elements and attaches listeners
     // called
     // 1) when document ready initially
@@ -139,7 +163,7 @@ $(document).ready(function() {
         $.post("{{ url_for('get_circles') }}", function(data) {
             $.each(data.circles, function(idx, circle) {
                 var div = $('<div/>');
-                div.css('margin-bottom', '10px');
+                div.addClass("circle");
                 var span1 = $('<span/>');
                 span1.attr('id', circle.id);
                 span1.attr('class', 'circle');
@@ -161,6 +185,7 @@ $(document).ready(function() {
                 var span2 = $('<span/>');
                 span2.text('    (' + circle.id + ')');
                 span2.appendTo(div);
+                makeDroppable(div);
                 $('#circles_container').append(div);
             });
             // select the selected circle
@@ -183,6 +208,7 @@ $(document).ready(function() {
             }, function(data) {
                 $.each(data.bookmarks, function(idx, bookmark) {
                     var div = $('<div/>');
+                    div.addClass("bookmark");
                     var a = $('<a/>');
                     a.attr('href', bookmark.url);
                     a.text(bookmark.url);
@@ -190,6 +216,7 @@ $(document).ready(function() {
                     var span = $('<span/>');
                     span.text('    (' + bookmark.id + ')');
                     span.appendTo(div);
+                    makeDraggable(div);
                     $('#bookmarks_container').append(div);
             });
         });
@@ -203,4 +230,6 @@ $(document).ready(function() {
 
     // make initial call to refreshElements
     refreshElements();
+
+
 });

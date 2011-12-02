@@ -21,11 +21,25 @@ p {
 
 /* Classes. */
 div.bookmarks_container {
-  height: 250px;
+  height: auto;
+}
+
+div.bookmark {
+  background-color: cyan;
+  width: 400px;
+  height: 50px;
+  border: 2px solid black;
 }
 
 div.circles_container {
-  height: 150px;
+  height: auto;
+}
+
+div.circle {
+  width: 400px;
+  height: 100px;
+  background-color: orange;
+  border: 2px solid black;
 }
 
 div.column {
