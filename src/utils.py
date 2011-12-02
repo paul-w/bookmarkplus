@@ -15,7 +15,7 @@ from re import match
 
 SALT = 'w59eSNVAE9ZpB29QF4A1'
 
-# TODO(mikemeko): check the validity of these regular expressions
+# TODO(mikemeko): check the robustness of these regular expressions
 EMAIL_RE = compile(r"\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b")
 NAME_RE = compile(r"\b[a-zA-Z0-9 ]+\b")
 MIN_PASSWORD_LENGTH = 6

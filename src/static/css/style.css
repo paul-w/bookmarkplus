@@ -20,6 +20,14 @@ p {
 }
 
 /* Classes. */
+div.bookmarks_container {
+  height: 250px;
+}
+
+div.circles_container {
+  height: 150px;
+}
+
 div.column {
   margin: 50px auto 0px auto;
   width: 60%;

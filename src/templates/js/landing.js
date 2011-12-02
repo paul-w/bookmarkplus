@@ -8,8 +8,8 @@
 
 $(document).ready(function() {
 
-  // TODO(mikemeko): this same exact block of code is in main.js, refactor
   // show all flash messages
+  // TODO(mikemeko): this same exact block of code is in main.js, refactor
   {% for message in get_flashed_messages() %}
     UTILS.showMessage("{{ message }}");
   {% endfor %}

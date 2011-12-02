@@ -9,15 +9,18 @@
 UTILS = {}
 
 // life of a pup-up message in milliseconds.
-UTILS.MESSAGE_DURATION = 3000;
+UTILS.MESSAGE_DURATION = 4000;
 
 // shows a pop-up message containing |message_text|.
 UTILS.showMessage = function (message_text) {
-  messages = $("div#messages");
+  var messages = $("div#messages");
   var message = $('<div>');
   message.text(message_text);
   message.addClass('message');
   messages.empty();
+  message.click(function () {
+    $(this).hide();
+  });
   messages.append(message);
   setTimeout(function() {
     message.fadeOut("slow", "linear");
