@@ -9,7 +9,6 @@
 $(document).ready(function() {
 
   // show all flash messages
-  // TODO(mikemeko): this same exact block of code is in main.js, refactor
   {% for message in get_flashed_messages() %}
     UTILS.showMessage("{{ message }}");
   {% endfor %}
