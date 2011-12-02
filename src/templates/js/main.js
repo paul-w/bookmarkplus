@@ -83,11 +83,10 @@ $(document).ready(function() {
                         UTILS.showMessage(response.message);
                       } else if (response.type == 'success') {
                         refreshElements();
-                        $('#add_bookmark_id').val('');
-                        $('#add_circle_id').val('');
                       }
                   });
                 }
+                $('#add_options').hide();
               }
           });
         }
@@ -106,13 +105,10 @@ $(document).ready(function() {
               } else if (response.type == 'success') {
                 refreshElements();
                 $('#create_circle_name').val('');
+                $('#add_options').hide();
               }
           });
         }
-    });
-
-  // bind add_bookmark_to_circle button
-    $('#add_bookmark').click(function(event) {
     });
 
     // bind enter key on inputs
@@ -126,18 +122,9 @@ $(document).ready(function() {
         $('#create_circle').click();
       }
     });
-    $('#add_bookmark_id').keydown(function(event) {
-      if (event.keyCode == 13) {
-        $('#add_bookmark').click();
-      }
-    });
-    $('#add_circle_id').keydown(function(event) {
-      if (event.keyCode == 13) {
-        $('#add_bookmark').click();
-      }
-    });
 
-    // TODO(mikemeko)
+    // makes an element draggable
+    // element is returned to its original place when dropped
     var makeDraggable = function (element) {
       element.draggable({
         revert: true
@@ -176,7 +163,7 @@ $(document).ready(function() {
         out: function (event, ui) {
           $(this).removeClass("highlight");
         },
-        tolerance: 'touch'
+        tolerance: 'pointer'
       });
     }
 
@@ -209,6 +196,7 @@ $(document).ready(function() {
                   drawBookmarksFromServer(selectedCircle);
                 });
                 makeCircleDroppable(div);
+                makeDraggable(div);
                 $('#circles_container').append(div);
             });
             // select the selected circle
@@ -216,6 +204,7 @@ $(document).ready(function() {
               $('#' + selectedCircle).addClass('selected');
             }
         });
+        $('#add_options').hide();
     };
 
     // populates circle elements and attaches listeners
@@ -243,16 +232,23 @@ $(document).ready(function() {
                     $('#bookmarks_container').append(div);
             });
         });
+        $('#add_options').hide();
     };
 
     // refresh the bookmarks and circles
     var refreshElements = function() {
         drawBookmarksFromServer(selectedCircle);
         drawCirclesFromServer();
+        $('#add_options').hide();
     };
 
     // make initial call to refreshElements
     refreshElements();
 
+    // hide bookmark and circle adding tools, show when + button is pressed
+    $('#add_options').hide();
+    $('#add_item').click(function () {
+      $('#add_options').slideToggle();
+    });
 
 });

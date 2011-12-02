@@ -24,7 +24,7 @@ from flask import session
 from flask import url_for
 from flaskext.mongokit import MongoKit
 from functools import wraps
-from utils import BOOKMARK_SORT_OPTIONS 
+from utils import BOOKMARK_SORT_OPTIONS
 from utils import BOOKMARK_SORT_OPTIONS_REVERSE
 from utils import check_email
 from utils import check_name
