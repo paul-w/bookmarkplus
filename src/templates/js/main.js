@@ -88,24 +88,6 @@ $(document).ready(function() {
 
   // bind add_bookmark_to_circle button
     $('#add_bookmark').click(function(event) {
-        if ($('#add_bookmark_id').val() == '') {
-          UTILS.showMessage('You must provide a bookmark ID.');
-        } else if ($('#add_circle_id').val() == '') {
-          UTILS.showMessage('You must provide a circle ID.');
-        } else {
-          $.post("{{ url_for('add_bookmark_to_circle') }}", {
-              'bookmark_id':$('#add_bookmark_id').val(),
-              'circle_id':$('#add_circle_id').val()
-          }, function(response) {
-              if (response.type == 'error') {
-                UTILS.showMessage(response.message);
-              } else if (response.type == 'success') {
-                refreshElements();
-                $('#add_bookmark_id').val('');
-                $('#add_circle_id').val('');
-              }
-          });
-        }
     });
 
     // bind enter key on inputs
@@ -137,18 +119,37 @@ $(document).ready(function() {
       });
     }
 
-    // TODO(mikemeko)
-    var makeDroppable = function (element) {
-      element.droppable({
+    // makes a circle a droppable element such that if a bookmark is dropped
+    // into it, it adds that bookmark to the circle
+    var makeCircleDroppable = function (circle) {
+      circle.droppable({
         drop: function (event, ui) {
-          // TODO(mikemeko)
-          alert('whad up');
+          var bookmark_id = ui.draggable.attr('bookmark_id');
+          if (typeof(bookmark_id) === "undefined") {
+            // TODO(mikemeko): better error message
+            UTILS.showMessage("You can't add that to a circle");
+          } else {
+            var circle_id = $(this).attr('circle_id');
+            $.post("{{ url_for('add_bookmark_to_circle') }}", {
+                'bookmark_id':bookmark_id,
+                'circle_id':circle_id
+            }, function(response) {
+                if (response.type == 'error') {
+                  UTILS.showMessage(response.message);
+                } else if (response.type == 'success') {
+                  refreshElements();
+                  // TODO(mikemeko)
+                  UTILS.showMessage("Bookmark successfully added to circle");
+                }
+            });
+          }
+          $(this).removeClass("highlight");
         },
         over: function (event, ui) {
-          // TODO(mikemeko)
+          $(this).addClass("highlight");
         },
         out: function (event, ui) {
-          // TODO
+          $(this).removeClass("highlight");
         },
         tolerance: 'touch'
       });
@@ -164,8 +165,8 @@ $(document).ready(function() {
             $.each(data.circles, function(idx, circle) {
                 var div = $('<div/>');
                 div.addClass("circle");
+                div.attr('circle_id', circle.id);
                 var span1 = $('<span/>');
-                span1.attr('id', circle.id);
                 span1.attr('class', 'circle');
                 span1.text(circle.name);
                 span1.appendTo(div);
@@ -182,10 +183,7 @@ $(document).ready(function() {
                   }
                   drawBookmarksFromServer(selectedCircle);
                 });
-                var span2 = $('<span/>');
-                span2.text('    (' + circle.id + ')');
-                span2.appendTo(div);
-                makeDroppable(div);
+                makeCircleDroppable(div);
                 $('#circles_container').append(div);
             });
             // select the selected circle
@@ -208,14 +206,12 @@ $(document).ready(function() {
             }, function(data) {
                 $.each(data.bookmarks, function(idx, bookmark) {
                     var div = $('<div/>');
-                    div.addClass("bookmark");
+                    div.addClass('bookmark');
+                    div.attr('bookmark_id', bookmark.id);
                     var a = $('<a/>');
                     a.attr('href', bookmark.url);
                     a.text(bookmark.url);
                     a.appendTo(div);
-                    var span = $('<span/>');
-                    span.text('    (' + bookmark.id + ')');
-                    span.appendTo(div);
                     makeDraggable(div);
                     $('#bookmarks_container').append(div);
             });
