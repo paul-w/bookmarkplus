@@ -177,6 +177,16 @@ def create_bookmark():
   new_bookmark = db.make_bookmark(session['user_id'], uri)
   return jsonify({'type':'success', 'bookmark_id':unicode(new_bookmark._id)})
 
+@app.route('/deletebookmark', methods = ['POST'])
+@requires_login
+def delete_bookmark():
+  bookmark_id = request.form.get('bookmark_id')
+  # TODO(jven): better validation, make sure user owns this bookmark
+  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
+  db.delete_bookmark(bookmark_id)
+  return jsonify({'type':'success'})
+
 @app.route('/createcircle', methods = ['POST'])
 @requires_login
 def create_circle():
@@ -195,7 +205,7 @@ def create_circle():
 def add_bookmark_to_circle():
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
-  # TODO(jven): better validation
+  # TODO(jven): better validation, make sure user owns these things
   if not bookmark_id or db.get_bookmark(bookmark_id) is None:
     return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
   if not circle_id or db.get_circle(circle_id) is None:
