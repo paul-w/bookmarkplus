@@ -184,6 +184,19 @@ class Database():
     new_bookmark.save()
     return new_bookmark
 
+  def delete_bookmark(self, bookmark_id):
+    """
+    Remove a bookmark from every circle it's in then delete the bookmark.
+    """
+    bookmark = self.get_bookmark(bookmark_id)
+    assert bookmark is not None
+    for circle_id in bookmark.circles:
+      print circle_id
+      circle = self.get_circle(circle_id)
+      circle.bookmarks.remove(bookmark_id)
+      circle.save()
+    self._mk.Bookmark.collection.remove(ObjectId(bookmark_id))
+
   def circle_exists(self, user_id, name):
     """
     Takes in a user and a circle name and checks if the user has a circle with

@@ -21,14 +21,25 @@ p {
 
 /* Classes. */
 div.bookmarks_container {
-  height: 250px;
+  height: auto;
 }
 
-div.bookmarks_container {
-  height: 250px;
+div.bookmark {
+  background-color: cyan;
+  width: 400px;
+  height: 50px;
+  border: 2px solid black;
 }
 
-div.bookmark_sort_options {
+div.circles_container {
+  height: auto;
+}
+
+div.circle {
+  width: 400px;
+  height: 100px;
+  background-color: orange;
+  border: 2px solid black;
 }
 
 div.column {
