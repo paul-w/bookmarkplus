@@ -42,6 +42,8 @@ DEFAULT_BOOKMARK_SORT_KEY = BOOKMARK_SORT_OPTIONS.keys()[0]
 # descending by default
 DEFAULT_BOOKMARK_SORT_ORDER = -1
 
+NUM_SUGGESTIONS = 3
+
 def get_hashed_password(raw_password):
   return unicode(sha256(raw_password + SALT).hexdigest())
 

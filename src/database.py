@@ -140,7 +140,9 @@ class Database():
     return self._mk.Bookmark.find_one(
         {'owner':unicode(user_id), 'url':url}) is not None
 
-  def get_suggestions(self, url):
+  def get_suggestions(self, bookmark_id):
+    bookmark = self.get_bookmark(unicode(bookmark_id))
+    url = bookmark.url
     return self._mk.Suggestion.find({'url':unicode(url)}).sort(
                                     [('score', -1)])
 

@@ -26,6 +26,7 @@ from flaskext.mongokit import MongoKit
 from functools import wraps
 from utils import BOOKMARK_SORT_OPTIONS
 from utils import BOOKMARK_SORT_OPTIONS_REVERSE
+from utils import NUM_SUGGESTIONS
 from utils import check_email
 from utils import check_name
 from utils import check_password
@@ -254,3 +255,18 @@ def get_bookmarks():
       'url':bookmark.url,
       'circles':bookmark.circles
   } for bookmark in bookmarks])
+
+
+@app.route('/getsuggestions', methods = ['POST'])
+@requires_login
+def get_bookmarks():
+
+  ## not yet tested
+
+  bookmark_id = request.form.get('bookmark_id')
+  suggestions = db.get_suggestions(bookmark_id)
+  if len(suggestions) > NUM_SUGGEST:
+      suggestions = suggestions[0:NUM_SUGGEST]
+  return jsonify(suggestions=[{
+      'url':suggestion.suggestion,
+  } for suggestion in suggestions])
