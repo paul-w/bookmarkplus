@@ -208,7 +208,7 @@ class Database():
     Get a user's bookmarks.
     """
     user = self.get_user_by_id(user_id)
-    user.bookmark_sort_key, user.bookmark_sort_order = sort_by 
+    user.bookmark_sort_key, user.bookmark_sort_order = sort_by
     return self._mk.Bookmark.find({'owner':unicode(user_id)}).sort([sort_by])
 
   def make_bookmark(self, user_id, url):
@@ -278,17 +278,23 @@ class Database():
     new_circle.save()
     return new_circle
 
-  def get_bookmarks_in_circle(self, circle_id, sort_by):
+  def get_bookmarks_in_circle(self, user_id, circle_id, sort_by):
     """
     Get all the bookmarks in the circle. Requires bookmark_exists(url)
     for each url in circle.bookmarks.
     """
-    user.bookmark_sort_key, user.bookmark_sort_order = sort_by 
+    user = self.get_user_by_id(user_id)
+    user.bookmark_sort_key, user.bookmark_sort_order = sort_by
     circle = self.get_circle(circle_id)
     if circle is None:
       return []
-    return [self._mk.Bookmark.find_one(ObjectId(bookmark_id)).sort([sort_by])
-        for bookmark_id in circle.bookmarks]
+    # TODO(mikemeko, pauL): pauL, this is buggy and I could not figure out
+    # how to fix it, so I have replaced it by what we had before.
+    # Error: Bookmark object has no sort method
+    return [self._mk.Bookmark.find_one(ObjectId(bookmark_id))
+            for bookmark_id in circle.bookmarks]
+#    return [self._mk.Bookmark.find_one(ObjectId(bookmark_id)).sort([sort_by])
+#            for bookmark_id in circle.bookmarks]
 
   def is_bookmark_in_circle(self, bookmark_id, circle_id):
     """

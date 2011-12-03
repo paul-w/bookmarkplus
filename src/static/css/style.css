@@ -39,7 +39,6 @@ div.bookmark {
 div.circles_container {
   display: inline;
   height: 100px;
-  overflow: auto;
 }
 
 div.circle {

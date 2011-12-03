@@ -240,6 +240,7 @@ def get_circles():
 @app.route('/getbookmarks', methods = ['POST'])
 @requires_login
 def get_bookmarks():
+  user_id = session.get('user_id')
   circle_id = request.form.get('circle_id')
   sort_by = request.form.get('sort_by')
   ascending = request.form.get('ascending')
@@ -247,9 +248,9 @@ def get_bookmarks():
     BOOKMARK_SORT_OPTIONS_REVERSE[sort_by], int(ascending))  
      
   if not circle_id:
-    bookmarks = db.get_all_bookmarks(session['user_id'], sort_params)
+    bookmarks = db.get_all_bookmarks(user_id, sort_params)
   else:
-    bookmarks = db.get_bookmarks_in_circle(circle_id, sort_params)
+    bookmarks = db.get_bookmarks_in_circle(user_id, circle_id, sort_params)
   return jsonify(bookmarks=[{
       'id':unicode(bookmark._id),
       'url':bookmark.url,
@@ -259,7 +260,7 @@ def get_bookmarks():
 
 @app.route('/getsuggestions', methods = ['POST'])
 @requires_login
-def get_bookmarks():
+def get_suggestions():
 
   ## not yet tested
 
