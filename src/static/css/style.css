@@ -30,10 +30,12 @@ div.bookmark {
   float: left;
   background-color: cyan;
   width: 20%;
-  height: 50px;
+  height: 35px;
   margin: 2.2%;
+  padding-top: 15px;
   border: 2px solid black;
   z-index: 1;
+  text-align: center;
 }
 
 div.circles_container {
@@ -43,12 +45,14 @@ div.circles_container {
 
 div.circle {
   float: left;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   margin: 10px;
-  padding: 25px;
+  -moz-border-radius: 100px;
+  -webkit-border-radius: 100px;
   background-color: orange;
   border: 2px solid black;
+  text-align: center;
 }
 
 div.highlight {
@@ -113,11 +117,13 @@ span.holder {
 }
 
 span.circle {
-  display: inline-block;
-  width: auto;
-  height: auto;
-  background-color: #FFC;
-  border: 2px solid black;
+  position: absolute;
+  width: 50px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-top: -10px;
+  margin-left: -25px;
 }
 
 span.selected {
