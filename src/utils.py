@@ -26,6 +26,7 @@ MIN_PASSWORD_LENGTH = 6
 # the front end and the database should not be aware of the
 # user facing text
 
+# TODO(pauL): move to database.py to keep MDD consistent
 BOOKMARK_SORT_OPTIONS = {
     unicode('url') : 'URL',
     unicode('clicks'): 'TotalVisits',

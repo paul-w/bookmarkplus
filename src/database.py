@@ -14,12 +14,13 @@ from utils import get_hashed_password
 from utils import get_unicode_datetime
 from models.bookmark import Bookmark
 from models.circle import Circle
+from models.suggestion import Suggestion
 from models.user import User
 from flaskext.mongokit import MongoKit
 from pymongo.objectid import ObjectId
 
 # TODO(jven): each model must be registered here
-MODELS = [Bookmark, Circle, User]
+MODELS = [Bookmark, Circle, User, Suggestion]
 
 class Database():
   """
@@ -63,7 +64,7 @@ class Database():
           print '%d documents' % collection.count()
 
   # Added for debugging 
-  # TODO(pauL):  remove
+  # TODO(pauL):  remove later
   def _show_contents_lengthy(self):
     """
     Show the contents of the current MongoDB connection.
@@ -139,15 +140,49 @@ class Database():
     return self._mk.Bookmark.find_one(
         {'owner':unicode(user_id), 'url':url}) is not None
 
+  def get_suggestions(self, url):
+    return self._mk.Suggestion.find({'url':unicode(url)}).sort(
+                                    [('score', -1)])
+
+
+  def suggestion_score(self, suggested_bookmark):
+    score = 1.0 / len(suggested_bookmark.circles)
+    return score
+
+  def update_suggestion_scores(self, suggested_bookmark):
+    suggested_url = suggested_bookmark.url
+    for circle_id in suggested_bookmark.circles:
+        circle = self.get_circle(circle_id)
+        for bookmark_id in circle.bookmarks:
+            bookmark = self.get_bookmark(bookmark_id)
+            url = bookmark.url
+            if url==suggested_url:
+                continue
+            score_change = self.suggestion_score(suggested_bookmark)
+            suggestion = self._mk.Suggestion.find_one(
+                   {'url': url, 'suggestion': suggested_url })
+            if suggestion is not None:
+                suggestion.score += score_change
+                suggestion.save()
+            else:
+                new_suggestion = self._mk.Suggestion()
+                new_suggestion.url = url
+                new_suggestion.suggestion = suggested_url
+                new_suggestion.score = score_change
+                new_suggestion.save()
+                
+
+
   def click_bookmark(self, bookmark_id):
     """
     Get a bookmark and record a click.
     """
-    bookmark = self.get_bookmark(bookmark_id)
+    bookmark = self.get_bookmark(unicode(bookmark_id))
     assert bookmark is not None
     bookmark.clicks += 1
     bookmark.date_last_clicked = get_unicode_datetime()
     bookmark.save()
+    self.update_suggestion_scores(bookmark)
     return bookmark
 
   def get_bookmark(self, bookmark_id):
@@ -181,6 +216,7 @@ class Database():
     new_bookmark.url = url
     new_bookmark.owner = unicode(user_id)
     new_bookmark.date_created = get_unicode_datetime()
+    new_bookmark.clicks = 0
     new_bookmark.save()
     return new_bookmark
 
