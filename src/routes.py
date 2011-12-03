@@ -24,8 +24,8 @@ from flask import session
 from flask import url_for
 from flaskext.mongokit import MongoKit
 from functools import wraps
-from utils import BOOKMARK_SORT_OPTIONS
-from utils import BOOKMARK_SORT_OPTIONS_REVERSE
+from models.bookmark import BOOKMARK_SORT_OPTIONS
+from models.bookmark import BOOKMARK_SORT_OPTIONS_REVERSE
 from utils import NUM_SUGGESTIONS
 from utils import check_email
 from utils import check_name
@@ -265,8 +265,8 @@ def get_bookmarks():
 
   bookmark_id = request.form.get('bookmark_id')
   suggestions = db.get_suggestions(bookmark_id)
-  if len(suggestions) > NUM_SUGGEST:
-      suggestions = suggestions[0:NUM_SUGGEST]
+  if len(suggestions) > NUM_SUGGESTIONS:
+      suggestions = suggestions[0:NUM_SUGGESTIONS]
   return jsonify(suggestions=[{
       'url':suggestion.suggestion,
   } for suggestion in suggestions])

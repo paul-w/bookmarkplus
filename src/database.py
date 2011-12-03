@@ -8,8 +8,8 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
-from utils import DEFAULT_BOOKMARK_SORT_KEY
-from utils import DEFAULT_BOOKMARK_SORT_ORDER
+from models.bookmark import DEFAULT_BOOKMARK_SORT_KEY
+from models.bookmark import DEFAULT_BOOKMARK_SORT_ORDER
 from utils import get_hashed_password
 from utils import get_unicode_datetime
 from models.bookmark import Bookmark
@@ -142,9 +142,12 @@ class Database():
 
   def get_suggestions(self, bookmark_id):
     bookmark = self.get_bookmark(unicode(bookmark_id))
-    url = bookmark.url
-    return self._mk.Suggestion.find({'url':unicode(url)}).sort(
+    if bookmark:
+        url = bookmark.url
+        return self._mk.Suggestion.find({'url':unicode(url)}).sort(
                                     [('score', -1)])
+    else:
+        return []
 
 
   def suggestion_score(self, suggested_bookmark):

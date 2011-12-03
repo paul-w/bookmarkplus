@@ -26,22 +26,6 @@ MIN_PASSWORD_LENGTH = 6
 # the front end and the database should not be aware of the
 # user facing text
 
-# TODO(pauL): move to database.py to keep MDD consistent
-BOOKMARK_SORT_OPTIONS = {
-    unicode('url') : 'URL',
-    unicode('clicks'): 'TotalVisits',
-    unicode('date_last_clicked'): 'LastVisited'
-}
-
-BOOKMARK_SORT_OPTIONS_REVERSE =  dict(
-    [(val, key) for (key, val) in BOOKMARK_SORT_OPTIONS.iteritems()]) 
-
-# for now, the first option is the default
-DEFAULT_BOOKMARK_SORT_KEY = BOOKMARK_SORT_OPTIONS.keys()[0]
-
-# descending by default
-DEFAULT_BOOKMARK_SORT_ORDER = -1
-
 NUM_SUGGESTIONS = 3
 
 def get_hashed_password(raw_password):
