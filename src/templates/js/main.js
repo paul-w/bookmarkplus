@@ -37,7 +37,7 @@ $(document).ready(function() {
         div.click(function() {
              text =  $(this).text();
              if(text ===  sortBookmarksBy){
-                 bAscending = -bAscending;
+                 //bAscending = -bAscending;
              }
              else{ 
                  bAscending = -1;
