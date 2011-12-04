@@ -202,8 +202,11 @@ $(document).ready(function() {
                 $('#inner_circles_container').append(div);
             });
             // select the selected circle
-            if (selectedCircle != '') {
-              $('#' + selectedCircle).addClass('selected');
+            if (selectedCircle !== '') {
+              // TODO(mikemeko): this doesn't work right now, fix!
+              var circleSelector = "div[circle_id='" + selectedCircle + "']";
+              var circleDiv = $(circleSelector);
+              circleDiv.addClass('selected');
             }
         });
         $('#add_options').hide();
