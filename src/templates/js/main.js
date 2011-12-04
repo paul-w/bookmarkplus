@@ -134,6 +134,12 @@ $(document).ready(function() {
     // element is returned to its original place when dropped
     var makeDraggable = function (element) {
       element.draggable({
+        start: function (event, ui) {
+          $('#delete').show();
+        },
+        stop: function (event, ui) {
+          $('#delete').hide();
+        },
         revert: true,
         helper: 'clone',
         containment: 'window'
@@ -301,8 +307,9 @@ $(document).ready(function() {
       $('#add_options').slideToggle();
     });
 
-    $('img#trash').click(function () {
+    $('#trash').click(function () {
       UTILS.showMessage("Drag an element here to delete");
     });
+    $('#delete').hide();
 
 });

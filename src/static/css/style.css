@@ -165,16 +165,25 @@ div#messages {
 }
 
 div#delete {
+  height: 45px;
   float: right;
+  background-color: lightgray;
+  border: 2.5px dashed black;
 }
 
 img#trash {
+  float: left;
   width: 40px;
   height: 40px;
 }
 
+span#delete_message {
+  float: right;
+  margin: 15px;
+}
+
 button#add_item {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   font-size: 30px;
 }
