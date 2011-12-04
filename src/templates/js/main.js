@@ -216,10 +216,8 @@ $(document).ready(function() {
             });
             // select the selected circle
             if (selectedCircle !== '') {
-              // TODO(mikemeko): this doesn't work right now, fix!
-              var circleSelector = "div[circle_id='" + selectedCircle + "']";
-              var circleDiv = $(circleSelector);
-              circleDiv.addClass('selected');
+              var circleDiv = $("div[circle_id='" + selectedCircle + "']");
+              circleDiv.find('span').addClass('selected');
             }
         });
         $('#add_options').hide();
@@ -307,9 +305,7 @@ $(document).ready(function() {
       $('#add_options').slideToggle();
     });
 
-    $('#trash').click(function () {
-      UTILS.showMessage("Drag an element here to delete");
-    });
+    // delete tab should only be visible when something is being dragged
     $('#delete').hide();
 
 });
