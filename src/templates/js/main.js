@@ -127,7 +127,9 @@ $(document).ready(function() {
     // element is returned to its original place when dropped
     var makeDraggable = function (element) {
       element.draggable({
-        revert: true
+        revert: true,
+        helper: 'clone',
+        containment: 'window'
       });
     }
 
@@ -234,6 +236,38 @@ $(document).ready(function() {
         });
         $('#add_options').hide();
     };
+
+    // if an element is dragged to the delete area, delete it
+    $('#delete').droppable({
+      drop: function (event, ui) {
+        // TODO(mikemeko): handle circle delete
+        var bookmark_id = ui.draggable.attr('bookmark_id');
+        if (bookmark_id === "undefined") {
+          // TODO(mikemeko): better error message
+          UTILS.showMessage("You can't delete that");
+        } else {
+          $.post("{{ url_for('delete_bookmark') }}", {
+            'bookmark_id': bookmark_id
+          }, function (response) {
+            if (response.type == 'error') {
+              UTILS.showMessage(response.message);
+            } else if (response.type == 'success') {
+              ui.draggable.remove();
+              refreshElements();
+              // TODO(mikemeko): better error message
+              UTILS.showMessage("Bookmark successfully deleted");
+            }
+          });
+        }
+      },
+      over: function (event, ui) {
+        ui.helper.addClass("death");
+      },
+      out: function (event, ui) {
+        ui.helper.removeClass("death");
+      },
+      tolerance: 'pointer'
+    });
 
     // refresh the bookmarks and circles
     var refreshElements = function() {
