@@ -24,7 +24,6 @@ div.bookmarks_container {
   display: inline-block;
   width: 100%;
   height: 200px;
-  background-color: pink;
   overflow: auto;
 }
 
@@ -51,7 +50,6 @@ div.inner_circles_container {
   display: inline-block;
   width: 2000px;
   height: 190px;
-  background-color: pink;
   overflow: hidden;
 }
 
@@ -164,4 +162,10 @@ div#delete {
 img#trash {
   width: 40px;
   height: 40px;
+}
+
+button#add_item {
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
 }
