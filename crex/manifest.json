@@ -2,6 +2,10 @@
   "name": "Bookmark+",
   "version": "1.0",
   "description": "Chrome extension for Bookmark+.",
+  "permissions": [
+    "tabs"
+  ],
+  "background_page": "background.html",
   "browser_action": {
     "default_icon": "img/helloworld.png"
   },
