@@ -172,7 +172,7 @@ $(document).ready(function() {
         out: function (event, ui) {
           $(this).removeClass("highlight");
         },
-        tolerance: 'pointer'
+        tolerance: 'intersect'
       });
     }
 
@@ -282,7 +282,7 @@ $(document).ready(function() {
       out: function (event, ui) {
         ui.helper.removeClass("death");
       },
-      tolerance: 'pointer'
+      tolerance: 'touch'
     });
 
     // refresh the bookmarks and circles
@@ -299,6 +299,10 @@ $(document).ready(function() {
     $('#add_options').hide();
     $('#add_item').click(function () {
       $('#add_options').slideToggle();
+    });
+
+    $('img#trash').click(function () {
+      UTILS.showMessage("Drag an element here to delete");
     });
 
 });
