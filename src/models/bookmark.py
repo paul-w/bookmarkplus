@@ -24,7 +24,7 @@ BOOKMARK_SORT_OPTIONS_REVERSE =  dict(
 DEFAULT_BOOKMARK_SORT_KEY = BOOKMARK_SORT_OPTIONS.keys()[0]
 
 # descending by default
-DEFAULT_BOOKMARK_SORT_ORDER = -1
+DEFAULT_BOOKMARK_SORT_ORDER = 1
 
 class Bookmark(Document):
   __collection__ = 'bookmarks'

@@ -43,10 +43,10 @@ $(document).ready(function() {
                 });
              $(this).addClass('selected_sort');
              if(text ===  sortBookmarksBy){
-                 //bAscending = -bAscending;
+                 bAscending = -bAscending;
              }
              else{ 
-                 bAscending = -1;
+                 bAscending = 1;
                  sortBookmarksBy =  text
              }
              drawBookmarksFromServer(selectedCircle);
