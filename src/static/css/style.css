@@ -122,6 +122,10 @@ div.death {
   background-color: yellow;
 }
 
+div.selected_sort{
+  font-weight: bold;
+}
+
 span.expected_input {
   position: absolute;
   top: 4px;

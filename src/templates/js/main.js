@@ -29,6 +29,8 @@ $(document).ready(function() {
     // set variables
     var selectedCircle = '';
 
+    sortBookmarksDivs = []
+
     b_options_div = $('#bookmark_sort_options')
     {% for option in bookmark_sort_options %}
         div = $('<div/>');
@@ -36,6 +38,10 @@ $(document).ready(function() {
         div.addClass('sort');
         div.click(function() {
              text =  $(this).text();
+             $.each(sortBookmarksDivs, function(i, e) {
+                e.removeClass('selected_sort');
+                });
+             $(this).addClass('selected_sort');
              if(text ===  sortBookmarksBy){
                  //bAscending = -bAscending;
              }
@@ -45,7 +51,8 @@ $(document).ready(function() {
              }
              drawBookmarksFromServer(selectedCircle);
         });
-        b_options_div.append(div)
+        b_options_div.append(div);
+        sortBookmarksDivs.push(div);
     {% endfor %}
 
     var sortBookmarksBy = "{{ bookmark_sort_key }}";
