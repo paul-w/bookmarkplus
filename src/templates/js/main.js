@@ -127,7 +127,9 @@ $(document).ready(function() {
     // element is returned to its original place when dropped
     var makeDraggable = function (element) {
       element.draggable({
-        revert: true
+        revert: true,
+        helper: 'clone',
+        containment: 'window'
       });
     }
 
