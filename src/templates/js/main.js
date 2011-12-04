@@ -174,7 +174,7 @@ $(document).ready(function() {
     // 1) when document ready initially
     // 2) after a user interaction that modifies the circles
     var drawCirclesFromServer = function() {
-        $('#circles_container').html('');
+        $('#inner_circles_container').html('');
         $.post("{{ url_for('get_circles') }}", function(data) {
             $.each(data.circles, function(idx, circle) {
                 var div = $('<div/>');
@@ -199,11 +199,14 @@ $(document).ready(function() {
                 });
                 makeCircleDroppable(div);
                 makeDraggable(div);
-                $('#circles_container').append(div);
+                $('#inner_circles_container').append(div);
             });
             // select the selected circle
-            if (selectedCircle != '') {
-              $('#' + selectedCircle).addClass('selected');
+            if (selectedCircle !== '') {
+              // TODO(mikemeko): this doesn't work right now, fix!
+              var circleSelector = "div[circle_id='" + selectedCircle + "']";
+              var circleDiv = $(circleSelector);
+              circleDiv.addClass('selected');
             }
         });
         $('#add_options').hide();
@@ -242,7 +245,7 @@ $(document).ready(function() {
       drop: function (event, ui) {
         // TODO(mikemeko): handle circle delete
         var bookmark_id = ui.draggable.attr('bookmark_id');
-        if (bookmark_id === "undefined") {
+        if (typeof(bookmark_id) === "undefined") {
           // TODO(mikemeko): better error message
           UTILS.showMessage("You can't delete that");
         } else {
