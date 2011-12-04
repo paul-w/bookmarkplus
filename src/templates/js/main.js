@@ -288,4 +288,8 @@ $(document).ready(function() {
       $('#add_options').slideToggle();
     });
 
+    $('img#trash').click(function () {
+      UTILS.showMessage("Drag an element here to delete");
+    });
+
 });
