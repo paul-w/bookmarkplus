@@ -31,7 +31,7 @@ div.bookmarks_container {
 div.bookmark {
   float: left;
   background-color: cyan;
-  width: 170px;
+  width: 200px;
   height: 35px;
   margin: 10px;
   padding-top: 15px;
@@ -66,7 +66,7 @@ div.highlight {
 
 div.column {
   margin: 50px auto 0px auto;
-  width: 60%;
+  width: 70%;
 }
 
 div.header {
@@ -113,6 +113,10 @@ div.sort {
     float:left;
 }
 
+div.death {
+  background-color: yellow;
+}
+
 span.expected_input {
   position: absolute;
   top: 4px;
@@ -144,4 +148,10 @@ div#messages {
   top: 10px;
   right: 10px;
   z-index: 1;
+}
+
+div#delete {
+  float: right;
+  background-color: darkgray;
+  border: 2px solid black;
 }
