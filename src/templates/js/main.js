@@ -172,7 +172,7 @@ $(document).ready(function() {
         out: function (event, ui) {
           $(this).removeClass("highlight");
         },
-        tolerance: 'pointer'
+        tolerance: 'intersect'
       });
     }
 
@@ -276,7 +276,7 @@ $(document).ready(function() {
       out: function (event, ui) {
         ui.helper.removeClass("death");
       },
-      tolerance: 'pointer'
+      tolerance: 'touch'
     });
 
     // refresh the bookmarks and circles
