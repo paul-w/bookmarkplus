@@ -19,6 +19,11 @@ p {
   padding: 0px;
 }
 
+a.bookmark_text {
+  text-decoration:underline;
+  color:blue;
+}
+
 /* Classes. */
 div.bookmarks_container {
   display: inline-block;

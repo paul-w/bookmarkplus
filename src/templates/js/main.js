@@ -237,8 +237,14 @@ $(document).ready(function() {
                     div.addClass('bookmark');
                     div.attr('bookmark_id', bookmark.id);
                     var a = $('<a/>');
-                    a.attr('href', bookmark.url);
+                    a.addClass('bookmark_text');
                     a.text(bookmark.url);
+                    a.click(function() {
+                        window.open(bookmark.url);
+                        $.post("{{ url_for('click') }}", {
+                            'bookmark_id':bookmark.id
+                        });
+                    });
                     a.appendTo(div);
                     makeDraggable(div);
                     $('#bookmarks_container').append(div);

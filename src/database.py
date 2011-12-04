@@ -288,13 +288,10 @@ class Database():
     circle = self.get_circle(circle_id)
     if circle is None:
       return []
-    # TODO(mikemeko, pauL): pauL, this is buggy and I could not figure out
-    # how to fix it, so I have replaced it by what we had before.
-    # Error: Bookmark object has no sort method
-    return [self._mk.Bookmark.find_one(ObjectId(bookmark_id))
-            for bookmark_id in circle.bookmarks]
-#    return [self._mk.Bookmark.find_one(ObjectId(bookmark_id)).sort([sort_by])
-#            for bookmark_id in circle.bookmarks]
+    return self._mk.Bookmark.find(
+            {'_id': {'$in':[ObjectId(bookmark_id)
+            for bookmark_id in circle.bookmarks] } } 
+            ).sort([sort_by])
 
   def is_bookmark_in_circle(self, bookmark_id, circle_id):
     """

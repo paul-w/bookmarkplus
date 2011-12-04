@@ -271,3 +271,10 @@ def get_suggestions():
   return jsonify(suggestions=[{
       'url':suggestion.suggestion,
   } for suggestion in suggestions])
+
+@app.route('/click', methods = ['POST'])
+@requires_login
+def click():
+    bookmark_id = request.form.get('bookmark_id')
+    db.click_bookmark(bookmark_id)
+    return jsonify({'type':'success'})
