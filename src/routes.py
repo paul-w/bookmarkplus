@@ -117,6 +117,10 @@ def login():
   """
   Handle a user login attempt.
   """
+  if g.user is not None:
+    error = "You are already logged in."
+    return jsonify({"type": "error", "error": error})
+
   email = request.form["email"]
   password = request.form["password"]
 
@@ -171,6 +175,17 @@ def register():
 
   session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("home")})
+
+@app.route('/is_logged_in', methods=['POST'])
+def is_logged_in():
+  """
+  Returns whether the user is logged in. Used by the chrome extension.
+  """
+  if g.user is not None:
+    return jsonify({"logged_in": True, "name": g.user.name,
+        "email": g.user.email})
+  else:
+    return jsonify({"logged_in": False})
 
 # methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])
