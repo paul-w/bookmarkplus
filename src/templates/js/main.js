@@ -67,7 +67,7 @@ $(document).ready(function() {
     // bind sort option toggler
      
 
-    // bind create_bookmark button
+    // bind create bookmark input box
     $('#create_bookmark_uri').keydown(function(event) {
       if (event.keyCode == 13) {
         if ($('#create_bookmark_uri').val() == '') {
@@ -100,7 +100,7 @@ $(document).ready(function() {
       }
     });
 
-    // bind create_circle button
+    // bind create circle input box
     $('#create_circle_name').keydown(function(event) {
       if (event.keyCode == 13) {
         if ($('#create_circle_name').val() == '') {

@@ -124,7 +124,8 @@ div.sort {
 }
 
 div.death {
-  background-color: yellow;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
 }
 
 div.selected_sort{
@@ -145,9 +146,9 @@ span.expected_input {
 }
 
 span.circle {
-  margin-top: 65px;
   width: 50px;
   height: 20px;
+  cursor: pointer;
 }
 
 span.selected {
@@ -198,4 +199,8 @@ button#add_item {
 input#create_circle_name {
   margin-top: 65px;
   width: 100px;
+}
+
+input#create_bookmark_uri {
+  width: 180px;
 }

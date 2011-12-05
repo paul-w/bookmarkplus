@@ -8,10 +8,6 @@
 {% endblock %}
 
 {% block body %}
-<div id="delete" class="unique">
-  <img id="trash" src="static/img/trashcan.png" />
-  <span id="delete_message">Delete</span>
-</div>
 <div class="logout" id="logout">
    <a href="{{ url_for('logout') }}">Logout</a>
 </div>
@@ -34,5 +30,8 @@
     </div>
   </div>
 </div>
-
+<div id="delete" class="unique">
+  <img id="trash" src="static/img/trashcan.png" />
+  <span id="delete_message">Delete</span>
+</div>
 {% endblock %}
