@@ -40,6 +40,9 @@ body{
 #main{
   width:300px
 }
+#message{
+  text-align:center
+}
 #password{
   width:135px
 }

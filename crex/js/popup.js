@@ -10,6 +10,7 @@ $(document).ready(function() {
   // TODO(jven): this domain must be granted permissions in manifest.json
   var DOMAIN = 'http://jasper.xvm.mit.edu/';
   var not_logged_in = function() {
+    $('#logged_in').hide();
     $('#not_logged_in').show();
     $('.textbox').each(function(idx, elt_id) {
       var elt = $(elt_id);
@@ -51,24 +52,28 @@ $(document).ready(function() {
             $('#errors').text(response.error);
             $('#errors').fadeIn();
           } else if (response.type == "redirect") {
-            $('#errors').text('success');
+            check_login();
           }
         });
     });
   };
   var logged_in = function(name, email) {
+    $('#not_logged_in').hide();
     $('#logged_in').show();
     $('#message').text('You are logged in as ' + name + ' (' + email + ').');
   };
-  // hide everything
+  // determine if user is logged in
+  var check_login = function() {
+    $.post(DOMAIN + 'is_logged_in', {}, function(response) {
+      if (response.logged_in) {
+        logged_in(response.name, response.email);
+      } else {
+        not_logged_in();
+      }
+    });
+  };
+  // initialize
   $('#not_logged_in').hide();
   $('#logged_in').hide();
-  // determine if user is logged in
-  $.post(DOMAIN + 'is_logged_in', {}, function(response) {
-    if (response.logged_in) {
-      logged_in(response.name, response.email);
-    } else {
-      not_logged_in();
-    }
-  });
+  check_login();
 });
