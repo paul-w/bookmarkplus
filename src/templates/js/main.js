@@ -134,7 +134,7 @@ $(document).ready(function() {
         },
         revert: true,
         helper: 'clone',
-        containment: 'window'
+        containment: 'window',
       });
     }
 
@@ -165,7 +165,9 @@ $(document).ready(function() {
           $(this).removeClass("highlight");
         },
         over: function (event, ui) {
-          $(this).addClass("highlight");
+          if (ui.draggable.hasClass('bookmark')) {
+            $(this).addClass("highlight");
+          }
         },
         out: function (event, ui) {
           $(this).removeClass("highlight");
@@ -296,7 +298,10 @@ $(document).ready(function() {
             if (response.type == 'error') {
               UTILS.showMessage(response.message);
             } else if (response.type == 'success') {
-              ui.draggable.remove();
+              if (selectedCircle === circle_id) {
+                selectedCircle = '';
+              }
+              // TODO(mikemeko): we don't always need to do this
               refreshElements();
               // TODO(mikemeko): better error message
               UTILS.showMessage("Circle successfully deleted");
@@ -327,5 +332,8 @@ $(document).ready(function() {
 
     // delete tab should only be visible when something is being dragged
     $('#delete').hide();
+
+    $('#inner_circles_container').sortable({});
+    $('#inner_circles_container').disableSelection();
 
 });
