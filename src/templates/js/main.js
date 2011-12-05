@@ -94,7 +94,6 @@ $(document).ready(function() {
                       }
                   });
                 }
-                $('#add_options').hide();
               }
           });
         }
@@ -102,7 +101,8 @@ $(document).ready(function() {
     });
 
     // bind create_circle button
-    $('#create_circle').click(function(event) {
+    $('#create_circle_name').keydown(function(event) {
+      if (event.keyCode == 13) {
         if ($('#create_circle_name').val() == '') {
           UTILS.showMessage('You must provide a circle name.');
         } else {
@@ -114,16 +114,9 @@ $(document).ready(function() {
               } else if (response.type == 'success') {
                 refreshElements();
                 $('#create_circle_name').val('');
-                $('#add_options').hide();
               }
           });
         }
-    });
-
-    // bind enter key on inputs
-    $('#create_circle_name').keydown(function(event) {
-      if (event.keyCode == 13) {
-        $('#create_circle').click();
       }
     });
 
@@ -179,12 +172,30 @@ $(document).ready(function() {
       });
     }
 
+    // clears the circle container, leaving only the circle creator
+    var clearCircleContainer = function () {
+      $.each($('#inner_circles_container').children(), function (idx, circle) {
+        if ($(circle).attr('id') !== 'add_circle') {
+          $(circle).remove();
+        }
+      });
+    }
+
+    // clears the bookmark container, leaving only the bookmark creator
+    var clearBookmarkContainer = function () {
+      $.each($('#bookmarks_container').children(), function (idx, bookmark) {
+        if ($(bookmark).attr('id') !== 'add_bookmark') {
+          $(bookmark).remove();
+        }
+      });
+    }
+
     // populates bookmark elements and attaches listeners
     // called
     // 1) when document ready initially
     // 2) after a user interaction that modifies the circles
     var drawCirclesFromServer = function() {
-        $('#inner_circles_container').html('');
+        clearCircleContainer();
         $.post("{{ url_for('get_circles') }}", function(data) {
             $.each(data.circles, function(idx, circle) {
                 var div = $('<div/>');
@@ -217,17 +228,7 @@ $(document).ready(function() {
               circleDiv.find('span').addClass('selected');
             }
         });
-        $('#add_options').hide();
     };
-
-    // clears the bookmark container, leaving only the bookmark adder
-    var clearBookmarkContainer = function () {
-      $.each($('#bookmarks_container').children(), function (idx, bookmark) {
-        if ($(bookmark).attr('id') !== 'add_bookmark') {
-          $(bookmark).remove();
-        }
-      });
-    }
 
     // populates circle elements and attaches listeners
     // called:
@@ -260,7 +261,6 @@ $(document).ready(function() {
                     $('#bookmarks_container').append(div);
             });
         });
-        $('#add_options').hide();
     };
 
     // if an element is dragged to the delete area, delete it
@@ -299,17 +299,10 @@ $(document).ready(function() {
     var refreshElements = function() {
         drawBookmarksFromServer(selectedCircle);
         drawCirclesFromServer();
-        $('#add_options').hide();
     };
 
     // make initial call to refreshElements
     refreshElements();
-
-    // hide bookmark and circle adding tools, show when + button is pressed
-    $('#add_options').hide();
-    $('#add_item').click(function () {
-      $('#add_options').slideToggle();
-    });
 
     // delete tab should only be visible when something is being dragged
     $('#delete').hide();
