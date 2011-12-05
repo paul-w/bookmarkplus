@@ -247,10 +247,16 @@ $(document).ready(function() {
                     var div = $('<div/>');
                     div.addClass('bookmark');
                     div.attr('bookmark_id', bookmark.id);
+                    var favicon = $('<img/>');
+                    // TODO(mikemeko): this is not robust!
+                    favicon.attr('src', 'http://www.getfavicon.org/?url='+
+                                 bookmark.url.substring(7));
+                    favicon.appendTo(div);
                     var a = $('<a/>');
                     a.addClass('bookmark_text');
                     a.text(bookmark.url);
                     a.appendTo(div);
+                    favicon.addClass('favicon');
                     div.click(function () {
                         window.open(bookmark.url);
                         $.post("{{ url_for('click') }}", {

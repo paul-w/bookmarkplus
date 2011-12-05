@@ -163,6 +163,12 @@ input.password {
   width: 150px;
 }
 
+img.favicon {
+  float: left;
+  width: 20px;
+  height: 20px;
+}
+
 /* IDs */
 div#messages {
   position: fixed;
