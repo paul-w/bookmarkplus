@@ -10,11 +10,18 @@ $(document).ready(function() {
   var add_bookmark = function() {
     chrome.extension.sendRequest({
       'type':'get_bookmark_url'
-    }, function(callback_ext) {
+    }, function(response_crex) {
       $.post('http://jasper.xvm.mit.edu/createbookmark', {
-          'uri':callback_ext.url
-      }, function(callback_amphoros) {
-        alert('Bookmark added for url \'' + callback_ext.url + '\'.');
+          'uri':response_crex.url
+      }, function(response_amphoros) {
+        if (response_amphoros.type == 'error') {
+          alert(response_amphoros.message);
+        } else if (response_amphoros.type == 'success') {
+          alert('Successfully created bookmark for url \'' +
+              response_crex.url + '\'.');
+        } else {
+          alert('Unexpected response: ' + response_amphoros);
+        }
       });
     });
   };
