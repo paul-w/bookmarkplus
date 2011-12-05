@@ -34,7 +34,7 @@ div.bookmarks_container {
 
 div.bookmark {
   float: left;
-  background-color: cyan;
+  background-color: silver;
   width: 200px;
   height: 35px;
   margin: 10px;
@@ -145,6 +145,7 @@ span.expected_input {
 }
 
 span.circle {
+  margin-top: 65px;
   width: 50px;
   height: 20px;
 }
@@ -170,8 +171,11 @@ div#messages {
 }
 
 div#delete {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
   height: 45px;
-  float: right;
 }
 
 img#trash {
@@ -189,4 +193,9 @@ button#add_item {
   width: 50px;
   height: 50px;
   font-size: 30px;
+}
+
+input#create_circle_name {
+  margin-top: 65px;
+  width: 100px;
 }
