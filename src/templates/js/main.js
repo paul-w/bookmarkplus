@@ -126,9 +126,11 @@ $(document).ready(function() {
       element.draggable({
         start: function (event, ui) {
           $('#delete').show();
+          element.addClass("faded");
         },
         stop: function (event, ui) {
           $('#delete').hide();
+          element.removeClass("faded");
         },
         revert: true,
         helper: 'clone',
@@ -306,10 +308,10 @@ $(document).ready(function() {
         }
       },
       over: function (event, ui) {
-        ui.helper.addClass("death");
+        ui.helper.addClass("faded");
       },
       out: function (event, ui) {
-        ui.helper.removeClass("death");
+        ui.helper.removeClass("faded");
       },
       tolerance: 'touch'
     });

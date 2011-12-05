@@ -124,7 +124,7 @@ div.sort {
     float:left;
 }
 
-div.death {
+div.faded {
   opacity: 0.3;
   filter: alpha(opacity=30);
 }
