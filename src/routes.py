@@ -41,14 +41,13 @@ db = Database(app)
 
 def access_denied():
   """Adapted from tipster example"""
-  flash('To access that page, please log in first.')
-  return redirect(url_for('home'))
+  return jsonify({'type': 'error', 'message': 'You are not logged in.'})
 
 def requires_login(f):
   """Decorator to be applied to actions that require login."""
   @wraps(f)
   def decorated(*args, **kwargs):
-    if 'user' not in dir(g):
+    if g.user is None:
        return access_denied()
     return f(*args, **kwargs)
   return decorated
@@ -107,10 +106,10 @@ def home():
     return render_template('html/landing.html')
 
 @app.route('/logout', methods=['GET'])
-@requires_login
 def logout():
-  flash("Goodbye %s" % g.user.name)
-  session.pop("user_id")
+  if g.user is not None:
+    flash("Goodbye %s" % g.user.name)
+    session.pop("user_id")
   return redirect(url_for('home'))
 
 @app.route('/login', methods=['POST'])
