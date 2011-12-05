@@ -205,7 +205,7 @@ $(document).ready(function() {
                 span1.attr('class', 'circle');
                 span1.text(circle.name);
                 span1.appendTo(div);
-                span1.click(function() {
+                div.click(function() {
                   if (selectedCircle != circle.id) {
                     selectedCircle = circle.id;
                     $('.circle').each(function (idx, elt) {
@@ -250,14 +250,13 @@ $(document).ready(function() {
                     var a = $('<a/>');
                     a.addClass('bookmark_text');
                     a.text(bookmark.url);
-                    var goToUrl = function () {
+                    a.appendTo(div);
+                    div.click(function () {
                         window.open(bookmark.url);
                         $.post("{{ url_for('click') }}", {
                             'bookmark_id':bookmark.id
                         });
-                    }
-                    a.appendTo(div);
-                    div.click(goToUrl);
+                    });
                     makeDraggable(div);
                     $('#bookmarks_container').append(div);
             });

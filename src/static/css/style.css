@@ -26,7 +26,6 @@ a.bookmark_text {
 }
 
 div.bookmarks_container {
-  cursor: pointer;
   display: inline-block;
   width: 100%;
   height: 200px;
@@ -43,6 +42,7 @@ div.bookmark {
   border: 2px solid black;
   z-index: 1;
   text-align: center;
+  cursor: pointer;
 }
 
 div.circles_container {
@@ -69,6 +69,7 @@ div.circle {
   background-color: silver;
   border: 2px solid black;
   text-align: center;
+  cursor: pointer;
 }
 
 div.highlight {
@@ -148,7 +149,6 @@ span.expected_input {
 span.circle {
   width: 50px;
   height: 20px;
-  cursor: pointer;
 }
 
 span.selected {
