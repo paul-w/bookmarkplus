@@ -272,12 +272,8 @@ $(document).ready(function() {
     // if an element is dragged to the delete area, delete it
     $('#delete').droppable({
       drop: function (event, ui) {
-        // TODO(mikemeko): handle circle delete
-        var bookmark_id = ui.draggable.attr('bookmark_id');
-        if (typeof(bookmark_id) === "undefined") {
-          // TODO(mikemeko): better error message
-          UTILS.showMessage("You can't delete that");
-        } else {
+        if (ui.draggable.hasClass('bookmark')) {
+          var bookmark_id = ui.draggable.attr('bookmark_id');
           $.post("{{ url_for('delete_bookmark') }}", {
             'bookmark_id': bookmark_id
           }, function (response) {
@@ -290,6 +286,23 @@ $(document).ready(function() {
               UTILS.showMessage("Bookmark successfully deleted");
             }
           });
+        } else if (ui.draggable.hasClass('circle')) {
+          var circle_id = ui.draggable.attr('circle_id');
+          $.post("{{ url_for('delete_circle') }}", {
+            'circle_id': circle_id
+          }, function (response) {
+            if (response.type == 'error') {
+              UTILS.showMessage(response.message);
+            } else if (response.type == 'success') {
+              ui.draggable.remove();
+              refreshElements();
+              // TODO(mikemeko): better error message
+              UTILS.showMessage("Circle successfully deleted");
+            }
+          });
+        } else {
+            // TODO(mikemeko): better error message
+            UTILS.showMessage("You can't delete that");
         }
       },
       over: function (event, ui) {

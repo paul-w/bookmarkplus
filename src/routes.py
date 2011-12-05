@@ -198,6 +198,16 @@ def delete_bookmark():
   db.delete_bookmark(bookmark_id)
   return jsonify({'type':'success'})
 
+@app.route('/deletecircle', methods = ['POST'])
+@requires_login
+def delete_circle():
+  circle_id = request.form.get('circle_id')
+  # TODO(mikemeko, jven): better validation
+  if not circle_id or db.get_circle(circle_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  db.delete_circle(circle_id)
+  return jsonify({'type':'success'})
+
 @app.route('/createcircle', methods = ['POST'])
 @requires_login
 def create_circle():

@@ -232,11 +232,18 @@ class Database():
     bookmark = self.get_bookmark(bookmark_id)
     assert bookmark is not None
     for circle_id in bookmark.circles:
-      print circle_id
       circle = self.get_circle(circle_id)
       circle.bookmarks.remove(bookmark_id)
       circle.save()
     self._mk.Bookmark.collection.remove(ObjectId(bookmark_id))
+
+  def delete_circle(self, circle_id):
+    """
+    Delete the circle, but the bookmarks in the circle are not deleted.
+    """
+    circle = self.get_circle(circle_id)
+    assert circle is not None
+    self._mk.Circle.collection.remove(ObjectId(circle_id))
 
   def circle_exists(self, user_id, name):
     """
