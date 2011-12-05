@@ -131,6 +131,11 @@ div.selected_sort{
   font-weight: bold;
 }
 
+div.unique {
+  background-color: lightgray;
+  border: 2.5px dashed black;
+}
+
 span.expected_input {
   position: absolute;
   top: 4px;
@@ -167,8 +172,6 @@ div#messages {
 div#delete {
   height: 45px;
   float: right;
-  background-color: lightgray;
-  border: 2.5px dashed black;
 }
 
 img#trash {

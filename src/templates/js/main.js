@@ -68,7 +68,8 @@ $(document).ready(function() {
      
 
     // bind create_bookmark button
-    $('#create_bookmark').click(function(event) {
+    $('#create_bookmark_uri').keydown(function(event) {
+      if (event.keyCode == 13) {
         if ($('#create_bookmark_uri').val() == '') {
           UTILS.showMessage('You must provide a bookmark URL.');
         } else {
@@ -97,6 +98,7 @@ $(document).ready(function() {
               }
           });
         }
+      }
     });
 
     // bind create_circle button
@@ -119,11 +121,6 @@ $(document).ready(function() {
     });
 
     // bind enter key on inputs
-    $('#create_bookmark_uri').keydown(function(event) {
-      if (event.keyCode == 13) {
-        $('#create_bookmark').click();
-      }
-    });
     $('#create_circle_name').keydown(function(event) {
       if (event.keyCode == 13) {
         $('#create_circle').click();
@@ -223,6 +220,15 @@ $(document).ready(function() {
         $('#add_options').hide();
     };
 
+    // clears the bookmark container, leaving only the bookmark adder
+    var clearBookmarkContainer = function () {
+      $.each($('#bookmarks_container').children(), function (idx, bookmark) {
+        if ($(bookmark).attr('id') !== 'add_bookmark') {
+          $(bookmark).remove();
+        }
+      });
+    }
+
     // populates circle elements and attaches listeners
     // called:
     // 1) when document ready initially
@@ -230,7 +236,7 @@ $(document).ready(function() {
     // 3) when bookmarks are re-sorted
     // 4) after a user interaction that modifies bookmarks
     var drawBookmarksFromServer = function(circle_id) {
-        $('#bookmarks_container').html('');
+        clearBookmarkContainer();
         $.post("{{ url_for('get_bookmarks') }}", {
                 'circle_id':circle_id,
                 'sort_by': sortBookmarksBy,
