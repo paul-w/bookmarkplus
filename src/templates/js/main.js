@@ -250,13 +250,14 @@ $(document).ready(function() {
                     var a = $('<a/>');
                     a.addClass('bookmark_text');
                     a.text(bookmark.url);
-                    a.click(function() {
+                    var goToUrl = function () {
                         window.open(bookmark.url);
                         $.post("{{ url_for('click') }}", {
                             'bookmark_id':bookmark.id
                         });
-                    });
+                    }
                     a.appendTo(div);
+                    div.click(goToUrl);
                     makeDraggable(div);
                     $('#bookmarks_container').append(div);
             });

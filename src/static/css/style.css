@@ -19,13 +19,14 @@ p {
   padding: 0px;
 }
 
+/* Classes. */
 a.bookmark_text {
   text-decoration:underline;
   color:blue;
 }
 
-/* Classes. */
 div.bookmarks_container {
+  cursor: pointer;
   display: inline-block;
   width: 100%;
   height: 200px;
@@ -97,7 +98,6 @@ div.landing_container {
 }
 
 div.link {
-  cursor: pointer;
   margin-top: 5px;
   text-align: center;
   text-decoration: underline;
