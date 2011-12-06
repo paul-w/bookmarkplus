@@ -12,6 +12,24 @@ $(document).ready(function() {
   var not_logged_in = function() {
     $('#logged_in').hide();
     $('#not_logged_in').show();
+  };
+  var logged_in = function(name, email) {
+    $('#not_logged_in').hide();
+    $('#logged_in').show();
+    $('#message').text('You are logged in as ' + name + ' (' + email + ').');
+  };
+  var check_login = function() {
+    $.post(DOMAIN + 'is_logged_in', {}, function(response) {
+      if (response.logged_in) {
+        logged_in(response.name, response.email);
+      } else {
+        not_logged_in();
+      }
+    });
+  };
+  var initialize = function() {
+    $('#not_logged_in').hide();
+    $('#logged_in').hide();
     $('.textbox').each(function(idx, elt_id) {
       var elt = $(elt_id);
       var container = $('<div/>');
@@ -56,24 +74,13 @@ $(document).ready(function() {
           }
         });
     });
-  };
-  var logged_in = function(name, email) {
-    $('#not_logged_in').hide();
-    $('#logged_in').show();
-    $('#message').text('You are logged in as ' + name + ' (' + email + ').');
-  };
-  // determine if user is logged in
-  var check_login = function() {
-    $.post(DOMAIN + 'is_logged_in', {}, function(response) {
-      if (response.logged_in) {
-        logged_in(response.name, response.email);
-      } else {
-        not_logged_in();
-      }
+    $('#logout').click(function() {
+      $.get(DOMAIN + 'logout', {}, function(response) {
+        check_login();
+      });
     });
+    check_login();
   };
   // initialize
-  $('#not_logged_in').hide();
-  $('#logged_in').hide();
-  check_login();
+  initialize();
 });
