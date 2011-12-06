@@ -8,6 +8,7 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
+import os
 from config import MONGODB_DATABASE
 from config import MONGODB_HOST
 from config import MONGODB_PORT
@@ -20,6 +21,7 @@ from flask import jsonify
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import send_from_directory
 from flask import session
 from flask import url_for
 from flaskext.mongokit import MongoKit
@@ -38,6 +40,12 @@ app.config['MONGODB_PORT'] = MONGODB_PORT
 app.config['SECRET_KEY'] = SECRET_KEY
 
 db = Database(app)
+
+#####################
+##                 ##
+## Utility Methods ##
+##                 ##
+#####################
 
 def access_denied():
   """Adapted from tipster example"""
@@ -68,7 +76,22 @@ def before_request():
 def teardown_request(exception):
   pass
 
-# JS templates
+##########################
+##                      ##
+## Javascript Templates ##
+##                      ##
+##########################
+
+@app.route('/favicon.ico', methods=['GET'])
+def favicon():
+  return send_from_directory(os.path.join(app.root_path, 'static', 'img'),
+      'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+##########################
+##                      ##
+## Javascript Templates ##
+##                      ##
+##########################
 
 @app.route('/landing_js.js', methods=['GET'])
 def landing_js():
@@ -92,7 +115,11 @@ def main_js():
 def util_js():
   return render_template('js/util.js')
 
-# Routes
+####################
+##                ##
+## HTML Templates ##
+##                ##
+####################
 
 @app.route('/', methods=['GET'])
 def home():
@@ -117,6 +144,10 @@ def login():
   """
   Handle a user login attempt.
   """
+  if g.user is not None:
+    error = "You are already logged in."
+    return jsonify({"type": "error", "error": error})
+
   email = request.form["email"]
   password = request.form["password"]
 
@@ -171,6 +202,17 @@ def register():
 
   session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("home")})
+
+@app.route('/is_logged_in', methods=['POST'])
+def is_logged_in():
+  """
+  Returns whether the user is logged in. Used by the chrome extension.
+  """
+  if g.user is not None:
+    return jsonify({"logged_in": True, "name": g.user.name,
+        "email": g.user.email})
+  else:
+    return jsonify({"logged_in": False})
 
 # methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])
@@ -266,20 +308,17 @@ def get_bookmarks():
       'circles':bookmark.circles
   } for bookmark in bookmarks])
 
-
 @app.route('/getsuggestions', methods = ['POST'])
 @requires_login
 def get_suggestions():
-
-  ## not yet tested
-
-  bookmark_id = request.form.get('bookmark_id')
-  suggestions = db.get_suggestions(bookmark_id)
-  if len(suggestions) > NUM_SUGGESTIONS:
-      suggestions = suggestions[0:NUM_SUGGESTIONS]
+  num_sugg = int(request.form.get('num_sugg'))
+  user_id = session.get('user_id')
+  suggestions = db.get_suggestions(unicode(user_id), num_sugg)
+  print [s for s in suggestions]
   return jsonify(suggestions=[{
-      'url':suggestion.suggestion,
+      'url':suggestion,
   } for suggestion in suggestions])
+
 
 @app.route('/click', methods = ['POST'])
 @requires_login

@@ -3,11 +3,13 @@
   "version": "1.0",
   "description": "Chrome extension for Bookmark+.",
   "permissions": [
-    "tabs"
+    "tabs",
+    "http://jasper.xvm.mit.edu/*"
   ],
   "background_page": "background.html",
   "browser_action": {
-    "default_icon": "img/helloworld.png"
+    "default_icon": "img/icon.png",
+    "popup": "popup.html"
   },
   "content_scripts": [
     {

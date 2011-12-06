@@ -14,13 +14,12 @@ from utils import get_hashed_password
 from utils import get_unicode_datetime
 from models.bookmark import Bookmark
 from models.circle import Circle
-from models.suggestion import Suggestion
 from models.user import User
 from flaskext.mongokit import MongoKit
 from pymongo.objectid import ObjectId
 
 # TODO(jven): each model must be registered here
-MODELS = [Bookmark, Circle, User, Suggestion]
+MODELS = [Bookmark, Circle, User]
 
 class Database():
   """
@@ -140,43 +139,9 @@ class Database():
     return self._mk.Bookmark.find_one(
         {'owner':unicode(user_id), 'url':url}) is not None
 
-  def get_suggestions(self, bookmark_id):
-    bookmark = self.get_bookmark(unicode(bookmark_id))
-    if bookmark:
-        url = bookmark.url
-        return self._mk.Suggestion.find({'url':unicode(url)}).sort(
-                                    [('score', -1)])
-    else:
-        return []
-
-
-  def suggestion_score(self, suggested_bookmark):
-    score = 1.0 / len(suggested_bookmark.circles)
-    return score
-
-  def update_suggestion_scores(self, suggested_bookmark):
-    suggested_url = suggested_bookmark.url
-    for circle_id in suggested_bookmark.circles:
-        circle = self.get_circle(circle_id)
-        for bookmark_id in circle.bookmarks:
-            bookmark = self.get_bookmark(bookmark_id)
-            url = bookmark.url
-            if url==suggested_url:
-                continue
-            score_change = self.suggestion_score(suggested_bookmark)
-            suggestion = self._mk.Suggestion.find_one(
-                   {'url': url, 'suggestion': suggested_url })
-            if suggestion is not None:
-                suggestion.score += score_change
-                suggestion.save()
-            else:
-                new_suggestion = self._mk.Suggestion()
-                new_suggestion.url = url
-                new_suggestion.suggestion = suggested_url
-                new_suggestion.score = score_change
-                new_suggestion.save()
-                
-
+  def get_suggestions(self, user_id, num):
+    user = self.get_user_by_id(unicode(user_id))
+    return user.suggestions
 
   def click_bookmark(self, bookmark_id):
     """
@@ -187,7 +152,6 @@ class Database():
     bookmark.clicks += 1
     bookmark.date_last_clicked = get_unicode_datetime()
     bookmark.save()
-    self.update_suggestion_scores(bookmark)
     return bookmark
 
   def get_bookmark(self, bookmark_id):
@@ -223,6 +187,7 @@ class Database():
     new_bookmark.date_created = get_unicode_datetime()
     new_bookmark.clicks = 0
     new_bookmark.save()
+    #update_suggestions(new_bookmark._id, circle_id)
     return new_bookmark
 
   def delete_bookmark(self, bookmark_id):
@@ -318,16 +283,36 @@ class Database():
     else:
       return False
 
+  def update_suggestions(self, suggested_bookmark_id, circle_id):
+        print 'update called'
+        suggested_bookmark = self.get_bookmark(suggested_bookmark_id) 
+        suggested_url = suggested_bookmark.url
+        circle = self.get_circle(circle_id)
+        for bookmark_id in circle.bookmarks:
+            bookmark = self.get_bookmark(bookmark_id)
+            if bookmark.url==suggested_url:
+                continue
+            affected_bookmarks = self._mk.Bookmark.find(
+                   {'url': bookmark.url})
+            for bookmark in affected_bookmarks:
+                user = self.get_user_by_id(bookmark.owner)
+                if suggested_url not in user.suggestions:
+                    print 'before', user.suggestions
+                    user.suggestions.append(suggested_url)
+                    print 'after', user.suggestions
+                    user.save()
+
   def add_bookmark_to_circle(self, bookmark_id, circle_id):
-    """
-    Takes in a bookmark and circle and adds the bookmark to the circle.
-    """
-    assert not self.is_bookmark_in_circle(bookmark_id, circle_id)
-    bookmark = self.get_bookmark(bookmark_id)
-    circle = self.get_circle(circle_id)
-    if bookmark is None or circle is None:
-      return
-    bookmark.circles.append(unicode(circle_id))
-    bookmark.save()
-    circle.bookmarks.append(unicode(bookmark_id))
-    circle.save()
+        """
+        Takes in a bookmark and circle and adds the bookmark to the circle.
+        """
+        assert not self.is_bookmark_in_circle(bookmark_id, circle_id)
+        bookmark = self.get_bookmark(bookmark_id)
+        circle = self.get_circle(circle_id)
+        if bookmark is None or circle is None:
+          return
+        bookmark.circles.append(unicode(circle_id))
+        bookmark.save()
+        circle.bookmarks.append(unicode(bookmark_id))
+        circle.save()
+        self.update_suggestions(bookmark_id, circle_id)
