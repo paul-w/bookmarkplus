@@ -53,7 +53,6 @@ div.circles_container {
 }
 
 div.circle {
-  display: list-item;
   float: left;
   width: 150px;
   height: 150px;
@@ -184,7 +183,6 @@ div#messages {
 }
 
 div#add_circle {
-  display: block;
   float: left;
 }
 
@@ -204,6 +202,7 @@ input#create_bookmark_uri {
 }
 
 ul#inner_circles_container {
+  display: list-item;
   float: left;
   width: 2000px;
   margin: 0;

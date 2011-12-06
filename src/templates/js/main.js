@@ -120,8 +120,7 @@ $(document).ready(function() {
       }
     });
 
-    // makes an element draggable
-    // element is returned to its original place when dropped
+    // make |bookmark| draggable so that it can be added to circle or deleted
     var makeBookmarkDraggable = function (bookmark) {
       bookmark.draggable({
         start: function (event, ui) {
@@ -141,6 +140,7 @@ $(document).ready(function() {
       });
     }
 
+    // make |circle| draggable so that it can be deleted
     var makeCircleDraggable = function (circle) {
       circle.draggable({
         start: function (event, ui) {
@@ -157,12 +157,11 @@ $(document).ready(function() {
         revertDuration: 100,
         helper: 'original',
         containment: 'parent',
-        connectToSortable: '#inner_circles_container'
       });
     }
 
-    // makes a circle a droppable element such that if a bookmark is dropped
-    // into it, it adds that bookmark to the circle
+    // makes a circle a droppable element so that if a bookmark is dropped
+    // into it, that bookmark is added to it
     var makeCircleDroppable = function (circle) {
       circle.droppable({
         drop: function (event, ui) {
@@ -195,11 +194,12 @@ $(document).ready(function() {
         out: function (event, ui) {
           $(this).removeClass("highlight");
         },
+        accept: '.bookmark',
         tolerance: 'intersect'
       });
     }
 
-    // clears the circle container, leaving only the circle creator
+    // clears the circle container, leaving only the circle adder / deleter
     var clearCircleContainer = function () {
       $.each($('#inner_circles_container').children(), function (idx, circle) {
         if ($(circle).attr('id') !== 'add_circle' &&
@@ -209,7 +209,7 @@ $(document).ready(function() {
       });
     }
 
-    // clears the bookmark container, leaving only the bookmark creator
+    // clears the bookmark container, leaving only the bookmark adder / deleter
     var clearBookmarkContainer = function () {
       $.each($('#bookmarks_container').children(), function (idx, bookmark) {
         if ($(bookmark).attr('id') !== 'add_bookmark' &&
@@ -298,7 +298,7 @@ $(document).ready(function() {
         });
     };
 
-    // if a bookmark is dropped in the add_bookmark div, it should be deleted
+    // if a bookmark is dropped in the delete_bookmark div, delete it
     $('#delete_bookmark').droppable({
       drop: function (event, ui) {
         if (ui.draggable.hasClass('bookmark')) {
@@ -329,7 +329,7 @@ $(document).ready(function() {
       tolerance: 'touch'
     });
 
-    // if an element is dragged to the delete area, delete it
+    // if a circle is dropped in the delete_circle div, delete it
     $('#delete_circle').droppable({
       drop: function (event, ui) {
         if (ui.draggable.hasClass('circle')) {
@@ -372,11 +372,8 @@ $(document).ready(function() {
     // make initial call to refreshElements
     refreshElements();
 
-    // delete tab should only be visible when something is being dragged
+    // delete divs should only be visible when something is being dragged
     $('#delete_bookmark').hide();
     $('#delete_circle').hide();
-
-    $('#inner_circles_container').sortable({});
-    $('#inner_circles_container').disableSelection();
 
 });
