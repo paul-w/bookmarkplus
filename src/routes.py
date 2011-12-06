@@ -132,6 +132,12 @@ def home():
   else:
     return render_template('html/landing.html')
 
+##################
+##              ##
+## AJAX Methods ##
+##              ##
+##################
+
 @app.route('/logout', methods=['GET'])
 def logout():
   if g.user is not None:
@@ -214,7 +220,6 @@ def is_logged_in():
   else:
     return jsonify({"logged_in": False})
 
-# methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])
 @requires_login
 def create_bookmark():

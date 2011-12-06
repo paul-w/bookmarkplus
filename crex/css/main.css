@@ -1,0 +1,27 @@
+/**
+ * Stylesheet for content script for Bookmark+ chrome extension.
+ * Authors:
+ * Michael Mekonnen (mikemeko@mit.edu)
+ * Justin Venezuela (jven@mit.edu)
+ * Paul Woods (pwoods@mit.edu)
+ **/
+
+@import url(http://fonts.googleapis.com/css?family=Linden+Hill);
+
+.amphoros_popup{
+  background-color:#222;
+  border:solid black 5px;
+  color:white;
+  display:none;
+  font-family:'Linden Hill', serif;
+  right:10px;
+  opacity:0.9;
+  padding:20px;
+  position:fixed;
+  top:10px;
+  width:180px
+  -moz-border-radius:20px;
+  -webkit-border-radius:20px;
+  -khtml-border-radius:20px;
+  border-radius:20px
+}
