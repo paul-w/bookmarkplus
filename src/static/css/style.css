@@ -132,6 +132,11 @@ div.unique {
   border: 2.5px dashed black;
 }
 
+div.delete {
+  background-color: #FA8072;
+  border: 2.5px dashed black;
+}
+
 span.expected_input {
   position: absolute;
   top: 4px;
@@ -164,6 +169,12 @@ img.favicon {
   margin: 2px;
 }
 
+img.trash {
+  float: left;
+  width: 35px;
+  height: 35px;
+}
+
 /* IDs */
 div#messages {
   position: fixed;
@@ -172,28 +183,9 @@ div#messages {
   z-index: 1;
 }
 
-div#delete {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 1;
-  height: 45px;
-}
-
 div#add_circle {
   display: block;
   float: left;
-}
-
-img#trash {
-  float: left;
-  width: 40px;
-  height: 40px;
-}
-
-span#delete_message {
-  float: right;
-  margin: 15px;
 }
 
 button#add_item {
@@ -216,7 +208,6 @@ ul#inner_circles_container {
   width: 2000px;
   margin: 0;
   padding: 0;
-  background-color: pink;
   overflow: hidden;
   list-style-type: none;
 }

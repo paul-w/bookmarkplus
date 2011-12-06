@@ -122,19 +122,42 @@ $(document).ready(function() {
 
     // makes an element draggable
     // element is returned to its original place when dropped
-    var makeDraggable = function (element) {
-      element.draggable({
+    var makeBookmarkDraggable = function (bookmark) {
+      bookmark.draggable({
         start: function (event, ui) {
-          $('#delete').show();
-          element.addClass("faded");
+          bookmark.addClass("faded");
+          $("#add_bookmark").hide();
+          $("#delete_bookmark").show();
         },
         stop: function (event, ui) {
-          $('#delete').hide();
-          element.removeClass("faded");
+          bookmark.removeClass("faded");
+          $("#add_bookmark").show();
+          $("#delete_bookmark").hide();
         },
-        revert: true,
+        revert: 'invalid',
+        revertDuration: 100,
         helper: 'clone',
         containment: 'window',
+      });
+    }
+
+    var makeCircleDraggable = function (circle) {
+      circle.draggable({
+        start: function (event, ui) {
+          circle.addClass("faded");
+          $("#add_circle").hide();
+          $("#delete_circle").show();
+        },
+        stop: function (event, ui) {
+          circle.removeClass("faded");
+          $("#add_circle").show();
+          $("#delete_circle").hide();
+        },
+        revert: 'invalid',
+        revertDuration: 100,
+        helper: 'original',
+        containment: 'parent',
+        connectToSortable: '#inner_circles_container'
       });
     }
 
@@ -179,7 +202,8 @@ $(document).ready(function() {
     // clears the circle container, leaving only the circle creator
     var clearCircleContainer = function () {
       $.each($('#inner_circles_container').children(), function (idx, circle) {
-        if ($(circle).attr('id') !== 'add_circle') {
+        if ($(circle).attr('id') !== 'add_circle' &&
+            $(circle).attr('id') !== 'delete_circle') {
           $(circle).remove();
         }
       });
@@ -188,7 +212,8 @@ $(document).ready(function() {
     // clears the bookmark container, leaving only the bookmark creator
     var clearBookmarkContainer = function () {
       $.each($('#bookmarks_container').children(), function (idx, bookmark) {
-        if ($(bookmark).attr('id') !== 'add_bookmark') {
+        if ($(bookmark).attr('id') !== 'add_bookmark' &&
+            $(bookmark).attr('id') !== 'delete_bookmark') {
           $(bookmark).remove();
         }
       });
@@ -223,7 +248,7 @@ $(document).ready(function() {
                   drawBookmarksFromServer(selectedCircle);
                 });
                 makeCircleDroppable(div);
-                makeDraggable(div);
+                makeCircleDraggable(div);
                 $('#inner_circles_container').append(div);
             });
             // select the selected circle
@@ -267,14 +292,14 @@ $(document).ready(function() {
                             'bookmark_id':bookmark.id
                         });
                     });
-                    makeDraggable(div);
+                    makeBookmarkDraggable(div);
                     $('#bookmarks_container').append(div);
             });
         });
     };
 
-    // if an element is dragged to the delete area, delete it
-    $('#delete').droppable({
+    // if a bookmark is dropped in the add_bookmark div, it should be deleted
+    $('#delete_bookmark').droppable({
       drop: function (event, ui) {
         if (ui.draggable.hasClass('bookmark')) {
           var bookmark_id = ui.draggable.attr('bookmark_id');
@@ -290,7 +315,24 @@ $(document).ready(function() {
               UTILS.showMessage("Bookmark successfully deleted");
             }
           });
-        } else if (ui.draggable.hasClass('circle')) {
+        } else {
+            // TODO(mikemeko): better error message
+            UTILS.showMessage("That is not a bookmark");
+        }
+      },
+      over: function (event, ui) {
+        ui.helper.addClass("faded");
+      },
+      out: function (event, ui) {
+        ui.helper.removeClass("faded");
+      },
+      tolerance: 'touch'
+    });
+
+    // if an element is dragged to the delete area, delete it
+    $('#delete_circle').droppable({
+      drop: function (event, ui) {
+        if (ui.draggable.hasClass('circle')) {
           var circle_id = ui.draggable.attr('circle_id');
           $.post("{{ url_for('delete_circle') }}", {
             'circle_id': circle_id
@@ -313,10 +355,10 @@ $(document).ready(function() {
         }
       },
       over: function (event, ui) {
-        ui.helper.addClass("faded");
+        ui.draggable.addClass("faded");
       },
       out: function (event, ui) {
-        ui.helper.removeClass("faded");
+        ui.draggable.removeClass("faded");
       },
       tolerance: 'touch'
     });
@@ -331,7 +373,8 @@ $(document).ready(function() {
     refreshElements();
 
     // delete tab should only be visible when something is being dragged
-    $('#delete').hide();
+    $('#delete_bookmark').hide();
+    $('#delete_circle').hide();
 
     $('#inner_circles_container').sortable({});
     $('#inner_circles_container').disableSelection();
