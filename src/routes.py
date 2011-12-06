@@ -308,20 +308,17 @@ def get_bookmarks():
       'circles':bookmark.circles
   } for bookmark in bookmarks])
 
-
 @app.route('/getsuggestions', methods = ['POST'])
 @requires_login
 def get_suggestions():
-
-  ## not yet tested
-
-  bookmark_id = request.form.get('bookmark_id')
-  suggestions = db.get_suggestions(bookmark_id)
-  if len(suggestions) > NUM_SUGGESTIONS:
-      suggestions = suggestions[0:NUM_SUGGESTIONS]
+  num_sugg = int(request.form.get('num_sugg'))
+  user_id = session.get('user_id')
+  suggestions = db.get_suggestions(unicode(user_id), num_sugg)
+  print [s for s in suggestions]
   return jsonify(suggestions=[{
-      'url':suggestion.suggestion,
+      'url':suggestion,
   } for suggestion in suggestions])
+
 
 @app.route('/click', methods = ['POST'])
 @requires_login

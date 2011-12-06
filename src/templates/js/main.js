@@ -27,6 +27,7 @@ $(document).ready(function() {
     $('input').val('');
 
     // set variables
+    var numSuggestions = 3;
     var selectedCircle = '';
 
     sortBookmarksDivs = []
@@ -269,6 +270,37 @@ $(document).ready(function() {
         });
     };
 
+    var drawSuggestionsFromServer = function() {
+        $.post("{{ url_for('get_suggestions') }}", {
+            'num_sugg':numSuggestions,
+            }, function(data) {
+
+                console.log('called!')
+                $.each(data.suggestions, function(idx, suggestion) {
+                    var div = $('<div/>');
+                    div.addClass('bookmark');
+                    div.addClass('suggestion');
+                    var favicon = $('<img/>');
+                    // TODO(mikemeko): this is not robust!
+                    favicon.attr('src', 'http://www.getfavicon.org/?url='+
+                                 suggestion.url.substring(7));
+                    favicon.appendTo(div);
+                    var a = $('<a/>');
+                    a.addClass('bookmark_text');
+                    a.text(suggestion.url);
+                    a.appendTo(div);
+                    favicon.addClass('favicon');
+                    div.click(function () {
+                        window.open(suggestion.url);
+                        });
+                    console.log(a.text);
+                    makeDraggable(div);
+                    $('#suggestions_container').append(div);
+                    });
+            });
+        };
+
+
     // if an element is dragged to the delete area, delete it
     $('#delete').droppable({
       drop: function (event, ui) {
@@ -316,6 +348,7 @@ $(document).ready(function() {
 
     // refresh the bookmarks and circles
     var refreshElements = function() {
+        drawSuggestionsFromServer();
         drawBookmarksFromServer(selectedCircle);
         drawCirclesFromServer();
     };
