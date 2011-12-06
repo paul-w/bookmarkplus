@@ -23,14 +23,22 @@ p {
 a.bookmark_text {
   text-decoration:underline;
   color:blue;
-}
+  border-color: red}
 
 div.bookmarks_container {
   display: inline-block;
-  width: 100%;
+  width: 70%;
   height: 200px;
   overflow: auto;
 }
+
+div.suggestions_container {
+  display: inline-block;
+  width: 20%;
+  height: 200px;
+  overflow: auto;
+}
+
 
 div.bookmark {
   float: left;
@@ -44,6 +52,10 @@ div.bookmark {
   text-align: center;
   cursor: pointer;
 }
+
+div.suggestion {
+  border-color: red;
+    };
 
 div.circles_container {
   width: 100%;
