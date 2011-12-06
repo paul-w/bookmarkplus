@@ -324,7 +324,7 @@ $(document).ready(function() {
                         window.open(suggestion.url);
                         });
                     console.log(a.text);
-                    //makeDraggable(div);
+                    makeBookmarkDraggable(div);
                     $('#suggestions_container').append(div);
                     });
             });
