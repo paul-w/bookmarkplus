@@ -306,6 +306,7 @@ $(document).ready(function() {
 
                 console.log('called!')
                 $.each(data.suggestions, function(idx, suggestion) {
+                    console.log(suggestion)
                     var div = $('<div/>');
                     div.addClass('bookmark');
                     div.addClass('suggestion');
@@ -323,7 +324,7 @@ $(document).ready(function() {
                         window.open(suggestion.url);
                         });
                     console.log(a.text);
-                    makeDraggable(div);
+                    //makeDraggable(div);
                     $('#suggestions_container').append(div);
                     });
             });

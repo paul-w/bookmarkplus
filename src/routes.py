@@ -318,8 +318,7 @@ def get_bookmarks():
 def get_suggestions():
   num_sugg = int(request.form.get('num_sugg'))
   user_id = session.get('user_id')
-  suggestions = db.get_suggestions(unicode(user_id), num_sugg)
-  print [s for s in suggestions]
+  suggestions = db.get_suggestions(user_id, num_sugg)
   return jsonify(suggestions=[{
       'url':suggestion,
   } for suggestion in suggestions])

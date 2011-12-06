@@ -21,6 +21,5 @@ class User(Document):
       'date_last_login':unicode,
       'bookmark_sort_key':unicode,
       'bookmark_sort_order':int, 
-      'suggestions':[unicode],  # urls
   }
   use_dot_notation = True
