@@ -132,6 +132,12 @@ def home():
   else:
     return render_template('html/landing.html')
 
+##################
+##              ##
+## AJAX Methods ##
+##              ##
+##################
+
 @app.route('/logout', methods=['GET'])
 def logout():
   if g.user is not None:
@@ -214,7 +220,6 @@ def is_logged_in():
   else:
     return jsonify({"logged_in": False})
 
-# methods related to interaction with main.js
 @app.route('/createbookmark', methods = ['POST'])
 @requires_login
 def create_bookmark():
@@ -342,8 +347,7 @@ def get_bookmarks():
 def get_suggestions():
   num_sugg = int(request.form.get('num_sugg'))
   user_id = session.get('user_id')
-  suggestions = db.get_suggestions(unicode(user_id), num_sugg)
-  print [s for s in suggestions]
+  suggestions = db.get_suggestions(user_id, num_sugg)
   return jsonify(suggestions=[{
       'url':suggestion,
   } for suggestion in suggestions])
