@@ -77,8 +77,14 @@ div.circle {
   cursor: pointer;
 }
 
-div.highlight {
-  background-color: orange;
+div.open {
+  background-color: #ADFF2F;
+  border: 2.5px dashed black;
+}
+
+div.closed {
+  background-color: #FA8072;
+  border: 2.5px dashed black;
 }
 
 div.column {

@@ -263,6 +263,19 @@ def create_circle():
   new_circle = db.make_circle(session['user_id'], name)
   return jsonify({'type':'success', 'circle_id':unicode(new_circle._id)})
 
+@app.route('/isbookmarkincircle', methods = ['POST'])
+@requires_login
+def is_bookmark_in_circle():
+  # TODO(mikemeko): this code is repeated a lot, we should write helpers
+  bookmark_id = request.form.get('bookmark_id')
+  circle_id = request.form.get('circle_id')
+  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
+  if not circle_id or db.get_circle(circle_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  bookmark_in_circle = db.is_bookmark_in_circle(bookmark_id, circle_id)
+  return jsonify({'bookmark_in_circle':bookmark_in_circle})
+
 @app.route('/addbookmarktocircle', methods = ['POST'])
 @requires_login
 def add_bookmark_to_circle():
@@ -277,6 +290,22 @@ def add_bookmark_to_circle():
     return jsonify({'type':'error', 'message':'That bookmark is already in '
         'that circle.'})
   db.add_bookmark_to_circle(bookmark_id, circle_id)
+  return jsonify({'type':'success'})
+
+@app.route('/removebookmarkfromcircle', methods = ['POST'])
+@requires_login
+def remove_bookmark_from_circle():
+  # TODO(mikemeko): this code is repeated a lot, we should write helpers
+  bookmark_id = request.form.get('bookmark_id')
+  circle_id = request.form.get('circle_id')
+  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
+  if not circle_id or db.get_circle(circle_id) is None:
+    return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  if not db.is_bookmark_in_circle(bookmark_id, circle_id):
+    return jsonify({'type':'error', 'message':'That bookmark is noy in that '
+        'circle.'})
+  db.remove_bookmark_from_circle(bookmark_id, circle_id)
   return jsonify({'type':'success'})
 
 @app.route('/getcircles', methods = ['POST'])

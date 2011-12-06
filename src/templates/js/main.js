@@ -163,37 +163,65 @@ $(document).ready(function() {
 
     // makes a circle a droppable element so that if a bookmark is dropped
     // into it, that bookmark is added to it
+    // TODO(mikemeko): there is a lot of repeated code here, fix
     var makeCircleDroppable = function (circle) {
       circle.droppable({
         drop: function (event, ui) {
           var bookmark_id = ui.draggable.attr('bookmark_id');
-          if (typeof(bookmark_id) === "undefined") {
-            // TODO(mikemeko): better error message
-            UTILS.showMessage("You can't add that to a circle");
-          } else {
-            var circle_id = $(this).attr('circle_id');
-            $.post("{{ url_for('add_bookmark_to_circle') }}", {
-                'bookmark_id':bookmark_id,
-                'circle_id':circle_id
-            }, function(response) {
-                if (response.type == 'error') {
-                  UTILS.showMessage(response.message);
-                } else if (response.type == 'success') {
-                  refreshElements();
-                  // TODO(mikemeko)
-                  UTILS.showMessage("Bookmark successfully added to circle");
-                }
-            });
-          }
-          $(this).removeClass("highlight");
+          var circle_id = circle.attr('circle_id');
+          $.post("{{ url_for('is_bookmark_in_circle') }}", {
+            bookmark_id:bookmark_id,
+            circle_id:circle_id
+          }, function (response) {
+            if (response.bookmark_in_circle) {
+              $.post("{{ url_for('remove_bookmark_from_circle') }}", {
+                  'bookmark_id':bookmark_id,
+                  'circle_id':circle_id
+              }, function(response) {
+                  if (response.type == 'error') {
+                    UTILS.showMessage(response.message);
+                  } else if (response.type == 'success') {
+                    refreshElements();
+                    // TODO(mikemeko)
+                    UTILS.showMessage("Bookmark successfully removed " +
+                                      " from circle");
+                  }
+              });
+            } else {
+              $.post("{{ url_for('add_bookmark_to_circle') }}", {
+                  'bookmark_id':bookmark_id,
+                  'circle_id':circle_id
+              }, function(response) {
+                  if (response.type == 'error') {
+                    UTILS.showMessage(response.message);
+                  } else if (response.type == 'success') {
+                    refreshElements();
+                    // TODO(mikemeko)
+                    UTILS.showMessage("Bookmark successfully added to circle");
+                  }
+              });
+            }
+          });
+          circle.removeClass('open');
+          circle.removeClass('closed');
         },
         over: function (event, ui) {
-          if (ui.draggable.hasClass('bookmark')) {
-            $(this).addClass("highlight");
-          }
+          $.post("{{ url_for('is_bookmark_in_circle') }}", {
+            bookmark_id:ui.draggable.attr('bookmark_id'),
+            circle_id:$(this).attr('circle_id')
+          }, function (response) {
+            if (response.bookmark_in_circle) {
+              // TODO(mikemeko): better name
+              circle.addClass('closed');
+            } else {
+              // TODO(mikemeko): better name
+              circle.addClass('open');
+            }
+          });
         },
         out: function (event, ui) {
-          $(this).removeClass("highlight");
+          circle.removeClass('open');
+          circle.removeClass('closed');
         },
         accept: '.bookmark',
         tolerance: 'intersect'

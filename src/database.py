@@ -316,3 +316,18 @@ class Database():
         circle.bookmarks.append(unicode(bookmark_id))
         circle.save()
         self.update_suggestions(bookmark_id, circle_id)
+
+  def remove_bookmark_from_circle(self, bookmark_id, circle_id):
+    """
+    Takes in a bookmark and circle and removes the bookmark from the circle.
+    """
+    # TODO(mikemeko): this code is repeated a lot, we should write helpers
+    assert self.is_bookmark_in_circle(bookmark_id, circle_id)
+    bookmark = self.get_bookmark(bookmark_id)
+    circle = self.get_circle(circle_id)
+    if bookmark is None or circle is None:
+      return
+    bookmark.circles.remove(unicode(circle_id))
+    bookmark.save()
+    circle.bookmarks.remove(unicode(bookmark_id))
+    circle.save()
