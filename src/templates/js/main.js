@@ -80,7 +80,7 @@ $(document).ready(function() {
               if (response.type == 'error') {
                 UTILS.showMessage(response.message);
               } else if (response.type == 'success') {
-                drawBookmarksFromServer(selectedCircle);
+                refreshElements();
                 $('#create_bookmark_uri').val('');
                 if (selectedCircle != '') {
                   // add bookmark to selected circle
