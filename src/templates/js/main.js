@@ -156,8 +156,10 @@ $(document).ready(function() {
         },
         revert: 'invalid',
         revertDuration: 100,
-        helper: 'original',
-        containment: 'parent',
+        helper: 'clone',
+        containment: 'parent'
+        // TODO(mikemeko): sorting
+        //connectToSortable: '#inner_circles_container'
       });
     }
 
@@ -263,21 +265,7 @@ $(document).ready(function() {
                 span1.attr('class', 'circle');
                 span1.text(circle.name);
                 span1.appendTo(div);
-                div.click(function() {
-                  if (selectedCircle != circle.id) {
-                    selectedCircle = circle.id;
-                    $('.circle').each(function (idx, elt) {
-                      $(elt).removeClass('selected');
-                    });
-                    span1.addClass('selected');
-                  } else {
-                    selectedCircle = '';
-                    span1.removeClass('selected');
-                  }
-                  drawBookmarksFromServer(selectedCircle);
-                });
-                makeCircleDroppable(div);
-                makeCircleDraggable(div);
+                bindCircleEventListeners(div);
                 $('#inner_circles_container').append(div);
             });
             // select the selected circle
@@ -287,6 +275,27 @@ $(document).ready(function() {
             }
         });
     };
+
+    // binds listeners to |circle| to make it behave like a circle
+    var bindCircleEventListeners = function (circle) {
+      var circle_name = circle.find('span');
+      var circle_id = circle.attr('circle_id');
+      circle.click(function() {
+        if (selectedCircle != circle_id) {
+          selectedCircle = circle_id;
+          $('.circle').each(function (idx, elt) {
+            $(elt).find('span').removeClass('selected');
+          });
+          circle_name.addClass('selected');
+        } else {
+          selectedCircle = '';
+          circle_name.removeClass('selected');
+        }
+        drawBookmarksFromServer(selectedCircle);
+      });
+      makeCircleDroppable(circle);
+      makeCircleDraggable(circle);
+    }
 
     // populates circle elements and attaches listeners
     // called:
@@ -436,5 +445,10 @@ $(document).ready(function() {
     // delete divs should only be visible when something is being dragged
     $('#delete_bookmark').hide();
     $('#delete_circle').hide();
+
+    // TODO(mikemeko): sorting
+    //$('#inner_circles_container').sortable({
+    //  revert: true
+    //});
 
 });
