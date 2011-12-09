@@ -167,7 +167,7 @@ class Database():
     if type(bookmark_id) != unicode:
       return None
     try:
-      return bookmark = self._mk.Bookmark.find_one(ObjectId(bookmark_id))
+      return self._mk.Bookmark.find_one(ObjectId(bookmark_id))
     except:
       return None
 
@@ -238,7 +238,7 @@ class Database():
     if type(circle_id) != unicode:
       return None
     try:
-      return circle = self._mk.Circle.find_one(ObjectId(circle_id))
+      return self._mk.Circle.find_one(ObjectId(circle_id))
     except:
       return None
 
@@ -327,9 +327,9 @@ class Database():
     circle.bookmarks.remove(unicode(bookmark_id))
     circle.save()
 
-  def get_suggestions(self, user_id, limit):
+  def update_suggestions(self, user_id, limit):
     """
-    Gets suggestions for the given user. At most limit suggestions are
+    Updates suggestions for the given user. At most limit suggestions are
     returned.
     """
     suggestions = []

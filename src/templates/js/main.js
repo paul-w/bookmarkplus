@@ -71,7 +71,7 @@ $(document).ready(function() {
       if ($('#create_bookmark_uri').val() == '') {
         UTILS.showMessage('You must provide a bookmark URL.');
       } else {
-        $.post('{{ url_for(\'create_bookmark\') }}', {
+        $.post("{{ url_for('create_bookmark') }}", {
             'uri':$('#create_bookmark_uri').val()
         }, function(response) {
           if (response.type == 'error') {
@@ -166,7 +166,7 @@ $(document).ready(function() {
       drop: function(event, ui) {
         var bookmark_id = ui.draggable.attr('bookmark_id');
         var circle_id = circle.attr('circle_id');
-        $.post('{{ url_for(\'is_bookmark_in_circle\') }}', {
+        $.post("{{ url_for('is_bookmark_in_circle') }}", {
             bookmark_id:bookmark_id,
             circle_id:circle_id
         }, function(response) {
@@ -184,7 +184,7 @@ $(document).ready(function() {
               }
             });
           } else {
-            $.post('{{ url_for(\'add_bookmark_to_circle\') }}', {
+            $.post("{{ url_for('add_bookmark_to_circle') }}", {
                 'bookmark_id':bookmark_id,
                 'circle_id':circle_id
             }, function(response) {
@@ -201,7 +201,7 @@ $(document).ready(function() {
         circle.removeClass('closed');
       },
       over: function(event, ui) {
-        $.post('{{ url_for(\'is_bookmark_in_circle\') }}', {
+        $.post("{{ url_for('is_bookmark_in_circle') }}", {
           bookmark_id: ui.draggable.attr('bookmark_id'),
           circle_id: $(this).attr('circle_id')
         }, function (response) {
@@ -249,7 +249,7 @@ $(document).ready(function() {
   // 2) after a user interaction that modifies the circles
   var drawCirclesFromServer = function() {
       clearCircleContainer();
-      $.post('{{ url_for(\'get_circles\') }}', function(data) {
+      $.post("{{ url_for('get_circles') }}", function(data) {
           $.each(data.circles, function(idx, circle) {
               var div = $('<div/>');
               div.addClass("circle");
@@ -291,7 +291,7 @@ $(document).ready(function() {
   // 4) after a user interaction that modifies bookmarks
   var drawBookmarksFromServer = function(circle_id) {
     clearBookmarkContainer();
-    $.post('{{ url_for(\'get_bookmarks\') }}', {
+    $.post("{{ url_for('get_bookmarks') }}", {
         'circle_id':circle_id,
         'sort_by': sortBookmarksBy,
         'ascending': bAscending
@@ -323,7 +323,7 @@ $(document).ready(function() {
   };
 
   var drawSuggestionsFromServer = function() {
-    $.post('{{ url_for(\'get_suggestions\') }}', {
+    $.post("{{ url_for('get_suggestions') }}", {
         'num_sugg':numSuggestions,
     }, function(data) {
       $.each(data.suggestions, function(idx, suggestion) {
@@ -355,7 +355,7 @@ $(document).ready(function() {
     drop: function(event, ui) {
       if (ui.draggable.hasClass('bookmark')) {
         var bookmark_id = ui.draggable.attr('bookmark_id');
-        $.post('{{ url_for(\'delete_bookmark\') }}', {
+        $.post("{{ url_for('delete_bookmark') }}", {
             'bookmark_id': bookmark_id
         }, function(response) {
           if (response.type == 'error') {
@@ -386,7 +386,7 @@ $(document).ready(function() {
     drop: function(event, ui) {
       if (ui.draggable.hasClass('circle')) {
         var circle_id = ui.draggable.attr('circle_id');
-        $.post('{{ url_for(\'delete_circle\') }}', {
+        $.post("{{ url_for('delete_circle') }}", {
             'circle_id': circle_id
         }, function(response) {
           if (response.type == 'error') {

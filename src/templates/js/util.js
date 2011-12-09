@@ -13,8 +13,8 @@ UTILS.MESSAGE_DURATION = 4000;
 
 // shows a pop-up message containing |message_text|.
 UTILS.showMessage = function (message_text) {
-  var messages = $("div#messages");
-  var message = $("<div>");
+  var messages = $('div#messages');
+  var message = $('<div>');
   message.text(message_text);
   message.addClass('message');
   messages.empty();
@@ -23,7 +23,7 @@ UTILS.showMessage = function (message_text) {
   });
   messages.append(message);
   setTimeout(function() {
-    message.fadeOut("slow", "linear");
+    message.fadeOut('slow', 'linear');
   }, UTILS.MESSAGE_DURATION);
 }
 
@@ -32,8 +32,8 @@ UTILS.showMessage = function (message_text) {
 // |container| should have an input and a span that is meant to be a holder
 // for the input
 UTILS.toggleInputMessage = function (container) {
-  var holder = $(container).find("span");
-  var input = $(container).find("input");
+  var holder = $(container).find('span');
+  var input = $(container).find('input');
   // If a container is clicked, focus input
   $(container).click(function (input_) {
     return function () {
@@ -49,7 +49,7 @@ UTILS.toggleInputMessage = function (container) {
   // If input is empty and out of focus, show holder
   $(input).focusout(function (input_, holder_) {
     return function () {
-      if (input_.val() === "") {
+      if (input_.val() === '') {
         holder_.show();
       }
     }
