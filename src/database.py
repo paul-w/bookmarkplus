@@ -8,15 +8,15 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
+from flaskext.mongokit import MongoKit
+from models.bookmark import Bookmark
 from models.bookmark import DEFAULT_BOOKMARK_SORT_KEY
 from models.bookmark import DEFAULT_BOOKMARK_SORT_ORDER
-from utils import get_hashed_password
-from utils import get_unicode_datetime
-from models.bookmark import Bookmark
 from models.circle import Circle
 from models.user import User
-from flaskext.mongokit import MongoKit
 from pymongo.objectid import ObjectId
+from utils import get_hashed_password
+from utils import get_unicode_datetime
 
 # TODO(jven): each model must be registered here
 MODELS = [Bookmark, Circle, User]
@@ -48,7 +48,7 @@ class Database():
 
   def _show_contents(self):
     """
-    Show the contents of the current MongoDB connection.
+    Shows the contents of the current MongoDB connection. (jven)
     """
     for database_name in self._mk.connection.database_names():
       print 'DATABASE: %s' % database_name
@@ -62,11 +62,9 @@ class Database():
         else:
           print '%d documents' % collection.count()
 
-  # Added for debugging 
-  # TODO(pauL):  remove later
   def _show_contents_lengthy(self):
     """
-    Show the contents of the current MongoDB connection.
+    Shows the contents of the current MongoDB connection. (pwoods)
     """
     for database_name in self._mk.connection.database_names():
       print 'DATABASE: %s\n' % database_name
@@ -80,23 +78,17 @@ class Database():
             for key in row:
                 print key, ':', row[key]
             print '\n'
-                
-        '''if count == 1:
-          print '%d document' % collection.count()
-        else:
-          print '%d documents' % collection.count()
-        '''
 
   def user_exists(self, email):
     """
-    Takes in an e-mail address and checks if a User exists with that address.
+    Takes an e-mail address and checks if a User exists with that address.
     """
     return self._mk.User.find_one({'email':email}) is not None
 
   def get_user_and_login(self, email, raw_password):
     """
-    Takes in an e-mail address and password and checks if a User exists with
-    this combinatio and updates date_last_login. Returns None otherwise.
+    Takes an e-mail address and password and checks if a User exists with
+    this combination. Updates date_last_login if user exists, None otherwise.
     """
     password = get_hashed_password(raw_password)
     user = self._mk.User.find_one({'email':email, 'password':password})
@@ -108,9 +100,14 @@ class Database():
   def get_user_by_id(self, user_id):
     """
     Takes a user id (unicode) and returns the User corresponding to that id.
-    A user with this user id should exist in the User table.
+    Returns None if no such user exists.
     """
-    return self._mk.User.find_one(ObjectId(user_id))
+    if type(user_id) != unicode:
+      return None
+    try:
+      return self._mk.User.find_one(ObjectId(user_id))
+    except:
+      return None
 
   def make_user(self, name, email, raw_password):
     """
@@ -133,22 +130,31 @@ class Database():
 
   def bookmark_exists(self, user_id, url):
     """
-    Takes in a user and a url and checks if the user has a bookmark with the
-    url.
+    Takes in a user and a url and returns whether the user has a bookmark
+    with the url.
     """
     return self._mk.Bookmark.find_one(
         {'owner':unicode(user_id), 'url':url}) is not None
 
   def get_suggestions(self, user_id, num):
+    """
+    Takes in a user_id and returns the suggestions of the user corresponding
+    to that user_id. Returns None if no such user exists.
+    """
+    # TODO(pwoods, jven): what is num?
     user = self.get_user_by_id(unicode(user_id))
-    return user.suggestions
+    if user is not None:
+      return user.suggestions
+    else:
+      return None
 
   def click_bookmark(self, bookmark_id):
     """
-    Get a bookmark and record a click.
+    Get a bookmark and record a click for that bookmark. Returns the bookmark.
     """
     bookmark = self.get_bookmark(unicode(bookmark_id))
-    assert bookmark is not None
+    assert bookmark is not None, ('ASSERTION ERROR: Attempted to click an '
+        'invalid bookmark.')
     bookmark.clicks += 1
     bookmark.date_last_clicked = get_unicode_datetime()
     bookmark.save()
@@ -156,22 +162,23 @@ class Database():
 
   def get_bookmark(self, bookmark_id):
     """
-    Get a bookmark.
+    Gets the book corresponding to the given bookmark_id.
     """
     if type(bookmark_id) != unicode:
       return None
     try:
-      bookmark = self._mk.Bookmark.find_one(ObjectId(bookmark_id))
+      return bookmark = self._mk.Bookmark.find_one(ObjectId(bookmark_id))
     except:
-      # TODO(jven): catch InvalidId exception specifically
       return None
-    return bookmark
 
   def get_all_bookmarks(self, user_id, sort_by):
     """
-    Get a user's bookmarks.
+    Gets a user's bookmarks, sorted in the specified way. Returns an empty list
+    if no such user exists.
     """
     user = self.get_user_by_id(user_id)
+    if user is None:
+      return []
     user.bookmark_sort_key, user.bookmark_sort_order = sort_by
     return self._mk.Bookmark.find({'owner':unicode(user_id)}).sort([sort_by])
 
@@ -180,7 +187,8 @@ class Database():
     Makes a bookmark for the given user with the given url.
     Requires not bookmark_exists(user, url). Returns the bookmark.
     """
-    assert not self.bookmark_exists(user_id, url)
+    assert not self.bookmark_exists(user_id, url), ('ASSERTION ERROR: '
+        'A bookmark already exists with the given URL for that user.')
     new_bookmark = self._mk.Bookmark()
     new_bookmark.url = url
     new_bookmark.owner = unicode(user_id)
@@ -191,7 +199,7 @@ class Database():
 
   def delete_bookmark(self, bookmark_id):
     """
-    Remove a bookmark from every circle it's in then delete the bookmark.
+    Removes a bookmark from every circle it's in, then deletes the bookmark.
     """
     bookmark = self.get_bookmark(bookmark_id)
     assert bookmark is not None
@@ -203,10 +211,11 @@ class Database():
 
   def delete_circle(self, circle_id):
     """
-    Delete the circle, but the bookmarks in the circle are not deleted.
+    Deletes the circle corresponding to the given circle_id. The bookmarks in
+    the circle are not deleted.
     """
     circle = self.get_circle(circle_id)
-    assert circle is not None
+    assert circle is not None, 'ASSERTION ERROR: No such circle exists.'
     for bookmark_id in circle.bookmarks:
       bookmark = self.get_bookmark(bookmark_id)
       bookmark.circles.remove(circle_id)
@@ -215,37 +224,37 @@ class Database():
 
   def circle_exists(self, user_id, name):
     """
-    Takes in a user and a circle name and checks if the user has a circle with
-    the name.
+    Takes a user and a circle name and checks if the user has a circle with
+    that name.
     """
     return self._mk.Circle.find_one(
         {'owner':unicode(user_id), 'name':name}) is not None
 
   def get_circle(self, circle_id):
     """
-    Get a circle.
+    Gets the circle corresponding to the given circle_id, or None if no such
+    circle exists.
     """
     if type(circle_id) != unicode:
       return None
     try:
-      circle = self._mk.Circle.find_one(ObjectId(circle_id))
+      return circle = self._mk.Circle.find_one(ObjectId(circle_id))
     except:
-      # TODO(jven): catch InvalidId exception specifically
       return None
-    return circle
 
   def get_all_circles(self, user_id):
     """
-    Get a user's circles.
+    Gets a user's circles.
     """
     return self._mk.Circle.find({'owner':unicode(user_id)})
 
   def make_circle(self, user_id, name):
     """
-    Makes a circle for the given user with the given name.
-    Requires not circle_exists(user, name). Returns the circle.
+    Makes a circle for the given user with the given name. Requires not
+    circle_exists(user, name). Returns the circle.
     """
-    assert not self.circle_exists(user_id, name)
+    assert not self.circle_exists(user_id, name), ('ASSERTION ERROR: '
+        'A circle already exists for this user with that name.')
     new_circle = self._mk.Circle()
     new_circle.name = name
     new_circle.owner = unicode(user_id)
@@ -255,22 +264,25 @@ class Database():
 
   def get_bookmarks_in_circle(self, user_id, circle_id, sort_by):
     """
-    Get all the bookmarks in the circle. Requires bookmark_exists(url)
-    for each url in circle.bookmarks.
+    Gets all the bookmarks in the circle in the specified sort order. Requires
+    bookmark_exists(url) for each url in circle.bookmarks.
     """
+    # TODO(jven): Make sure user owns the circle
     user = self.get_user_by_id(user_id)
+    assert user is not None, 'ASSERTION ERROR: No such user exists.'
     user.bookmark_sort_key, user.bookmark_sort_order = sort_by
     circle = self.get_circle(circle_id)
     if circle is None:
       return []
-    return self._mk.Bookmark.find(
-            {'_id': {'$in':[ObjectId(bookmark_id)
-            for bookmark_id in circle.bookmarks] } } 
-            ).sort([sort_by])
+    return self._mk.Bookmark.find({
+        '_id': {'$in':
+            [ObjectId(bookmark_id) for bookmark_id in circle.bookmarks]
+        }
+    }).sort([sort_by])
 
   def is_bookmark_in_circle(self, bookmark_id, circle_id):
     """
-    Checks if a bookmark is in a circle.
+    Returns whether a bookmark is in a circle.
     """
     bookmark = self.get_bookmark(bookmark_id)
     circle = self.get_circle(circle_id)
@@ -283,26 +295,29 @@ class Database():
       return False
 
   def add_bookmark_to_circle(self, bookmark_id, circle_id):
-        """
-        Takes in a bookmark and circle and adds the bookmark to the circle.
-        """
-        assert not self.is_bookmark_in_circle(bookmark_id, circle_id)
-        bookmark = self.get_bookmark(bookmark_id)
-        circle = self.get_circle(circle_id)
-        if bookmark is None or circle is None:
-          return
-        bookmark.circles.append(unicode(circle_id))
-        bookmark.save()
-        circle.bookmarks.append(unicode(bookmark_id))
-        circle.save()
-        self.update_suggestions(bookmark_id, circle_id)
+    """
+    Takes a bookmark and circle and adds the bookmark to the circle.
+    Updates suggestions.
+    """
+    assert not self.is_bookmark_in_circle(bookmark_id, circle_id), (
+        'ASSERTION ERROR: That bookmark is already in that circle.')
+    bookmark = self.get_bookmark(bookmark_id)
+    circle = self.get_circle(circle_id)
+    if bookmark is None or circle is None:
+      return
+    bookmark.circles.append(unicode(circle_id))
+    bookmark.save()
+    circle.bookmarks.append(unicode(bookmark_id))
+    circle.save()
+    self.update_suggestions(bookmark_id, circle_id)
 
   def remove_bookmark_from_circle(self, bookmark_id, circle_id):
     """
-    Takes in a bookmark and circle and removes the bookmark from the circle.
+    Takes a bookmark and circle and removes the bookmark from the circle.
     """
     # TODO(mikemeko): this code is repeated a lot, we should write helpers
-    assert self.is_bookmark_in_circle(bookmark_id, circle_id)
+    assert self.is_bookmark_in_circle(bookmark_id, circle_id), (
+        'ASSERTION ERROR: That bookmark is not in that circle.')
     bookmark = self.get_bookmark(bookmark_id)
     circle = self.get_circle(circle_id)
     if bookmark is None or circle is None:
@@ -313,29 +328,27 @@ class Database():
     circle.save()
 
   def get_suggestions(self, user_id, limit):
-        suggestions = []
-        user_id = unicode(user_id)
-        if limit == 0:
-            return suggestions
-
-        user_bookmarks = self._mk.Bookmark.find(
-                {'owner':user_id})
-        for bookmark in user_bookmarks:
-            same_urls = self._mk.Bookmark.find(
-            {'url': bookmark.url })
-            for same_url in same_urls:
-                if same_url.owner == user_id:
-                    print '\nTrue\n'
-                    continue
-                print 'sameurlcircles', same_url.circles
-                for circle_id in same_url.circles:
-                    print 'circle_id', circle_id
-                    circle = self.get_circle(circle_id)
-                    for suggested_id in circle.bookmarks:
-                        suggestion = self.get_bookmark(suggested_id)
-                        suggestions.append(suggestion.url)
-                        print 'suggestions', suggestions
-                        if len(suggestions) >= limit:
-                            return suggestions
-
-        return suggestions
+    """
+    Gets suggestions for the given user. At most limit suggestions are
+    returned.
+    """
+    suggestions = []
+    user_id = unicode(user_id)
+    if limit == 0:
+      return suggestions
+    user_bookmarks = self._mk.Bookmark.find(
+        {'owner':user_id})
+    for bookmark in user_bookmarks:
+      same_urls = self._mk.Bookmark.find(
+      {'url': bookmark.url})
+      for same_url in same_urls:
+        if same_url.owner == user_id:
+          continue
+        for circle_id in same_url.circles:
+          circle = self.get_circle(circle_id)
+          for suggested_id in circle.bookmarks:
+            suggestion = self.get_bookmark(suggested_id)
+            suggestions.append(suggestion.url)
+            if len(suggestions) >= limit:
+              return suggestions
+    return suggestions
