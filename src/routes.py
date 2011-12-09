@@ -155,8 +155,8 @@ def logout():
   (landing) page.
   """
   if g.user is not None:
-    flash("Goodbye %s" % g.user.name)
-    session.pop("user_id")
+    flash('Bye, %s!' % g.user.name)
+    session.pop('user_id')
   return redirect(url_for('home'))
 
 ##################
@@ -171,51 +171,51 @@ def login():
   Attempts to log in the user with the given credentials.
   """
   if g.user is not None:
-    error = "You are already logged in."
-    return jsonify({"type": "error", "error": error})
-  email = request.form["email"]
-  password = request.form["password"]
+    error = 'You are already logged in.'
+    return jsonify({'type': 'error', 'error': error})
+  email = request.form['email']
+  password = request.form['password']
   if not db.user_exists(email):
-    error = "unknown e-mail"
-    return jsonify({"type": "error", "error": error})
+    error = 'No user exists with that e-mail address.'
+    return jsonify({'type': 'error', 'error': error})
   user = db.get_user_and_login(email, password)
   if user == None:
-    error = "incorrect password"
-    return jsonify({"type": "error", "error": error})
-  flash("Welcome %s" % user.name)
-  session["user_id"] = unicode(user._id)
-  return jsonify({"type": "redirect", "url": url_for("home")})
+    error = 'Incorrect password.'
+    return jsonify({'type': 'error', 'error': error})
+  flash('Hi, %s!' % user.name)
+  session['user_id'] = unicode(user._id)
+  return jsonify({'type': 'redirect', 'url': url_for('home')})
 
 @app.route('/register', methods=['POST'])
 def register():
   """
   Attempts to register the user with the given account information.
   """
-  name = request.form["name"]
-  email = request.form["email"]
-  password = request.form["password"]
-  repassword = request.form["repassword"]
+  name = request.form['name']
+  email = request.form['email']
+  password = request.form['password']
+  repassword = request.form['repassword']
   name_error = check_name(name)
   if name_error != None:
     # malformed name
-    return jsonify({"type": "error", "error": name_error})
+    return jsonify({'type': 'error', 'error': name_error})
   email_error = check_email(email)
   if email_error != None:
     # malformed e-mail
-    return jsonify({"type": "error", "error": email_error})
+    return jsonify({'type': 'error', 'error': email_error})
   password_error = check_password(password, repassword)
   if password_error != None:
     # malformed password
-    return jsonify({"type": "error", "error": password_error})
+    return jsonify({'type': 'error', 'error': password_error})
   user_exists = db.user_exists(email)
   if user_exists:
     # user with this e-mail already exists
-    error = "a user with this e-mail already exists"
-    return jsonify({"type": "error", "error": error})
+    error = 'An account with this e-mail address already exists!'
+    return jsonify({'type': 'error', 'error': error})
   user = db.make_user(name, email, password)
-  flash("Welcome to Bookmark+ %s!" % user.name)
-  session["user_id"] = unicode(user._id)
-  return jsonify({"type": "redirect", "url": url_for("home")})
+  flash('Welcome to Bookmark+, %s!' % user.name)
+  session['user_id'] = unicode(user._id)
+  return jsonify({'type': 'redirect', 'url': url_for('home')})
 
 @app.route('/is_logged_in', methods=['POST'])
 def is_logged_in():
@@ -223,10 +223,13 @@ def is_logged_in():
   Returns whether the user is logged in. Used by the chrome extension.
   """
   if g.user is not None:
-    return jsonify({"logged_in": True, "name": g.user.name,
-        "email": g.user.email})
+    return jsonify({
+        'logged_in': True,
+        'name': g.user.name,
+        'email': g.user.email
+    })
   else:
-    return jsonify({"logged_in": False})
+    return jsonify({'logged_in': False})
 
 @app.route('/createbookmark', methods = ['POST'])
 @requires_login
@@ -337,7 +340,7 @@ def remove_bookmark_from_circle():
   if not circle_id or db.get_circle(circle_id) is None:
     return jsonify({'type':'error', 'message':'Invalid circle ID.'})
   if not db.is_bookmark_in_circle(bookmark_id, circle_id):
-    return jsonify({'type':'error', 'message':'That bookmark is noy in that '
+    return jsonify({'type':'error', 'message':'That bookmark is not in that '
         'circle.'})
   db.remove_bookmark_from_circle(bookmark_id, circle_id)
   return jsonify({'type':'success'})
