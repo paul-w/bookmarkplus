@@ -42,7 +42,6 @@ app.config['MONGODB_PORT'] = MONGODB_PORT
 #app.config['MONGODB_USERNAME'] = MONGODB_USERNAME
 #app.config['MONGODB_PASSWORD'] = MONGODB_PASSWORD
 app.config['SECRET_KEY'] = SECRET_KEY
-
 db = Database(app)
 
 #####################
@@ -52,11 +51,17 @@ db = Database(app)
 #####################
 
 def access_denied():
-  """Adapted from tipster example"""
+  """
+  Returns response when a user not logged in makes a request that requires
+  login.
+  """
   return jsonify({'type': 'error', 'message': 'You are not logged in.'})
 
 def requires_login(f):
-  """Decorator to be applied to actions that require login."""
+  """
+  Returns a function to be called when a request calls the given function
+  via a request.
+  """
   @wraps(f)
   def decorated(*args, **kwargs):
     if g.user is None:
@@ -67,7 +72,8 @@ def requires_login(f):
 @app.before_request
 def before_request():
   """
-  If a user is logged in, store the current User in g using user id in session.
+  Checks if the user is logged in before handling the request, sets g.user
+  if so.
   """
   if "user_id" in session:
     g.user = db.get_user_by_id(session.get("user_id"))
@@ -75,10 +81,6 @@ def before_request():
       session.pop('user_id', None)
   else:
     g.user = None
-
-@app.teardown_request
-def teardown_request(exception):
-  pass
 
 ##########################
 ##                      ##
@@ -88,6 +90,9 @@ def teardown_request(exception):
 
 @app.route('/favicon.ico', methods=['GET'])
 def favicon():
+  """
+  Returns the favicon.
+  """
   return send_from_directory(os.path.join(app.root_path, 'static', 'img'),
       'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
@@ -97,26 +102,33 @@ def favicon():
 ##                      ##
 ##########################
 
-@app.route('/landing_js.js', methods=['GET'])
+@app.route('/landing.js', methods=['GET'])
 def landing_js():
+  """
+  Renders and returns the landing page JavaScript.
+  """
   return render_template('js/landing.js')
 
-@app.route('/main_js.js', methods=['GET'])
+@app.route('/main.js', methods=['GET'])
 @requires_login
 def main_js():
+  """
+  Renders and returns the main page JavaScript.
+  """
   bookmark_sort_options = []
   for option in BOOKMARK_SORT_OPTIONS.values():
-      bookmark_sort_options.append(option)
-
+    bookmark_sort_options.append(option)
   return render_template('js/main.js',
-            bookmark_sort_options = bookmark_sort_options,
-            bookmark_sort_key = BOOKMARK_SORT_OPTIONS[
-                                    g.user.bookmark_sort_key],
-            bookmark_sort_order = g.user.bookmark_sort_order
-            )
+      bookmark_sort_options = bookmark_sort_options,
+      bookmark_sort_key = BOOKMARK_SORT_OPTIONS[
+          g.user.bookmark_sort_key],
+      bookmark_sort_order = g.user.bookmark_sort_order)
 
-@app.route('/util_js.js', methods=['GET'])
+@app.route('/util.js', methods=['GET'])
 def util_js():
+  """
+  Renders and returns the util JavaScript.
+  """
   return render_template('js/util.js')
 
 ####################
@@ -128,13 +140,24 @@ def util_js():
 @app.route('/', methods=['GET'])
 def home():
   """
-  If user is logged in, returns the main page. If not, returns the landing
-  page.
+  Returns the landing page for users not logged in and the main page for users
+  logged in.
   """
   if g.user is not None:
     return render_template('html/main.html')
   else:
     return render_template('html/landing.html')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+  """
+  Logs out the user if a user is logged in. In any case, redirects to the home
+  (landing) page.
+  """
+  if g.user is not None:
+    flash("Goodbye %s" % g.user.name)
+    session.pop("user_id")
+  return redirect(url_for('home'))
 
 ##################
 ##              ##
@@ -142,74 +165,55 @@ def home():
 ##              ##
 ##################
 
-@app.route('/logout', methods=['GET'])
-def logout():
-  if g.user is not None:
-    flash("Goodbye %s" % g.user.name)
-    session.pop("user_id")
-  return redirect(url_for('home'))
-
 @app.route('/login', methods=['POST'])
 def login():
   """
-  Handle a user login attempt.
+  Attempts to log in the user with the given credentials.
   """
   if g.user is not None:
     error = "You are already logged in."
     return jsonify({"type": "error", "error": error})
-
   email = request.form["email"]
   password = request.form["password"]
-
   if not db.user_exists(email):
     error = "unknown e-mail"
     return jsonify({"type": "error", "error": error})
-
   user = db.get_user_and_login(email, password)
   if user == None:
     error = "incorrect password"
     return jsonify({"type": "error", "error": error})
-
   flash("Welcome %s" % user.name)
-
   session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("home")})
 
 @app.route('/register', methods=['POST'])
 def register():
   """
-  Handle a user register attempt.
+  Attempts to register the user with the given account information.
   """
   name = request.form["name"]
   email = request.form["email"]
   password = request.form["password"]
   repassword = request.form["repassword"]
-
   name_error = check_name(name)
   if name_error != None:
     # malformed name
     return jsonify({"type": "error", "error": name_error})
-
   email_error = check_email(email)
   if email_error != None:
     # malformed e-mail
     return jsonify({"type": "error", "error": email_error})
-
   password_error = check_password(password, repassword)
   if password_error != None:
     # malformed password
     return jsonify({"type": "error", "error": password_error})
-
   user_exists = db.user_exists(email)
   if user_exists:
     # user with this e-mail already exists
     error = "a user with this e-mail already exists"
     return jsonify({"type": "error", "error": error})
-
   user = db.make_user(name, email, password)
-
   flash("Welcome to Bookmark+ %s!" % user.name)
-
   session["user_id"] = unicode(user._id)
   return jsonify({"type": "redirect", "url": url_for("home")})
 
@@ -227,6 +231,9 @@ def is_logged_in():
 @app.route('/createbookmark', methods = ['POST'])
 @requires_login
 def create_bookmark():
+  """
+  Creates a bookmark with the specified url.
+  """
   uri = request.form.get('uri')
   # TODO(jven): better validation
   if not uri:
@@ -242,6 +249,9 @@ def create_bookmark():
 @app.route('/deletebookmark', methods = ['POST'])
 @requires_login
 def delete_bookmark():
+  """
+  Deletes the bookmark with the specified bookmark_id.
+  """
   bookmark_id = request.form.get('bookmark_id')
   # TODO(jven): better validation, make sure user owns this bookmark
   if not bookmark_id or db.get_bookmark(bookmark_id) is None:
@@ -252,6 +262,9 @@ def delete_bookmark():
 @app.route('/deletecircle', methods = ['POST'])
 @requires_login
 def delete_circle():
+  """
+  Deletes the circle with the specified circle_id.
+  """
   circle_id = request.form.get('circle_id')
   # TODO(mikemeko, jven): better validation
   if not circle_id or db.get_circle(circle_id) is None:
@@ -262,6 +275,9 @@ def delete_circle():
 @app.route('/createcircle', methods = ['POST'])
 @requires_login
 def create_circle():
+  """
+  Creates a circle with the given circle name.
+  """
   name = request.form.get('name')
   # TODO(jven): better validation
   if not name:
@@ -275,6 +291,9 @@ def create_circle():
 @app.route('/isbookmarkincircle', methods = ['POST'])
 @requires_login
 def is_bookmark_in_circle():
+  """
+  Returns whether the bookmark is in the given circle.
+  """
   # TODO(mikemeko): this code is repeated a lot, we should write helpers
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
@@ -288,6 +307,9 @@ def is_bookmark_in_circle():
 @app.route('/addbookmarktocircle', methods = ['POST'])
 @requires_login
 def add_bookmark_to_circle():
+  """
+  Adds the bookmark to the given circle.
+  """
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
   # TODO(jven): better validation, make sure user owns these things
@@ -304,6 +326,9 @@ def add_bookmark_to_circle():
 @app.route('/removebookmarkfromcircle', methods = ['POST'])
 @requires_login
 def remove_bookmark_from_circle():
+  """
+  Removes the bookmark from the given circle.
+  """
   # TODO(mikemeko): this code is repeated a lot, we should write helpers
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
@@ -320,6 +345,9 @@ def remove_bookmark_from_circle():
 @app.route('/getcircles', methods = ['POST'])
 @requires_login
 def get_circles():
+  """
+  Returns the circles of the current user.
+  """
   return jsonify(circles=[{
       'id':unicode(circle._id),
       'name':circle.name,
@@ -329,13 +357,14 @@ def get_circles():
 @app.route('/getbookmarks', methods = ['POST'])
 @requires_login
 def get_bookmarks():
+  """
+  Returns the bookmarks. Filters by circle if a circle_id is given.
+  """
   user_id = session.get('user_id')
   circle_id = request.form.get('circle_id')
   sort_by = request.form.get('sort_by')
   ascending = request.form.get('ascending')
-  sort_params = (
-    BOOKMARK_SORT_OPTIONS_REVERSE[sort_by], int(ascending))  
-     
+  sort_params = (BOOKMARK_SORT_OPTIONS_REVERSE[sort_by], int(ascending))
   if not circle_id:
     bookmarks = db.get_all_bookmarks(user_id, sort_params)
   else:
@@ -349,6 +378,9 @@ def get_bookmarks():
 @app.route('/getsuggestions', methods = ['POST'])
 @requires_login
 def get_suggestions():
+  """
+  Returns the suggestions for the current user.
+  """
   num_sugg = int(request.form.get('num_sugg'))
   user_id = session.get('user_id')
   suggestions = db.get_suggestions(user_id, num_sugg)
@@ -356,10 +388,12 @@ def get_suggestions():
       'url':suggestion,
   } for suggestion in suggestions])
 
-
 @app.route('/click', methods = ['POST'])
 @requires_login
 def click():
-    bookmark_id = request.form.get('bookmark_id')
-    db.click_bookmark(bookmark_id)
-    return jsonify({'type':'success'})
+  """
+  Records a click for the given bookmark.
+  """
+  bookmark_id = request.form.get('bookmark_id')
+  db.click_bookmark(bookmark_id)
+  return jsonify({'type':'success'})
