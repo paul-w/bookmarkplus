@@ -11,7 +11,9 @@ __author__ = (
 import os
 from config import MONGODB_DATABASE
 from config import MONGODB_HOST
+from config import MONGODB_PASSWORD
 from config import MONGODB_PORT
+from config import MONGODB_USERNAME
 from config import SECRET_KEY
 from database import Database
 from flask import flash
@@ -37,6 +39,8 @@ app = Flask(__name__)
 app.config['MONGODB_DATABASE'] = MONGODB_DATABASE
 app.config['MONGODB_HOST'] = MONGODB_HOST
 app.config['MONGODB_PORT'] = MONGODB_PORT
+#app.config['MONGODB_USERNAME'] = MONGODB_USERNAME
+#app.config['MONGODB_PASSWORD'] = MONGODB_PASSWORD
 app.config['SECRET_KEY'] = SECRET_KEY
 
 db = Database(app)
