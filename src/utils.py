@@ -14,15 +14,14 @@ from re import compile
 from re import match
 
 SALT = 'w59eSNVAE9ZpB29QF4A1'
-
 # TODO(mikemeko): check the robustness of these regular expressions
-EMAIL_RE = compile(r"\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b")
-NAME_RE = compile(r"\b[a-zA-Z0-9 ]+\b")
+EMAIL_RE = compile(r'\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b')
+NAME_RE = compile(r'\b[a-zA-Z0-9 ]+\b')
 MIN_PASSWORD_LENGTH = 6
 
-# defines which parameters of the Bookmark structure are sortable 
+# defines which parameters of the Bookmark structure are sortable
 # Bookmark structure --> user facing text
-# the Bookmark structure paramters should not be exposed to 
+# the Bookmark structure paramters should not be exposed to
 # the front end and the database should not be aware of the
 # user facing text
 
@@ -42,7 +41,7 @@ def check_name(name):
   Returns the error, or None if there is no error.
   """
   if NAME_RE.match(name) == None:
-    return "name is malformed"
+    return 'Names must use only letters and numbers.'
   return None
 
 # TODO(mikemeko): unittest this
@@ -56,7 +55,7 @@ def check_email(email):
   Returns the error, or None if there is no error.
   """
   if EMAIL_RE.match(email) == None:
-    return "e-mail is malformed"
+    return 'Invalid e-mail address.'
   return None
 
 # TODO(mikemeko): unittest this
@@ -69,8 +68,9 @@ def check_password(password, repassword):
   Returns the error, or None if there is no error.
   """
   if password != repassword:
-    return "passwords do not match"
+    return 'The two given passwords don\'t match.'
   if len(password) < MIN_PASSWORD_LENGTH:
-    return "password must be at least %d characters" % MIN_PASSWORD_LENGTH
+    return ('Passwords must be at least %d characters long.' %
+        MIN_PASSWORD_LENGTH)
   # TODO(mikemeko): more requirements
   return None
