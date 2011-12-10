@@ -260,11 +260,26 @@ $(document).ready(function() {
         bookmark.addClass("faded");
         $("#add_bookmark").hide();
         $("#delete_bookmark").show();
+        var bookmarkID = bookmark.attr('bookmark_id');
+        getCircles(function (circle) {
+          var circleDiv = $('div[circle_id=' + circle.id + ']');
+          bookmarkInCircle(bookmarkID, circle.id,
+            function () {
+              circleDiv.addClass('closed');
+            }, function () {
+              circleDiv.addClass('open');
+            });
+        });
       },
       stop: function (event, ui) {
         bookmark.removeClass("faded");
         $("#add_bookmark").show();
         $("#delete_bookmark").hide();
+        getCircles(function (circle) {
+          var circleDiv = $('div[circle_id=' + circle.id + ']');
+          circleDiv.removeClass('open');
+          circleDiv.removeClass('closed');
+        });
       },
       revert: 'invalid',
       revertDuration: DRAG_REVERT_DURATION,
@@ -307,22 +322,10 @@ $(document).ready(function() {
           function () {
             addBookmarkToCircle(bookmarkID, circleID);
           });
-        circle.removeClass('open');
-        circle.removeClass('closed');
       },
       over: function (event, ui) {
-        var bookmarkID = ui.draggable.attr('bookmark_id');
-        bookmarkInCircle(bookmarkID, circleID,
-          function () {
-            circle.addClass('closed');
-          },
-          function () {
-            circle.addClass('open');
-          });
       },
       out: function (event, ui) {
-        circle.removeClass('open');
-        circle.removeClass('closed');
       },
       accept: '.bookmark',
       tolerance: 'intersect'

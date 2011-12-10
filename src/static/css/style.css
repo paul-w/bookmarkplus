@@ -78,13 +78,11 @@ div.circle {
 }
 
 div.open {
-  background-color: #ADFF2F;
-  border: 2.5px dashed black;
+  border: 3px solid green;
 }
 
 div.closed {
-  background-color: #FA8072;
-  border: 2.5px dashed black;
+  border: 3px solid red;
 }
 
 div.column {
