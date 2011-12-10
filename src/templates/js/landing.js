@@ -61,14 +61,6 @@ $(document).ready(function() {
     return false;
   });
 
-  // For each place_holder-text_input pair, attach listeners so that
-  // a palce_holder is visible only when the correspodning text_input
-  // is not in focus and is empty
-  text_containers = $('div.text_container');
-  $.each(text_containers, function(idx, container) {
-    UTILS.toggleInputMessage(container);
-  });
-
   // Hide the about div and bind the links.
   $('#about').hide();
   $('#about_link').click(function() {
