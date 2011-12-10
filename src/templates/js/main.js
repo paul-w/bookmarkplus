@@ -322,10 +322,21 @@ $(document).ready(function() {
           function () {
             addBookmarkToCircle(bookmarkID, circleID);
           });
+        circle.removeClass('add_bookmark');
+        circle.removeClass('remove_bookmark');
       },
       over: function (event, ui) {
+        var bookmarkID = ui.draggable.attr('bookmark_id');
+        bookmarkInCircle(bookmarkID, circleID,
+          function () {
+            circle.addClass('remove_bookmark');
+          }, function () {
+            circle.addClass('add_bookmark');
+          });
       },
       out: function (event, ui) {
+        circle.removeClass('add_bookmark');
+        circle.removeClass('remove_bookmark');
       },
       accept: '.bookmark',
       tolerance: 'intersect'

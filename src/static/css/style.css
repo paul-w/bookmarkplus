@@ -72,17 +72,25 @@ div.circle {
   -moz-border-radius: 100px;
   -webkit-border-radius: 100px;
   background-color: silver;
-  border: 2px solid black;
+  border: 2.5px solid black;
   text-align: center;
   cursor: pointer;
 }
 
 div.open {
-  border: 3px solid green;
+  border-color: green;
 }
 
 div.closed {
-  border: 3px solid red;
+  border-color: red;
+}
+
+div.add_bookmark {
+  background-color: green;
+}
+
+div.remove_bookmark {
+  background-color: red;
 }
 
 div.column {
