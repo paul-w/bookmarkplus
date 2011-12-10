@@ -292,6 +292,28 @@ def create_circle():
   new_circle = db.make_circle(session['user_id'], name)
   return jsonify({'type':'success', 'circle_id':unicode(new_circle._id)})
 
+@app.route('/editcircle', methods = ['POST'])
+@requires_login
+def edit_circle():
+  """
+  Edits the name of a circle.
+  """
+  # TODO(mikemeko, jven): better validation
+  name = request.form.get('name')
+  if not name:
+    return jsonify({'type':'error', 'message':'Invalid circle name.'})
+  new_name = request.form.get('new_name')
+  if not new_name:
+    return jsonify({'type':'error', 'message':'Invalid new name.'})
+  if not db.circle_exists(session['user_id'], name):
+    return jsonify({'type':'error', 'message':'A circle with that name '
+        'does not exist.'})
+  if db.circle_exists(session['user_id'], new_name):
+    return jsonify({'type':'error', 'message':'A circle with that name '
+        'already exists.'})
+  db.edit_circle(session['user_id'], name, new_name)
+  return jsonify({'type':'success'})
+
 @app.route('/isbookmarkincircle', methods = ['POST'])
 @requires_login
 def is_bookmark_in_circle():

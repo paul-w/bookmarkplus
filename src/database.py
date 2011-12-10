@@ -262,6 +262,21 @@ class Database():
     new_circle.save()
     return new_circle
 
+  def edit_circle(self, user_id, name, new_name):
+    """
+    Changes the name of the given circle, if the new name has not already
+    been taken.
+    """
+    assert self.circle_exists(user_id, name), ('ASSERTION ERROR: '
+        'A circle with that name does not exist for this user.')
+    assert not self.circle_exists(user_id, new_name), ('ASSERTION ERROR: '
+        'A circle already eixsts for this user with that name.')
+    circle = self._mk.Circle.find_one(
+        {'owner':unicode(user_id), 'name':name})
+    circle.name = new_name
+    circle.save()
+    return circle
+
   def get_bookmarks_in_circle(self, user_id, circle_id, sort_by):
     """
     Gets all the bookmarks in the circle in the specified sort order. Requires

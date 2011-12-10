@@ -125,14 +125,29 @@ $(document).ready(function() {
     $.post("{{ url_for('delete_circle') }}", {
       'circle_id': circleID
     }, function (response) {
-      if (response.type == 'error') {
+      if (response.type === 'error') {
         UTILS.showMessage(response.message);
       } else if (response.type == 'success') {
-        UTILS.showMessage("Circle successfully deleted.");
+        UTILS.showMessage('Circle successfully deleted.');
         if (selectedCircle === circleID) {
           selectedCircle = '';
         }
         drawCirclesFromServer();
+      }
+    });
+  }
+
+  // edit the name of a circle and call onSucces if name change succeeds
+  var editCircle = function (name, newName, onSuccess) {
+    $.post("{{ url_for('edit_circle') }}", {
+      'name':name,
+      'new_name':newName
+    }, function (response) {
+      if (response.type === 'error') {
+        UTILS.showMessage(response.message);
+      } else if (response.type === 'success') {
+        UTILS.showMessage('Circle name successfully changed.');
+        onSuccess();
       }
     });
   }
@@ -461,6 +476,38 @@ $(document).ready(function() {
     span.addClass('circle');
     span.text(circleName);
     div.append(span);
+    var input = $('<input type="text"/>');
+    input.hide();
+    div.append(input);
+    span.click(function (event) {
+      input.show();
+      input.focus();
+      event.stopPropagation();
+    });
+    input.keydown(function (event) {
+      if (event.keyCode == ENTER_KEY_CODE) {
+        var newCircleName = input.val();
+        if (newCircleName === '') {
+          UTILS.showMessage('Please enter a new circle name.');
+        } else if (newCircleName === circleName) {
+          UTILS.showMessage('Please enter a different circle name.');
+        } else {
+          editCircle(circleName, newCircleName, function () {
+            span.text(input.val());
+            input.hide();
+            circleName = newCircleName;
+          });
+        }
+      }
+      event.stopPropagation();
+    });
+    input.focusout(function (event) {
+      input.hide();
+      event.stopPropagation();
+    });
+    input.click(function (event) {
+      event.stopPropagation();
+    });
     bindCircleEventListeners(div);
     $('#inner_circles_container').append(div);
   }
