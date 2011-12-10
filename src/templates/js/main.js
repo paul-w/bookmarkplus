@@ -105,8 +105,10 @@ $(document).ready(function() {
     });
   }
 
-  // create a new circle
-  var createCircle = function (circleName) {
+  // TODO(mikemeko): is this too hacky?
+  // create a new circle and call on success, call onSuccess with
+  // the id of the new circle as argument
+  var createCircle = function (circleName, onSuccess) {
     $.post("{{ url_for('create_circle') }}", {
       'name':circleName
     }, function(response) {
@@ -115,6 +117,7 @@ $(document).ready(function() {
       } else if (response.type == 'success') {
         UTILS.showMessage('Circle successfully created.');
         $('#create_circle_name').val('');
+        onSuccess(response.circle_id);
         drawCirclesFromServer();
       }
     });
@@ -263,7 +266,7 @@ $(document).ready(function() {
       if (circleName == '') {
         UTILS.showMessage('Please provide a circle name.');
       } else {
-        createCircle(circleName);
+        createCircle(circleName, function (circleID) {});
       }
     }
   });
@@ -396,6 +399,37 @@ $(document).ready(function() {
     tolerance: 'touch'
   });
 
+  // if a bookmark is dragged to the add_circle div, create
+  // a new circle containing that bookmark
+  $('#add_circle').droppable({
+    drop: function (event, ui) {
+      var bookmarkID = ui.draggable.attr('bookmark_id');
+      var bookmarkURI = ui.draggable.attr('bookmark_uri');
+      // TODO(mikemeko): making the name of the new circle the bookmark
+      // uri could be trouble!
+      // NOTE: possible advantage of this is that if user tries to make another
+      // circle with the same bookmark, it won't let him (discuss this)
+      createCircle(bookmarkURI, function (circleID) {
+        addBookmarkToCircle(bookmarkID, circleID);
+      });
+      $('#add_circle').find('input').show();
+      $('#add_circle').removeClass('new_circle');
+      $('#add_circle').addClass('unique');
+    },
+    over: function (event, ui) {
+      $('#add_circle').find('input').hide();
+      $('#add_circle').removeClass('unique');
+      $('#add_circle').addClass('new_circle');
+    },
+    out: function (event, ui) {
+      $('#add_circle').find('input').show();
+      $('#add_circle').removeClass('new_circle');
+      $('#add_circle').addClass('unique');
+    },
+    tolerance: 'intersect',
+    accept: '.bookmark'
+  });
+
   // binds listeners to |circle| to make it behave like a circle
   var bindCircleEventListeners = function (circle) {
     var circle_name = circle.find('span');
@@ -445,22 +479,23 @@ $(document).ready(function() {
   }
 
   // draw a bookmark div and bind the appropriate listeners
-  var drawBookmark = function (bookmarkID, bookmarkURL) {
+  var drawBookmark = function (bookmarkID, bookmarkURI) {
     var div = $('<div/>');
     div.addClass('bookmark');
     div.attr('bookmark_id', bookmarkID);
+    div.attr('bookmark_uri', bookmarkURI);
     var favicon = $('<img/>');
     // TODO(mikemeko): this is not robust!
     favicon.attr('src', 'http://www.getfavicon.org/?url='+
-                 bookmarkURL.substring(7));
+                 bookmarkURI.substring(7));
     favicon.addClass('favicon');
     div.append(favicon);
     var a = $('<a/>');
     a.addClass('bookmark_text');
-    a.text(bookmarkURL);
+    a.text(bookmarkURI);
     div.append(a);
     div.click(function () {
-      window.open(bookmarkURL);
+      window.open(bookmarkURI);
       recordClick(bookmarkID);
     });
     makeBookmarkDraggable(div);
