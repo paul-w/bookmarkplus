@@ -18,7 +18,7 @@ BOOKMARK_SORT_OPTIONS = {
 }
 
 BOOKMARK_SORT_OPTIONS_REVERSE =  dict(
-    [(val, key) for (key, val) in BOOKMARK_SORT_OPTIONS.iteritems()]) 
+    [(val, key) for (key, val) in BOOKMARK_SORT_OPTIONS.iteritems()])
 
 # for now, the first option is the default
 DEFAULT_BOOKMARK_SORT_KEY = BOOKMARK_SORT_OPTIONS.keys()[0]

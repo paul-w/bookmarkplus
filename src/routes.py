@@ -82,6 +82,7 @@ def before_request():
   else:
     g.user = None
 
+# TODO: how come we have two of these? lol
 ##########################
 ##                      ##
 ## Javascript Templates ##
@@ -184,7 +185,7 @@ def login():
     return jsonify({'type': 'error', 'error': error})
   flash('Hi, %s!' % user.name)
   session['user_id'] = unicode(user._id)
-  return jsonify({'type': 'redirect', 'url': url_for('home')})
+  return jsonify({'type': 'success', 'url': url_for('home')})
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -215,7 +216,7 @@ def register():
   user = db.make_user(name, email, password)
   flash('Welcome to Bookmark+, %s!' % user.name)
   session['user_id'] = unicode(user._id)
-  return jsonify({'type': 'redirect', 'url': url_for('home')})
+  return jsonify({'type': 'success', 'url': url_for('home')})
 
 @app.route('/is_logged_in', methods=['POST'])
 def is_logged_in():

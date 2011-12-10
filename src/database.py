@@ -315,7 +315,6 @@ class Database():
     """
     Takes a bookmark and circle and removes the bookmark from the circle.
     """
-    # TODO(mikemeko): this code is repeated a lot, we should write helpers
     assert self.is_bookmark_in_circle(bookmark_id, circle_id), (
         'ASSERTION ERROR: That bookmark is not in that circle.')
     bookmark = self.get_bookmark(bookmark_id)

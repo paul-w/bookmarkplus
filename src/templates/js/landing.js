@@ -26,7 +26,7 @@ $(document).ready(function() {
      }, function(response) {
        if (response.type === 'error') {
          UTILS.showMessage(response.error);
-       } else if (response.type === 'redirect') {
+       } else if (response.type === 'success') {
          window.location.replace(response.url);
        } else {
          // We should never get here
@@ -52,7 +52,7 @@ $(document).ready(function() {
     }, function(response) {
       if (response.type === 'error') {
         UTILS.showMessage(response.error);
-      } else if (response.type === 'redirect') {
+      } else if (response.type === 'success') {
         window.location.replace(response.url);
       } else {
         // We should never get here
