@@ -165,7 +165,6 @@ $(document).ready(function() {
         UTILS.showMessage(response.message);
       } else if (response.type == 'success') {
         UTILS.showMessage('Bookmark successfully added to circle.');
-        drawBookmarksFromServer(selectedCircle);
       }
     });
   }
@@ -486,20 +485,25 @@ $(document).ready(function() {
   }
 
   // draw a bookmark div and bind the appropriate listeners
-  var drawBookmark = function (bookmarkID, bookmarkURI) {
+  var drawBookmark = function (bookmarkID, bookmarkURI, bookmarkTitle) {
     var div = $('<div/>');
     div.addClass('bookmark');
     div.attr('bookmark_id', bookmarkID);
     div.attr('bookmark_uri', bookmarkURI);
     var favicon = $('<img/>');
-    // TODO(mikemeko): this is not robust!
     favicon.attr('src', faviconFor(bookmarkURI));
     favicon.addClass('favicon');
-    div.append(favicon);
+    var faviconContainer = $('<div/>');
+    faviconContainer.append(favicon);
+    faviconContainer.addClass('favicon_container');
+    div.append(faviconContainer);
     var a = $('<a/>');
     a.addClass('bookmark_text');
-    a.text(bookmarkURI);
-    div.append(a);
+    a.text(bookmarkTitle);
+    var bookmarkTextContainer = $('<div/>');
+    bookmarkTextContainer.append(a);
+    bookmarkTextContainer.addClass('bookmark_text_container');
+    div.append(bookmarkTextContainer);
     div.click(function () {
       window.open(bookmarkURI);
       recordClick(bookmarkID);
@@ -594,7 +598,7 @@ $(document).ready(function() {
   var drawBookmarksFromServer = function (circleID) {
     clearBookmarkContainer();
     getBookmarks(circleID, function (bookmark) {
-      drawBookmark(bookmark.id, bookmark.url);
+      drawBookmark(bookmark.id, bookmark.url, bookmark.title);
     });
   };
 

@@ -12,6 +12,7 @@ from datetime import datetime
 from hashlib import sha256
 from re import compile
 from re import match
+from urllib import urlopen
 
 SALT = 'w59eSNVAE9ZpB29QF4A1'
 # TODO(mikemeko): check the robustness of these regular expressions
@@ -85,3 +86,18 @@ def check_circle_name(circle_name):
     return ('Circle name must be at %d or less characters long.' %
         MAX_CIRCLE_NAME_LENGTH)
   return None
+
+def url_title(url):
+  """
+  Returns the title of the web page with the given url
+  On failure, returns the url itself
+  """
+  # TODO(mikemeko): this might be too hacky
+  try:
+    f = urlopen(url)
+    page = f.read()
+    start = page.index('<title>')
+    end = page.index('</title>')
+    return page[start+7:end]
+  except:
+    return url

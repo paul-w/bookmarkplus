@@ -38,18 +38,30 @@ div.suggestions_container {
   overflow: auto;
 }
 
+div.bookmark_text_container {
+  display: inline-block;
+  float: left;
+  white-space: nowrap;
+}
+
+div.favicon_container {
+  display: inline-block;
+  float: left;
+}
 
 div.bookmark {
+  display: inline-block;
   float: left;
   background-color: silver;
   width: 200px;
   height: 35px;
-  margin: 5px;
+  margin: 2%;
   padding-top: 15px;
   border: 2px solid black;
   z-index: 1;
   text-align: center;
   cursor: pointer;
+  overflow: hidden;
 }
 
 div.suggestion {
@@ -186,7 +198,6 @@ input.circle_name {
 }
 
 img.favicon {
-  float: left;
   width: 20px;
   height: 20px;
   margin: 2px;

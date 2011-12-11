@@ -36,6 +36,7 @@ from utils import check_circle_name
 from utils import check_email
 from utils import check_name
 from utils import check_password
+from utils import url_title
 
 app = Flask(__name__)
 app.config['MONGODB_DATABASE'] = MONGODB_DATABASE
@@ -410,6 +411,7 @@ def get_bookmarks():
   return jsonify(bookmarks=[{
       'id':unicode(bookmark._id),
       'url':bookmark.url,
+      'title':url_title(bookmark.url),
       'circles':bookmark.circles
   } for bookmark in bookmarks])
 
