@@ -137,6 +137,7 @@ div.landing_container {
 }
 
 div.link {
+  cursor: pointer;
   margin-top: 5px;
   text-align: center;
   text-decoration: underline;
