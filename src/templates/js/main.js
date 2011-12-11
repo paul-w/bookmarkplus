@@ -478,6 +478,14 @@ $(document).ready(function() {
     });
   }
 
+  // returns a URI containing the favicon for |URI|
+  // |URI| should contain '://'
+  var faviconFor = function (URI) {
+    var schemeSeparator = URI.indexOf('://');
+    var hierPart = URI.substring(schemeSeparator + '://'.length);
+    return 'http://www.getfavicon.org/?url=' + hierPart;
+  }
+
   // draw a bookmark div and bind the appropriate listeners
   var drawBookmark = function (bookmarkID, bookmarkURI) {
     var div = $('<div/>');
@@ -486,8 +494,7 @@ $(document).ready(function() {
     div.attr('bookmark_uri', bookmarkURI);
     var favicon = $('<img/>');
     // TODO(mikemeko): this is not robust!
-    favicon.attr('src', 'http://www.getfavicon.org/?url='+
-                 bookmarkURI.substring(7));
+    favicon.attr('src', faviconFor(bookmarkURI));
     favicon.addClass('favicon');
     div.append(favicon);
     var a = $('<a/>');
@@ -560,8 +567,7 @@ $(document).ready(function() {
     div.addClass('suggestion');
     var favicon = $('<img/>');
     // TODO(mikemeko): this is not robust!
-    favicon.attr('src', 'http://www.getfavicon.org/?url='+
-                 suggestionURL.substring(7));
+    favicon.attr('src', faviconFor(suggestionURL));
     div.append(favicon);
     favicon.addClass('favicon');
     var a = $('<a/>');
