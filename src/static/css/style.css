@@ -10,7 +10,6 @@
 
 /* HTML Tags. */
 body {
-  background-image: url('../img/ricepaper.png');
   font-family: 'Linden Hill', serif;
 }
 
@@ -68,7 +67,7 @@ div.circle {
   float: left;
   width: 150px;
   height: 150px;
-  margin: 10px;
+  margin: 10px 20px;
   -moz-border-radius: 100px;
   -webkit-border-radius: 100px;
   background-color: silver;
@@ -177,11 +176,12 @@ input.password {
 }
 
 input.circle_name {
+  font-family: 'Linden Hill', serif;
+  font-size: 1.5em;
   text-align: center;
   width: 100%;
-  margin-top: 45%;
+  margin-top: 40%;
   background: none;
-  background-color: pink;
   border: none;
 }
 

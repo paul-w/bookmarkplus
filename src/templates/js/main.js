@@ -515,6 +515,7 @@ $(document).ready(function() {
     div.attr('circle_id', circleID);
     var input = $('<input type="text"/>');
     input.addClass('circle_name');
+    input.attr('maxlength', '{{ max_circle_name_length }}');
     input.val(circleName);
     div.append(input);
     input.keydown(function (event) {

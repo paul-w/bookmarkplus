@@ -31,6 +31,7 @@ from functools import wraps
 from models.bookmark import BOOKMARK_SORT_OPTIONS
 from models.bookmark import BOOKMARK_SORT_OPTIONS_REVERSE
 from utils import NUM_SUGGESTIONS
+from utils import MAX_CIRCLE_NAME_LENGTH
 from utils import check_circle_name
 from utils import check_email
 from utils import check_name
@@ -124,7 +125,8 @@ def main_js():
       bookmark_sort_options = bookmark_sort_options,
       bookmark_sort_key = BOOKMARK_SORT_OPTIONS[
           g.user.bookmark_sort_key],
-      bookmark_sort_order = g.user.bookmark_sort_order)
+      bookmark_sort_order = g.user.bookmark_sort_order,
+      max_circle_name_length = MAX_CIRCLE_NAME_LENGTH)
 
 @app.route('/util.js', methods=['GET'])
 def util_js():
@@ -146,7 +148,8 @@ def home():
   logged in.
   """
   if g.user is not None:
-    return render_template('html/main.html')
+    return render_template('html/main.html',
+        max_circle_name_length = MAX_CIRCLE_NAME_LENGTH)
   else:
     return render_template('html/landing.html')
 
