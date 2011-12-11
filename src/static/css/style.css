@@ -27,7 +27,7 @@ a.bookmark_text {
 
 div.bookmarks_container {
   display: inline-block;
-  width: 70%;
+  width: 74%;
   height: 200px;
   overflow: auto;
 }
@@ -79,6 +79,10 @@ div.circle {
 
 div.open {
   border-color: green;
+}
+
+div.selected {
+  background-color: orange;
 }
 
 div.closed {
@@ -164,21 +168,21 @@ div.delete {
   border: 2.5px dashed black;
 }
 
-span.circle {
-  width: 50px;
-  height: 20px;
-}
-
-span.selected {
-  font-weight: bold;
-}
-
 input.identity {
   width: 300px;
 }
 
 input.password {
   width: 150px;
+}
+
+input.circle_name {
+  text-align: center;
+  width: 100%;
+  margin-top: 45%;
+  background: none;
+  background-color: pink;
+  border: none;
 }
 
 img.favicon {

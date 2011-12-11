@@ -18,6 +18,7 @@ SALT = 'w59eSNVAE9ZpB29QF4A1'
 EMAIL_RE = compile(r'\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b')
 NAME_RE = compile(r'\b[a-zA-Z0-9 ]+\b')
 MIN_PASSWORD_LENGTH = 6
+MAX_CIRCLE_NAME_LENGTH = 10
 
 # defines which parameters of the Bookmark structure are sortable
 # Bookmark structure --> user facing text
@@ -73,4 +74,14 @@ def check_password(password, repassword):
     return ('Passwords must be at least %d characters long.' %
         MIN_PASSWORD_LENGTH)
   # TODO(mikemeko): more requirements
+  return None
+
+# TODO(mikemeko): unittest this
+def check_circle_name(circle_name):
+  """
+  Checks that |circle_name| has at most |MAX_CIRCLE_NAME_LENGTH| characters
+  """
+  if len(circle_name) > MAX_CIRCLE_NAME_LENGTH:
+    return ('Circle name must be at %d or less characters long.' %
+        MAX_CIRCLE_NAME_LENGTH)
   return None
