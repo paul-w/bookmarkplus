@@ -312,7 +312,6 @@ class Database():
     bookmark.save()
     circle.bookmarks.append(unicode(bookmark_id))
     circle.save()
-    self.update_suggestions(bookmark_id, circle_id)
 
   def remove_bookmark_from_circle(self, bookmark_id, circle_id):
     """
