@@ -411,7 +411,6 @@ def get_bookmarks():
   return jsonify(bookmarks=[{
       'id':unicode(bookmark._id),
       'url':bookmark.url,
-      'title':url_title(bookmark.url),
       'circles':bookmark.circles
   } for bookmark in bookmarks])
 
@@ -437,3 +436,12 @@ def click():
   bookmark_id = request.form.get('bookmark_id')
   db.click_bookmark(bookmark_id)
   return jsonify({'type':'success'})
+
+@app.route('/titleforurl', methods = ['POST'])
+@requires_login
+def title_for_url():
+  """
+  Returns the title of a web page given its url.
+  """
+  url = request.form.get('url')
+  return jsonify({'title': url_title(url)})
