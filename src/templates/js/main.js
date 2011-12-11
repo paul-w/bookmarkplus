@@ -435,7 +435,6 @@ $(document).ready(function() {
     var circle_name = circle.find('span');
     var circle_id = circle.attr('circle_id');
     circle.click(function() {
-      circle.find('input').hide();
       if (selectedCircle != circle_id) {
         selectedCircle = circle_id;
         $('.circle').each(function (index, circle_) {
@@ -515,18 +514,10 @@ $(document).ready(function() {
     var div = $('<div/>');
     div.addClass('circle');
     div.attr('circle_id', circleID);
-    var span = $('<span/>');
-    span.addClass('circle');
-    span.text(circleName);
-    div.append(span);
     var input = $('<input type="text"/>');
-    input.hide();
+    input.addClass('circle_name');
+    input.val(circleName);
     div.append(input);
-    span.click(function (event) {
-      input.show();
-      input.focus();
-      event.stopPropagation();
-    });
     input.keydown(function (event) {
       if (event.keyCode == ENTER_KEY_CODE) {
         var newCircleName = input.val();
@@ -536,16 +527,12 @@ $(document).ready(function() {
           UTILS.showMessage('Please enter a different circle name.');
         } else {
           editCircle(circleName, newCircleName, function () {
-            span.text(input.val());
-            input.hide();
             circleName = newCircleName;
+            input.val(newCircleName);
           });
         }
+        input.val(circleName);
       }
-      event.stopPropagation();
-    });
-    input.focusout(function (event) {
-      input.hide();
       event.stopPropagation();
     });
     input.click(function (event) {

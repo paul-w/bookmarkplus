@@ -164,11 +164,6 @@ div.delete {
   border: 2.5px dashed black;
 }
 
-span.circle {
-  width: 50px;
-  height: 20px;
-}
-
 span.selected {
   font-weight: bold;
 }
@@ -179,6 +174,15 @@ input.identity {
 
 input.password {
   width: 150px;
+}
+
+input.circle_name {
+  text-align: center;
+  width: 100%;
+  margin-top: 45%;
+  background: none;
+  background-color: pink;
+  border: none;
 }
 
 img.favicon {
