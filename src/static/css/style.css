@@ -228,9 +228,9 @@ input#create_bookmark_uri {
 ul#inner_circles_container {
   display: list-item;
   float: left;
-  width: 2000px;
   margin: 0;
   padding: 0;
   overflow: hidden;
   list-style-type: none;
+  white-space: nowrap;
 }
