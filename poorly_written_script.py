@@ -79,7 +79,7 @@ class FlaskrTestCase(unittest.TestCase):
 
     for b in bookmarks:
         print 'Suggestions:', b.url
-        suggestions =  self.db.get_suggestions(b._id)
+        suggestions =  self.db.get_suggestions(user_id, 5)
         for s in suggestions:
             print s.suggestion, s.score
         print '\n'

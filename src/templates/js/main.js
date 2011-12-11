@@ -562,7 +562,6 @@ $(document).ready(function() {
   // We could get in some troble here, like makeBookmarkDraggable won't work
   // TODO(mikemeko, pauL): there are some logs here, remove later
   var drawSuggestion = function (suggestionURL) {
-    console.log(suggestion)
     var div = $('<div/>');
     div.addClass('bookmark');
     div.addClass('suggestion');

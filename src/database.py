@@ -346,6 +346,8 @@ class Database():
                     circle = self.get_circle(circle_id)
                     for suggested_id in circle.bookmarks:
                         suggestion = self.get_bookmark(suggested_id)
+                        if suggestion.url in user_bookmarks:
+                            continue
                         suggestions.append(suggestion.url)
                         if len(suggestions) >= limit:
                             return suggestions
