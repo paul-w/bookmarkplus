@@ -459,7 +459,7 @@ $(document).ready(function() {
 
   $('#bookmarks_container').droppable({
     drop: function (event, ui) {
-      
+      createBookmark(ui.draggable.attr('url'));
     },
     over: function (event, ui) {
       ui.helper.addClass('accept_suggestion');

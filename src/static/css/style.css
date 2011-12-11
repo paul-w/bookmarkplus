@@ -116,6 +116,7 @@ div.remove_bookmark {
 
 div.new_circle {
   background-color: green;
+  cursor: auto;
 }
 
 div.column {
@@ -228,8 +229,13 @@ div#messages {
   z-index: 1;
 }
 
+div#add_bookmark {
+  cursor: auto;
+}
+
 div#add_circle {
   float: left;
+  cursor: auto;
 }
 
 button#add_item {
