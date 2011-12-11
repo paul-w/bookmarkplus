@@ -136,18 +136,6 @@ class Database():
     return self._mk.Bookmark.find_one(
         {'owner':unicode(user_id), 'url':url}) is not None
 
-  def get_suggestions(self, user_id, num):
-    """
-    Takes in a user_id and returns the suggestions of the user corresponding
-    to that user_id. Returns None if no such user exists.
-    """
-    # TODO(pwoods, jven): what is num?
-    user = self.get_user_by_id(unicode(user_id))
-    if user is not None:
-      return user.suggestions
-    else:
-      return None
-
   def click_bookmark(self, bookmark_id):
     """
     Get a bookmark and record a click for that bookmark. Returns the bookmark.
@@ -341,28 +329,26 @@ class Database():
     circle.bookmarks.remove(unicode(bookmark_id))
     circle.save()
 
-  def update_suggestions(self, user_id, limit):
-    """
-    Updates suggestions for the given user. At most limit suggestions are
-    returned.
-    """
-    suggestions = []
-    user_id = unicode(user_id)
-    if limit == 0:
-      return suggestions
-    user_bookmarks = self._mk.Bookmark.find(
-        {'owner':user_id})
-    for bookmark in user_bookmarks:
-      same_urls = self._mk.Bookmark.find(
-      {'url': bookmark.url})
-      for same_url in same_urls:
-        if same_url.owner == user_id:
-          continue
-        for circle_id in same_url.circles:
-          circle = self.get_circle(circle_id)
-          for suggested_id in circle.bookmarks:
-            suggestion = self.get_bookmark(suggested_id)
-            suggestions.append(suggestion.url)
-            if len(suggestions) >= limit:
-              return suggestions
-    return suggestions
+  def get_suggestions(self, user_id, limit):
+        suggestions = []
+        user_id = unicode(user_id)
+        if limit == 0:
+            return suggestions
+
+        user_bookmarks = self._mk.Bookmark.find(
+                {'owner':user_id})
+        for bookmark in user_bookmarks:
+            same_urls = self._mk.Bookmark.find(
+            {'url': bookmark.url })
+            for same_url in same_urls:
+                if same_url.owner == user_id:
+                    continue
+                for circle_id in same_url.circles:
+                    circle = self.get_circle(circle_id)
+                    for suggested_id in circle.bookmarks:
+                        suggestion = self.get_bookmark(suggested_id)
+                        suggestions.append(suggestion.url)
+                        if len(suggestions) >= limit:
+                            return suggestions
+
+        return suggestions
