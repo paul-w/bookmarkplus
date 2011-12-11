@@ -29,6 +29,8 @@ $(document).ready(function() {
   var NUM_SUGGESTIONS = 3;
   var ENTER_KEY_CODE = 13;
   var DRAG_REVERT_DURATION = 100;
+  
+  var ASC_TEXT = ['<', '>']
 
   /* Variables */
 
@@ -54,16 +56,26 @@ $(document).ready(function() {
       $(this).addClass('selected_sort');
       if (text ===  sortBookmarksBy) {
         bAscending = -bAscending;
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+
       }
       else {
         bAscending = 1;
         sortBookmarksBy =  text
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
       }
       drawBookmarksFromServer(selectedCircle);
     });
     b_options_div.append(div);
     sortBookmarksDivs.push(div);
   {% endfor %}
+
+    var ascDiv = $('<div/>');
+    ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+    ascDiv.addClass('sort');
+    ascDiv.addClass('selected_sort');
+    b_options_div.append(ascDiv);
+
 
   /*
     Ajax calls
