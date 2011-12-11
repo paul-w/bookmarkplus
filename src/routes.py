@@ -31,6 +31,7 @@ from functools import wraps
 from models.bookmark import BOOKMARK_SORT_OPTIONS
 from models.bookmark import BOOKMARK_SORT_OPTIONS_REVERSE
 from utils import NUM_SUGGESTIONS
+from utils import check_circle_name
 from utils import check_email
 from utils import check_name
 from utils import check_password
@@ -289,6 +290,9 @@ def create_circle():
   if db.circle_exists(session['user_id'], name):
     return jsonify({'type':'error', 'message':'A circle with that name '
         'already exists.'})
+  name_error = check_circle_name(name)
+  if name_error != None:
+    return jsonify({'type':'error', 'message':name_error})
   new_circle = db.make_circle(session['user_id'], name)
   return jsonify({'type':'success', 'circle_id':unicode(new_circle._id)})
 
@@ -311,6 +315,9 @@ def edit_circle():
   if db.circle_exists(session['user_id'], new_name):
     return jsonify({'type':'error', 'message':'A circle with that name '
         'already exists.'})
+  new_name_error = check_circle_name(new_name)
+  if new_name_error != None:
+    return jsonify({'type':'error', 'message':new_name_error})
   db.edit_circle(session['user_id'], name, new_name)
   return jsonify({'type':'success'})
 
