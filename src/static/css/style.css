@@ -81,6 +81,10 @@ div.open {
   border-color: green;
 }
 
+div.selected {
+  background-color: orange;
+}
+
 div.closed {
   border-color: red;
 }
@@ -162,10 +166,6 @@ div.unique {
 div.delete {
   background-color: #FA8072;
   border: 2.5px dashed black;
-}
-
-span.selected {
-  font-weight: bold;
 }
 
 input.identity {

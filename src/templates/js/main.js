@@ -432,18 +432,17 @@ $(document).ready(function() {
 
   // binds listeners to |circle| to make it behave like a circle
   var bindCircleEventListeners = function (circle) {
-    var circle_name = circle.find('span');
     var circle_id = circle.attr('circle_id');
     circle.click(function() {
       if (selectedCircle != circle_id) {
         selectedCircle = circle_id;
         $('.circle').each(function (index, circle_) {
-          $(circle_).find('span').removeClass('selected');
+          circle.removeClass('selected');
         });
-        circle_name.addClass('selected');
+        circle.addClass('selected');
       } else {
         selectedCircle = '';
-        circle_name.removeClass('selected');
+        circle.removeClass('selected');
       }
       drawBookmarksFromServer(selectedCircle);
     });
@@ -581,7 +580,7 @@ $(document).ready(function() {
     // if a circle is selected, show that it is selected
     if (selectedCircle !== '') {
       var circleDiv = $("div[circle_id='" + selectedCircle + "']");
-      circleDiv.find('span').addClass('selected');
+      circleDiv.addClass('selected');
     }
   };
 
