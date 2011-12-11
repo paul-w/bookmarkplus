@@ -85,13 +85,6 @@ def before_request():
   else:
     g.user = None
 
-# TODO: how come we have two of these? lol
-##########################
-##                      ##
-## Javascript Templates ##
-##                      ##
-##########################
-
 @app.route('/favicon.ico', methods=['GET'])
 def favicon():
   """
