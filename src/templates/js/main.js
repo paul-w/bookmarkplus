@@ -49,7 +49,7 @@ $(document).ready(function() {
     div.click(function() {
       text =  $(this).text();
       $.each(sortBookmarksDivs, function(index, sortBookmarkDiv) {
-        sorBookmarkDiv.removeClass('selected_sort');
+        sortBookmarkDiv.removeClass('selected_sort');
       });
       $(this).addClass('selected_sort');
       if (text ===  sortBookmarksBy) {
