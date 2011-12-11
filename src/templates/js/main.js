@@ -30,6 +30,8 @@ $(document).ready(function() {
   var ENTER_KEY_CODE = 13;
   var DRAG_REVERT_DURATION = 100;
 
+  var ASC_TEXT = ['<', '>']
+
   /* Variables */
 
   var selectedCircle = '';
@@ -54,16 +56,26 @@ $(document).ready(function() {
       $(this).addClass('selected_sort');
       if (text ===  sortBookmarksBy) {
         bAscending = -bAscending;
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+
       }
       else {
         bAscending = 1;
         sortBookmarksBy =  text
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
       }
       drawBookmarksFromServer(selectedCircle);
     });
     b_options_div.append(div);
     sortBookmarksDivs.push(div);
   {% endfor %}
+
+    var ascDiv = $('<div/>');
+    ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+    ascDiv.addClass('sort');
+    ascDiv.addClass('selected_sort');
+    b_options_div.append(ascDiv);
+
 
   /*
     Ajax calls
@@ -459,7 +471,8 @@ $(document).ready(function() {
 
   $('#bookmarks_container').droppable({
     drop: function (event, ui) {
-      createBookmark(ui.draggable.attr('url'));
+      createBookmark(ui.draggable.attr('uri'));
+      ui.draggable.remove();
     },
     over: function (event, ui) {
       ui.helper.addClass('accept_suggestion');
