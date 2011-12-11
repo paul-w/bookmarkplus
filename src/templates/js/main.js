@@ -240,6 +240,15 @@ $(document).ready(function() {
     });
   }
 
+  //
+  var getTitleForUrl = function (url, onSuccess) {
+    $.post("{{ url_for('title_for_url') }}", {
+      'url':url
+    }, function (response) {
+      onSuccess(response.title);
+    });
+  }
+
   /* Bind page elements to Ajax calls */
 
   // bind sort option toggler
@@ -485,7 +494,7 @@ $(document).ready(function() {
   }
 
   // draw a bookmark div and bind the appropriate listeners
-  var drawBookmark = function (bookmarkID, bookmarkURI, bookmarkTitle) {
+  var drawBookmark = function (bookmarkID, bookmarkURI) {
     var div = $('<div/>');
     div.addClass('bookmark');
     div.attr('bookmark_id', bookmarkID);
@@ -499,7 +508,10 @@ $(document).ready(function() {
     div.append(faviconContainer);
     var a = $('<a/>');
     a.addClass('bookmark_text');
-    a.text(bookmarkTitle);
+    a.text(bookmarkURI);
+    getTitleForUrl(bookmarkURI, function (title) {
+      a.text(title);
+    });
     var bookmarkTextContainer = $('<div/>');
     bookmarkTextContainer.append(a);
     bookmarkTextContainer.addClass('bookmark_text_container');
@@ -598,7 +610,7 @@ $(document).ready(function() {
   var drawBookmarksFromServer = function (circleID) {
     clearBookmarkContainer();
     getBookmarks(circleID, function (bookmark) {
-      drawBookmark(bookmark.id, bookmark.url, bookmark.title);
+      drawBookmark(bookmark.id, bookmark.url);
     });
   };
 

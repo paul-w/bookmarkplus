@@ -41,12 +41,14 @@ div.suggestions_container {
 div.bookmark_text_container {
   display: inline-block;
   float: left;
+  width: 80%;
   white-space: nowrap;
 }
 
 div.favicon_container {
   display: inline-block;
   float: left;
+  width: 20%;
 }
 
 div.bookmark {
@@ -200,7 +202,7 @@ input.circle_name {
 img.favicon {
   width: 20px;
   height: 20px;
-  margin: 2px;
+  margin: 1px;
 }
 
 img.trash {
