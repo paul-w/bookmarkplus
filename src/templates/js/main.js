@@ -435,6 +435,7 @@ $(document).ready(function() {
     var circle_name = circle.find('span');
     var circle_id = circle.attr('circle_id');
     circle.click(function() {
+      circle.find('input').hide();
       if (selectedCircle != circle_id) {
         selectedCircle = circle_id;
         $('.circle').each(function (index, circle_) {
