@@ -391,10 +391,10 @@ $(document).ready(function() {
       }
     },
     over: function (event, ui) {
-      ui.draggable.addClass("faded");
+      ui.helper.addClass("faded");
     },
     out: function (event, ui) {
-      ui.draggable.removeClass("faded");
+      ui.helper.removeClass("faded");
     },
     tolerance: 'touch'
   });
