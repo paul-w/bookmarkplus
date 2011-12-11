@@ -243,6 +243,8 @@ def create_bookmark():
   # TODO(jven): better validation
   if not uri:
     return jsonify({'type':'error', 'message':'Invalid URL.'})
+  if 'www.' not in uri:
+    uri = 'www.%s' % uri
   if '://' not in uri:
     uri = 'http://%s' % uri
   if db.bookmark_exists(session['user_id'], uri):
