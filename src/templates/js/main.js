@@ -105,7 +105,6 @@ $(document).ready(function() {
     });
   }
 
-  // TODO(mikemeko): is this too hacky?
   // create a new circle and call on success, call onSuccess with
   // the id of the new circle as argument
   var createCircle = function (circleName, onSuccess) {
@@ -179,7 +178,6 @@ $(document).ready(function() {
           UTILS.showMessage(response.message);
         } else if (response.type == 'success') {
           UTILS.showMessage('Bookmark successfully removed from circle.');
-          drawBookmarksFromServer(selectedCircle);
         }
     });
   }
@@ -283,6 +281,7 @@ $(document).ready(function() {
   var makeBookmarkDraggable = function (bookmark) {
     bookmark.draggable({
       start: function (event, ui) {
+        ui.helper.addClass("cursor");
         bookmark.addClass("faded");
         $("#add_bookmark").hide();
         $("#delete_bookmark").show();
@@ -298,6 +297,7 @@ $(document).ready(function() {
         });
       },
       stop: function (event, ui) {
+        ui.helper.removeClass("cursor");
         bookmark.removeClass("faded");
         $("#add_bookmark").show();
         $("#delete_bookmark").hide();
@@ -314,15 +314,34 @@ $(document).ready(function() {
     });
   }
 
+  // make |suggestion| draggable so that it can be added as a bookmark
+  var makeSuggestionDraggable = function (suggestion) {
+    suggestion.draggable({
+      start: function (event, ui) {
+        ui.helper.addClass("cursor");
+        suggestion.addClass('faded');
+      },
+      stop: function (event, ui) {
+        ui.helper.removeClass("cursor");
+        suggestion.removeClass('faded');
+      },
+      revert: 'invalid',
+      revertDuration: DRAG_REVERT_DURATION,
+      helper: 'clone',
+    });
+  }
+
   // make |circle| draggable so that it can be deleted
   var makeCircleDraggable = function (circle) {
     circle.draggable({
       start: function (event, ui) {
+        ui.helper.addClass("cursor");
         circle.addClass("faded");
         $("#add_circle").hide();
         $("#delete_circle").show();
       },
       stop: function (event, ui) {
+        ui.helper.removeClass("cursor");
         circle.removeClass("faded");
         $("#add_circle").show();
         $("#delete_circle").hide();
@@ -412,7 +431,7 @@ $(document).ready(function() {
   $('#add_circle').droppable({
     drop: function (event, ui) {
       var bookmarkID = ui.draggable.attr('bookmark_id');
-      var bookmarkURI = ui.draggable.attr('bookmark_uri');
+      var bookmarkURI = ui.draggable.attr('uri');
       // TODO(mikemeko): making the name of the new circle the bookmark
       // uri could be trouble!
       // NOTE: possible advantage of this is that if user tries to make another
@@ -436,6 +455,20 @@ $(document).ready(function() {
     },
     tolerance: 'intersect',
     accept: '.bookmark'
+  });
+
+  $('#bookmarks_container').droppable({
+    drop: function (event, ui) {
+      
+    },
+    over: function (event, ui) {
+      ui.helper.addClass('accept_suggestion');
+    },
+    out: function (event, ui) {
+      ui.helper.removeClass('accept_suggestion');
+    },
+    tolerance: 'intersect',
+    accept: '.suggestion'
   });
 
   // binds listeners to |circle| to make it behave like a circle
@@ -493,35 +526,54 @@ $(document).ready(function() {
     return 'http://www.getfavicon.org/?url=' + hierPart;
   }
 
-  // draw a bookmark div and bind the appropriate listeners
-  var drawBookmark = function (bookmarkID, bookmarkURI) {
-    var div = $('<div/>');
-    div.addClass('bookmark');
-    div.attr('bookmark_id', bookmarkID);
-    div.attr('bookmark_uri', bookmarkURI);
+  // makes and returns a div that contains the given uri, or the
+  // respective title. This helper method is used in
+  // |drawBookmark| and |drawSuggestion|
+  var drawUrlContainer = function (URI) {
+    var container = $('<div/>');
+    container.attr('uri', URI);
+    container.addClass('bookmark');
     var favicon = $('<img/>');
-    favicon.attr('src', faviconFor(bookmarkURI));
+    favicon.attr('src', faviconFor(URI));
     favicon.addClass('favicon');
     var faviconContainer = $('<div/>');
     faviconContainer.append(favicon);
     faviconContainer.addClass('favicon_container');
-    div.append(faviconContainer);
-    var a = $('<a/>');
-    a.addClass('bookmark_text');
-    a.text(bookmarkURI);
-    getTitleForUrl(bookmarkURI, function (title) {
-      a.text(title);
+    container.append(faviconContainer);
+    var uriLink = $('<a/>');
+    uriLink.addClass('bookmark_text');
+    uriLink.text(URI);
+    getTitleForUrl(URI, function (title) {
+      uriLink.text(title);
     });
-    var bookmarkTextContainer = $('<div/>');
-    bookmarkTextContainer.append(a);
-    bookmarkTextContainer.addClass('bookmark_text_container');
-    div.append(bookmarkTextContainer);
-    div.click(function () {
+    var textContainer = $('<div/>');
+    textContainer.append(uriLink);
+    textContainer.addClass('bookmark_text_container');
+    container.append(textContainer);
+    return container;
+  }
+
+  // draw a bookmark div and bind the appropriate listeners
+  var drawBookmark = function (bookmarkID, bookmarkURI) {
+    bookmarkContainer = drawUrlContainer(bookmarkURI);
+    bookmarkContainer.attr('bookmark_id', bookmarkID);
+    bookmarkContainer.click(function () {
       window.open(bookmarkURI);
       recordClick(bookmarkID);
     });
-    makeBookmarkDraggable(div);
-    $('#bookmarks_container').append(div);
+    makeBookmarkDraggable(bookmarkContainer);
+    $('#bookmarks_container').append(bookmarkContainer);
+  }
+
+  // draw a suggestion bookmark and bind the appropriate listeners
+  var drawSuggestion = function (suggestionURI) {
+    suggestionContainer = drawUrlContainer(suggestionURI);
+    suggestionContainer.addClass('suggestion');
+    suggestionContainer.click(function () {
+      window.open(suggestionURL);
+    });
+    makeSuggestionDraggable(suggestionContainer);
+    $('#suggestions_container').append(suggestionContainer);
   }
 
   // draw a circle div and bind the appropriate listeners
@@ -556,33 +608,6 @@ $(document).ready(function() {
     });
     bindCircleEventListeners(div);
     $('#inner_circles_container').append(div);
-  }
-
-  // draw a suggestion bookmark and bind the appropriate listeners
-  // TODO(mikemeko, pauL): there's some repeated code here, but I
-  // didn't refactor because I don't know the design choices you have
-  // in mind in terms how similar suggestion bookmars are to normal bookmarks
-  // We could get in some troble here, like makeBookmarkDraggable won't work
-  // TODO(mikemeko, pauL): there are some logs here, remove later
-  var drawSuggestion = function (suggestionURL) {
-    var div = $('<div/>');
-    div.addClass('bookmark');
-    div.addClass('suggestion');
-    var favicon = $('<img/>');
-    // TODO(mikemeko): this is not robust!
-    favicon.attr('src', faviconFor(suggestionURL));
-    div.append(favicon);
-    favicon.addClass('favicon');
-    var a = $('<a/>');
-    a.addClass('bookmark_text');
-    a.text(suggestionURL);
-    div.append(a);
-    div.click(function () {
-      window.open(suggestionURL);
-    });
-    console.log(a.text);
-    makeBookmarkDraggable(div);
-    $('#suggestions_container').append(div);
   }
 
   // populates bookmark elements and attaches listeners

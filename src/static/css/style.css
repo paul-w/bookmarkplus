@@ -62,12 +62,16 @@ div.bookmark {
   border: 2px solid black;
   z-index: 1;
   text-align: center;
-  cursor: pointer;
+  cursor: url(../img/openhand.png), pointer;
   overflow: hidden;
 }
 
 div.suggestion {
   border-color: red;
+}
+
+div.accept_suggestion {
+  background-color: yellow;
 }
 
 div.circles_container {
@@ -87,7 +91,7 @@ div.circle {
   background-color: silver;
   border: 2.5px solid black;
   text-align: center;
-  cursor: pointer;
+  cursor: url(../img/openhand.png), pointer;
 }
 
 div.open {
@@ -166,6 +170,10 @@ div.sort {
 div.faded {
   opacity: 0.3;
   filter: alpha(opacity=30);
+}
+
+div.cursor {
+  cursor: url('../img/closedhand.png'), pointer;
 }
 
 div.selected_sort{
