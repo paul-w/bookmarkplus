@@ -336,6 +336,7 @@ class Database():
 
         user_bookmarks = self._mk.Bookmark.find(
                 {'owner':user_id})
+        user_urls = [u_b.url for u_b in user_bookmarks]
         for bookmark in user_bookmarks:
             same_urls = self._mk.Bookmark.find(
             {'url': bookmark.url })
@@ -346,7 +347,7 @@ class Database():
                     circle = self.get_circle(circle_id)
                     for suggested_id in circle.bookmarks:
                         suggestion = self.get_bookmark(suggested_id)
-                        if suggestion.url in user_bookmarks:
+                        if suggestion.url in user_urls:
                             continue
                         suggestions.append(suggestion.url)
                         if len(suggestions) >= limit:
