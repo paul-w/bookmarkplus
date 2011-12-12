@@ -82,8 +82,8 @@ $(document).ready(function() {
     Each of these methods should make the respective change on the page
   */
 
-  // create a new bookmark
-  var createBookmark = function (bookmarkURI) {
+  // create a new bookmark, and add it to the given circle, if any
+  var createBookmark = function (bookmarkURI, circleID) {
     $.post("{{ url_for('create_bookmark') }}", {
       'uri':bookmarkURI
     }, function (response) {
@@ -92,9 +92,8 @@ $(document).ready(function() {
       } else if (response.type == 'success') {
         UTILS.showMessage('Bookmark successfully created.');
         $('#create_bookmark_uri').val('');
-        // if we are in a circle, add the new bookmark to the circle
-        if (selectedCircle !== '') {
-          addBookmarkToCircle(response.bookmark_id, selectedCircle);
+        if (circleID !== '') {
+          addBookmarkToCircle(response.bookmark_id, circleID);
         } else {
           drawBookmarksFromServer(selectedCircle);
         }
@@ -272,7 +271,7 @@ $(document).ready(function() {
       if (bookmarkURI == '') {
         UTILS.showMessage('Please provide a bookmark URI.');
       } else {
-        createBookmark(bookmarkURI);
+        createBookmark(bookmarkURI, selectedCircle);
       }
     }
   });
@@ -371,14 +370,19 @@ $(document).ready(function() {
     var circleID = circle.attr('circle_id');
     circle.droppable({
       drop: function (event, ui) {
-        var bookmarkID = ui.draggable.attr('bookmark_id');
-        bookmarkInCircle(bookmarkID, circleID,
-          function () {
-            removeBookmarkFromCircle(bookmarkID, circleID);
-          },
-          function () {
-            addBookmarkToCircle(bookmarkID, circleID);
-          });
+        if (ui.draggable.hasClass('suggestion')) {
+          createBookmark(ui.draggable.attr('uri'), circleID);
+          ui.draggable.remove();
+        } else {
+          var bookmarkID = ui.draggable.attr('bookmark_id');
+          bookmarkInCircle(bookmarkID, circleID,
+            function () {
+              removeBookmarkFromCircle(bookmarkID, circleID);
+            },
+            function () {
+              addBookmarkToCircle(bookmarkID, circleID);
+            });
+        }
         circle.removeClass('add_bookmark');
         circle.removeClass('remove_bookmark');
       },
@@ -471,7 +475,7 @@ $(document).ready(function() {
 
   $('#bookmarks_container').droppable({
     drop: function (event, ui) {
-      createBookmark(ui.draggable.attr('uri'));
+      createBookmark(ui.draggable.attr('uri'), selectedCircle);
       ui.draggable.remove();
     },
     over: function (event, ui) {
