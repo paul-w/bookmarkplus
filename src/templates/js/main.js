@@ -92,7 +92,7 @@ $(document).ready(function() {
         UTILS.showMessage(response.message);
       } else if (response.type == 'success') {
         UTILS.showMessage('Bookmark successfully created.');
-        $('#create_bookmark_uri').val('');
+        $('#add_bookmark_uri').val('');
         if (circleID !== '') {
           addBookmarkToCircle(response.bookmark_id, circleID, function (bookmarkID, circleID) {});
         } else {
@@ -129,7 +129,7 @@ $(document).ready(function() {
         UTILS.showMessage(response.message);
       } else if (response.type == 'success') {
         UTILS.showMessage('Circle successfully created.');
-        $('#create_circle_name').val('');
+        $('#add_circle_name').val('');
         drawCirclesFromServer();
         onSuccess(response.circle_id);
       }
@@ -271,9 +271,9 @@ $(document).ready(function() {
 
 
   // bind create bookmark input box
-  $('#create_bookmark_uri').keydown(function(event) {
+  $('#add_bookmark_uri').keydown(function(event) {
     if (event.keyCode == ENTER_KEY_CODE) {
-      var bookmarkURI = $('#create_bookmark_uri').val();
+      var bookmarkURI = $('#add_bookmark_uri').val();
       if (bookmarkURI == '') {
         UTILS.showMessage('Please provide a bookmark URI.');
       } else {
@@ -283,9 +283,9 @@ $(document).ready(function() {
   });
 
   // bind create circle input box
-  $('#create_circle_name').keydown(function(event) {
+  $('#add_circle_name').keydown(function(event) {
     if (event.keyCode == ENTER_KEY_CODE) {
-      var circleName = $('#create_circle_name').val();
+      var circleName = $('#add_circle_name').val();
       if (circleName == '') {
         UTILS.showMessage('Please provide a circle name.');
       } else {
