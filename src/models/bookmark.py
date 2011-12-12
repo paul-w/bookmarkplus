@@ -12,7 +12,7 @@ from datetime import datetime
 from flaskext.mongokit import Document
 
 BOOKMARK_SORT_OPTIONS = {
-        unicode('url') : 'URL',
+        unicode('uri') : 'URI',
             unicode('clicks'): 'TotalVisits',
                 unicode('date_last_clicked'): 'LastVisited'
 }
