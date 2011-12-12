@@ -1,5 +1,4 @@
 test('testRoutes()', function() { 
-    alert('yo');
     test_urls = [
     'google.com',
     'www.google.com',
