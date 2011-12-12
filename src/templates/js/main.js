@@ -83,7 +83,8 @@ $(document).ready(function() {
   */
 
   // create a new bookmark, and add it to the given circle, if any
-  var createBookmark = function (bookmarkURI, circleID) {
+  // call onSuccess with bookmarkID if successful
+  var createBookmark = function (bookmarkURI, circleID, onSuccess) {
     $.post("{{ url_for('create_bookmark') }}", {
       'uri':bookmarkURI
     }, function (response) {
@@ -97,6 +98,7 @@ $(document).ready(function() {
         } else {
           drawBookmarksFromServer(selectedCircle);
         }
+        onSuccess(response.bookmark_id);
       }
     });
   }
@@ -112,6 +114,7 @@ $(document).ready(function() {
         UTILS.showMessage("Bookmark successfully deleted.");
         $('div[bookmark_id=' + bookmarkID + ']').remove();
         drawBookmarksFromServer(selectedCircle);
+        drawSuggestionsFromServer();
       }
     });
   }
@@ -278,7 +281,7 @@ $(document).ready(function() {
       if (bookmarkURI == '') {
         UTILS.showMessage('Please provide a bookmark URI.');
       } else {
-        createBookmark(bookmarkURI, selectedCircle);
+        createBookmark(bookmarkURI, selectedCircle, function (bookmarkID) {});
       }
     }
   });
@@ -378,7 +381,7 @@ $(document).ready(function() {
     circle.droppable({
       drop: function (event, ui) {
         if (ui.draggable.hasClass('suggestion')) {
-          createBookmark(ui.draggable.attr('uri'), circleID);
+          createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {});
           ui.draggable.remove();
         } else {
           var bookmarkID = ui.draggable.attr('bookmark_id');
@@ -453,16 +456,25 @@ $(document).ready(function() {
   // a new circle containing that bookmark
   $('#add_circle').droppable({
     drop: function (event, ui) {
-      var bookmarkID = ui.draggable.attr('bookmark_id');
       var date = new Date();
-      // date object doesn't work correctly
+      // TODO(mikemeko): date object doesn't work correctly
       var circleName = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay();
-      createCircle(circleName, function (circleID) {
-        addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {
-          $('div[circle_id="' + circleID + '"]').find('input').val('');
-          $('div[circle_id="' + circleID + '"]').find('input').select();
+      if (ui.draggable.hasClass('suggestion')) {
+        createCircle(circleName, function (circleID) {
+          createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {
+            $('div[circle_id="' + circleID + '"]').find('input').val('');
+            $('div[circle_id="' + circleID + '"]').find('input').select();
+          });
         });
-      });
+      } else {
+        var bookmarkID = ui.draggable.attr('bookmark_id');
+        createCircle(circleName, function (circleID) {
+          addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {
+            $('div[circle_id="' + circleID + '"]').find('input').val('');
+            $('div[circle_id="' + circleID + '"]').find('input').select();
+          });
+        });
+      }
       $('#add_circle').find('input').show();
       $('#add_circle').removeClass('new_circle');
       $('#add_circle').addClass('unique');
@@ -483,7 +495,7 @@ $(document).ready(function() {
 
   $('#bookmarks_container').droppable({
     drop: function (event, ui) {
-      createBookmark(ui.draggable.attr('uri'), selectedCircle);
+      createBookmark(ui.draggable.attr('uri'), selectedCircle, function (bookmarkID) {});
       ui.draggable.remove();
     },
     over: function (event, ui) {
