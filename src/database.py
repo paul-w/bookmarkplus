@@ -352,6 +352,8 @@ class Database():
                         print suggestion.url
                         if suggestion.url in user_urls:
                             continue
+                        if suggestion.url in suggestions:
+                            continue
                         suggestions.append(suggestion.url)
                         if len(suggestions) >= limit:
                             return suggestions
