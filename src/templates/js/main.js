@@ -144,6 +144,7 @@ $(document).ready(function() {
         UTILS.showMessage('Circle successfully deleted.');
         if (selectedCircle === circleID) {
           selectedCircle = '';
+          drawBookmarksFromServer();
         }
         drawCirclesFromServer();
       }
@@ -631,6 +632,7 @@ $(document).ready(function() {
           editCircle(circleName, newCircleName, function () {
             circleName = newCircleName;
             input.val(newCircleName);
+            input.blur();
           });
         }
         input.val(circleName);
