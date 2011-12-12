@@ -97,6 +97,7 @@ $(document).ready(function() {
           addBookmarkToCircle(response.bookmark_id, circleID, function (bookmarkID, circleID) {});
         } else {
           drawBookmarksFromServer(selectedCircle);
+          drawSuggestionsFromServer();
         }
         onSuccess(response.bookmark_id);
       }
