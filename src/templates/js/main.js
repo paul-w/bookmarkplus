@@ -147,7 +147,7 @@ $(document).ready(function() {
         UTILS.showMessage('Circle successfully deleted.');
         if (selectedCircle === circleID) {
           selectedCircle = '';
-          drawBookmarksFromServer();
+          drawBookmarksFromServer(selectedCircle);
         }
         drawCirclesFromServer();
       }
@@ -180,6 +180,7 @@ $(document).ready(function() {
         UTILS.showMessage(response.message);
       } else if (response.type == 'success') {
         UTILS.showMessage('Bookmark successfully added to circle.');
+        drawBookmarksFromServer(selectedCircle);
         onSuccess(bookmarkID, circleID);
       }
     });
@@ -195,6 +196,7 @@ $(document).ready(function() {
           UTILS.showMessage(response.message);
         } else if (response.type == 'success') {
           UTILS.showMessage('Bookmark successfully removed from circle.');
+          drawBookmarksFromServer(selectedCircle);
         }
     });
   }
