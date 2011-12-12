@@ -18,7 +18,6 @@ from pymongo.objectid import ObjectId
 from utils import get_hashed_password
 from utils import get_unicode_datetime
 
-# TODO(jven): each model must be registered here
 MODELS = [Bookmark, Circle, User]
 
 class Database():
@@ -261,6 +260,8 @@ class Database():
         'A circle already eixsts for this user with that name.')
     circle = self._mk.Circle.find_one(
         {'owner':unicode(user_id), 'name':name})
+    assert circle.owner == unicode(user_id), ('ASSERTION ERROR: '
+        'User does not own that circle.')
     circle.name = new_name
     circle.save()
     return circle
@@ -270,11 +271,12 @@ class Database():
     Gets all the bookmarks in the circle in the specified sort order. Requires
     bookmark_exists(url) for each url in circle.bookmarks.
     """
-    # TODO(jven): Make sure user owns the circle
     user = self.get_user_by_id(user_id)
     assert user is not None, 'ASSERTION ERROR: No such user exists.'
     user.bookmark_sort_key, user.bookmark_sort_order = sort_by
     circle = self.get_circle(circle_id)
+    assert circle.owner == unicode(user_id), ('ASSERTION ERROR: User does '
+        'not own this circle.')
     if circle is None:
       return []
     return self._mk.Bookmark.find({

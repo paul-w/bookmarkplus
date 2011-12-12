@@ -236,7 +236,6 @@ def create_bookmark():
   Creates a bookmark with the specified url.
   """
   uri = request.form.get('uri')
-  # TODO(jven): better validation
   if not uri:
     return jsonify({'type':'error', 'message':'Invalid URL.'})
   if '://' not in uri:
@@ -254,9 +253,14 @@ def delete_bookmark():
   Deletes the bookmark with the specified bookmark_id.
   """
   bookmark_id = request.form.get('bookmark_id')
-  # TODO(jven): better validation, make sure user owns this bookmark
-  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+  if not bookmark_id:
     return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
+  bookmark = db.get_bookmark(bookmark_id)
+  if not bookmark:
+    return jsonify({'type':'error', 'message':'Invalid bookmark.'})
+  if bookmark.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that '
+        'bookmark.'})
   db.delete_bookmark(bookmark_id)
   return jsonify({'type':'success'})
 
@@ -267,9 +271,14 @@ def delete_circle():
   Deletes the circle with the specified circle_id.
   """
   circle_id = request.form.get('circle_id')
-  # TODO(mikemeko, jven): better validation
-  if not circle_id or db.get_circle(circle_id) is None:
+  if not circle_id:
     return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  circle = db.get_circle(circle_id)
+  if circle is None:
+    return jsonify({'type':'error', 'message':'Invalid circle.'})
+  if circle.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that '
+        'circle.'})
   db.delete_circle(circle_id)
   return jsonify({'type':'success'})
 
@@ -280,7 +289,6 @@ def create_circle():
   Creates a circle with the given circle name.
   """
   name = request.form.get('name')
-  # TODO(jven): better validation
   if not name:
     return jsonify({'type':'error', 'message':'Invalid circle name.'})
   if db.circle_exists(session['user_id'], name):
@@ -298,7 +306,6 @@ def edit_circle():
   """
   Edits the name of a circle.
   """
-  # TODO(mikemeko, jven): better validation
   name = request.form.get('name')
   if not name:
     return jsonify({'type':'error', 'message':'Invalid circle name.'})
@@ -326,10 +333,20 @@ def is_bookmark_in_circle():
   # TODO(mikemeko): this code is repeated a lot, we should write helpers
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
-  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+  if not bookmark_id:
     return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
-  if not circle_id or db.get_circle(circle_id) is None:
+  if not circle_id:
     return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  bookmark = db.get_bookmark(bookmark_id)
+  circle = db.get_circle(circle_id)
+  if bookmark is None:
+    return jsonify({'type':'error', 'message':'Invalid bookmark.'})
+  if circle is None:
+    return jsonify({'type':'error', 'message':'Invalid circle.'})
+  if bookmark.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that bookmark.'})
+  if circle.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that circle.'})
   bookmark_in_circle = db.is_bookmark_in_circle(bookmark_id, circle_id)
   return jsonify({'bookmark_in_circle':bookmark_in_circle})
 
@@ -341,11 +358,20 @@ def add_bookmark_to_circle():
   """
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
-  # TODO(jven): better validation, make sure user owns these things
-  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+  if not bookmark_id:
     return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
-  if not circle_id or db.get_circle(circle_id) is None:
+  if not circle_id:
     return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  bookmark = db.get_bookmark(bookmark_id)
+  circle = db.get_circle(circle_id)
+  if bookmark is None:
+    return jsonify({'type':'error', 'message':'Invalid bookmark.'})
+  if circle is None:
+    return jsonify({'type':'error', 'message':'Invalid circle.'})
+  if bookmark.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that bookmark.'})
+  if circle.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that circle.'})
   if db.is_bookmark_in_circle(bookmark_id, circle_id):
     return jsonify({'type':'error', 'message':'That bookmark is already in '
         'that circle.'})
@@ -361,10 +387,20 @@ def remove_bookmark_from_circle():
   # TODO(mikemeko): this code is repeated a lot, we should write helpers
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
-  if not bookmark_id or db.get_bookmark(bookmark_id) is None:
+  if not bookmark_id:
     return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
-  if not circle_id or db.get_circle(circle_id) is None:
+  if not circle_id:
     return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+  bookmark = db.get_bookmark(bookmark_id)
+  circle = db.get_circle(circle_id)
+  if bookmark is None:
+    return jsonify({'type':'error', 'message':'Invalid bookmark.'})
+  if circle is None:
+    return jsonify({'type':'error', 'message':'Invalid circle.'})
+  if bookmark.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that bookmark.'})
+  if circle.owner != session['user_id']:
+    return jsonify({'type':'error', 'message':'You don\'t own that circle.'})
   if not db.is_bookmark_in_circle(bookmark_id, circle_id):
     return jsonify({'type':'error', 'message':'That bookmark is not in that '
         'circle.'})

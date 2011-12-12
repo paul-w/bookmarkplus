@@ -8,10 +8,11 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
-#TODO(jven): make separate db configs for development and deployment
 MONGODB_DATABASE = 'amphoros'
 MONGODB_HOST = 'localhost'
+#MONGODB_HOST = 'dbh84.mongolab.com'
 MONGODB_PORT = 27017
+#MONGODB_PORT = 27847
 MONGODB_USERNAME = 'amphoros'
 MONGODB_PASSWORD = 'amphoros'
 SECRET_KEY = (
