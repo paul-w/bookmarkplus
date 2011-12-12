@@ -632,6 +632,7 @@ $(document).ready(function() {
           editCircle(circleName, newCircleName, function () {
             circleName = newCircleName;
             input.val(newCircleName);
+            input.blur();
           });
         }
         input.val(circleName);
