@@ -495,11 +495,16 @@ $(document).ready(function() {
   // binds listeners to |circle| to make it behave like a circle
   var bindCircleEventListeners = function (circle) {
     var circle_id = circle.attr('circle_id');
+    circle.hover(function() {
+      circle.addClass('hover');
+    }, function() {
+      circle.removeClass('hover');
+    });
     circle.click(function() {
       if (selectedCircle != circle_id) {
         selectedCircle = circle_id;
         $('.circle').each(function (index, circle_) {
-          circle.removeClass('selected');
+          $(circle_).removeClass('selected');
         });
         circle.addClass('selected');
       } else {

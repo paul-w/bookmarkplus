@@ -94,6 +94,12 @@ div.circle {
   cursor: url(../img/openhand.png), pointer;
 }
 
+div.hover {
+  box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+  -webkit-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+  -moz-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+}
+
 div.open {
   border-color: #71BC78;
 }
