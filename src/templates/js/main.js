@@ -175,6 +175,10 @@ $(document).ready(function() {
         UTILS.showMessage(response.message);
       } else if (response.type == 'success') {
         UTILS.showMessage('Bookmark successfully added to circle.');
+        if (selectedCircle !== '') {
+          // this is for the case where we add a suggestion to a circle
+          drawBookmarksFromServer(selectedCircle);
+        }
       }
     });
   }
