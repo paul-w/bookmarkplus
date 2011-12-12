@@ -180,7 +180,6 @@ $(document).ready(function() {
         UTILS.showMessage(response.message);
       } else if (response.type == 'success') {
         UTILS.showMessage('Bookmark successfully added to circle.');
-        drawBookmarksFromServer(selectedCircle);
         onSuccess(bookmarkID, circleID);
       }
     });
@@ -303,6 +302,8 @@ $(document).ready(function() {
         bookmark.addClass("faded");
         $("#add_bookmark").hide();
         $("#delete_bookmark").show();
+        $("#add_circle").hide();
+        $("#create_circle").show();
         var bookmarkID = bookmark.attr('bookmark_id');
         getCircles(function (circle) {
           var circleDiv = $('div[circle_id=' + circle.id + ']');
@@ -319,6 +320,8 @@ $(document).ready(function() {
         bookmark.removeClass("faded");
         $("#add_bookmark").show();
         $("#delete_bookmark").hide();
+        $("#add_circle").show();
+        $("#create_circle").hide();
         getCircles(function (circle) {
           var circleDiv = $('div[circle_id=' + circle.id + ']');
           circleDiv.removeClass('open');
@@ -338,10 +341,18 @@ $(document).ready(function() {
       start: function (event, ui) {
         ui.helper.addClass("cursor");
         suggestion.addClass('faded');
+        $("#add_bookmark").hide();
+        $("#create_bookmark").show();
+        $("#add_circle").hide();
+        $("#create_circle").show();
       },
       stop: function (event, ui) {
         ui.helper.removeClass("cursor");
         suggestion.removeClass('faded');
+        $("#add_bookmark").show();
+        $("#create_bookmark").hide();
+        $("#add_circle").show();
+        $("#create_circle").hide();
       },
       revert: 'invalid',
       revertDuration: DRAG_REVERT_DURATION,
@@ -451,7 +462,7 @@ $(document).ready(function() {
 
   // if a bookmark is dragged to the add_circle div, create
   // a new circle containing that bookmark
-  $('#add_circle').droppable({
+  $('#create_circle').droppable({
     drop: function (event, ui) {
       var date = new Date();
       // TODO(mikemeko): date object doesn't work correctly
@@ -472,25 +483,16 @@ $(document).ready(function() {
           });
         });
       }
-      $('#add_circle').find('input').show();
-      $('#add_circle').removeClass('new_circle');
-      $('#add_circle').addClass('unique');
     },
     over: function (event, ui) {
-      $('#add_circle').find('input').hide();
-      $('#add_circle').removeClass('unique');
-      $('#add_circle').addClass('new_circle');
     },
     out: function (event, ui) {
-      $('#add_circle').find('input').show();
-      $('#add_circle').removeClass('new_circle');
-      $('#add_circle').addClass('unique');
     },
     tolerance: 'intersect',
     accept: '.bookmark'
   });
 
-  $('#add_bookmark').droppable({
+  $('#create_bookmark').droppable({
     drop: function (event, ui) {
       createBookmark(ui.draggable.attr('uri'), selectedCircle, function (bookmarkID) {});
       ui.draggable.remove();
@@ -534,7 +536,8 @@ $(document).ready(function() {
   var clearCircleContainer = function () {
     $.each($('#inner_circles_container').children(), function (index, circle) {
       if ($(circle).attr('id') !== 'add_circle' &&
-          $(circle).attr('id') !== 'delete_circle') {
+          $(circle).attr('id') !== 'delete_circle' &&
+          $(circle).attr('id') !== 'create_circle') {
         $(circle).remove();
       }
     });
@@ -544,7 +547,8 @@ $(document).ready(function() {
   var clearBookmarkContainer = function () {
     $.each($('#bookmarks_container').children(), function (index, bookmark) {
       if ($(bookmark).attr('id') !== 'add_bookmark' &&
-          $(bookmark).attr('id') !== 'delete_bookmark') {
+          $(bookmark).attr('id') !== 'delete_bookmark' &&
+          $(bookmark).attr('id') !== 'create_bookmark') {
         $(bookmark).remove();
       }
     });
@@ -705,9 +709,11 @@ $(document).ready(function() {
   // clear all inputs
   $('input').val('');
 
-  // delete divs should only be visible when the respective delete
+  // create and delete divs should only be visible when
   // object is being dragged
+  $('#create_bookmark').hide();
   $('#delete_bookmark').hide();
+  $('#create_circle').hide();
   $('#delete_circle').hide();
 
   // show all flash messages

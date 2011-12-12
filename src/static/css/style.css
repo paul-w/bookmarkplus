@@ -123,11 +123,6 @@ div.remove_bookmark {
   border-color: black;
 }
 
-div.new_circle {
-  background-color: #71BC78;
-  cursor: auto;
-}
-
 div.column {
   margin: 40px auto 0px auto;
   width: 95%;
@@ -246,6 +241,15 @@ div#add_bookmark {
 div#add_circle {
   float: left;
   cursor: auto;
+}
+
+div#create_bookmark {
+  background-color: #71BC78;
+}
+
+div#create_circle {
+  background-color: #71BC78;
+  float: left;
 }
 
 button#add_item {
