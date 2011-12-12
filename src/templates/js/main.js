@@ -144,6 +144,7 @@ $(document).ready(function() {
         UTILS.showMessage('Circle successfully deleted.');
         if (selectedCircle === circleID) {
           selectedCircle = '';
+          drawBookmarksFromServer();
         }
         drawCirclesFromServer();
       }
