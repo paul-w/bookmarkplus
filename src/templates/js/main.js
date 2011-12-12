@@ -491,7 +491,7 @@ $(document).ready(function() {
     accept: '.bookmark'
   });
 
-  $('#bookmarks_container').droppable({
+  $('#add_bookmark').droppable({
     drop: function (event, ui) {
       createBookmark(ui.draggable.attr('uri'), selectedCircle, function (bookmarkID) {});
       ui.draggable.remove();
@@ -618,7 +618,7 @@ $(document).ready(function() {
       window.open(suggestionURI);
     });
     makeSuggestionDraggable(suggestionContainer);
-    $('#suggestions_container').append(suggestionContainer);
+    $('#bookmarks_container').append(suggestionContainer);
   }
 
   // draw a circle div and bind the appropriate listeners

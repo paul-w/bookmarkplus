@@ -20,22 +20,13 @@ p {
 
 /* Classes. */
 a.bookmark_text {
-  cursor: pointer;
-  text-decoration: underline;
-  color: black;
-  border-color: #F88379;
-}
+  text-decoration:underline;
+  color:blue;
+  border-color: red}
 
 div.bookmarks_container {
   display: inline-block;
-  width: 74%;
-  height: 200px;
-  overflow: auto;
-}
-
-div.suggestions_container {
-  display: inline-block;
-  width: 25%;
+  width: 100%;
   height: 200px;
   overflow: auto;
 }
@@ -59,7 +50,7 @@ div.bookmark {
   background-color: #CCCCFF;
   width: 200px;
   height: 35px;
-  margin: 10px 2%;
+  margin: 1%;
   padding-top: 15px;
   border: 2px solid black;
   z-index: 1;
@@ -69,7 +60,7 @@ div.bookmark {
 }
 
 div.suggestion {
-  border-color: #;
+  border-color: red;
 }
 
 div.accept_suggestion {
