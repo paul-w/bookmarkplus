@@ -241,6 +241,10 @@ img.trash {
 }
 
 /* IDs */
+div#delete_circle_text {
+  margin-top: 50px;
+}
+
 div#messages {
   position: fixed;
   top: 10px;
