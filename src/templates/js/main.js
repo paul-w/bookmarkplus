@@ -424,7 +424,7 @@ $(document).ready(function() {
     out: function (event, ui) {
       ui.helper.removeClass("faded");
     },
-    tolerance: 'touch'
+    tolerance: 'intersect'
   });
 
   // if a circle is dropped in the delete_circle div, delete it
@@ -443,7 +443,7 @@ $(document).ready(function() {
     out: function (event, ui) {
       ui.helper.removeClass("faded");
     },
-    tolerance: 'touch'
+    tolerance: 'intersect'
   });
 
   // if a bookmark is dragged to the add_circle div, create
@@ -496,9 +496,9 @@ $(document).ready(function() {
   var bindCircleEventListeners = function (circle) {
     var circle_id = circle.attr('circle_id');
     circle.hover(function() {
-      circle.addClass('hover');
+      circle.addClass('circle_hover');
     }, function() {
-      circle.removeClass('hover');
+      circle.removeClass('circle_hover');
     });
     circle.click(function() {
       if (selectedCircle != circle_id) {
@@ -576,6 +576,11 @@ $(document).ready(function() {
     textContainer.append(uriLink);
     textContainer.addClass('bookmark_text_container');
     container.append(textContainer);
+    container.hover(function() {
+      container.addClass('bookmark_hover');
+    }, function() {
+      container.removeClass('bookmark_hover');
+    });
     return container;
   }
 

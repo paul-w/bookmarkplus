@@ -94,10 +94,15 @@ div.circle {
   cursor: url(../img/openhand.png), pointer;
 }
 
-div.hover {
-  box-shadow: 0 0 30px rgba(0, 0, 255, 1);
-  -webkit-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
-  -moz-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+div.bookmark_hover {
+  opacity: 0.8;
+}
+
+div.circle_hover {
+  opacity: 0.8;
+  box-shadow: 0 0 30px rgba(0, 0, 255, 0.7);
+  -webkit-box-shadow: 0 0 30px rgba(0, 0, 255, 0.7);
+  -moz-box-shadow: 0 0 30px rgba(0, 0, 255, 0.7);
 }
 
 div.open {
@@ -193,8 +198,8 @@ div.selected_sort{
 }
 
 div.unique {
-  border: 2.5px dashed black;
-  opacity: 0.7;
+  background-color: #DBDBFF;
+  border: 2.5px dashed #888888;
 }
 
 div.delete {
