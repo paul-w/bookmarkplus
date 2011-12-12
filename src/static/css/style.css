@@ -196,6 +196,10 @@ div.delete {
   border: 2.5px dashed black;
 }
 
+div.center_vertical {
+  margin-top: 40%;
+}
+
 input.identity {
   width: 300px;
 }
@@ -227,10 +231,6 @@ img.trash {
 }
 
 /* IDs */
-div#delete_circle_text {
-  margin-top: 50px;
-}
-
 div#messages {
   position: fixed;
   top: 10px;
@@ -239,10 +239,14 @@ div#messages {
 }
 
 div#add_bookmark {
+  background-color: #DBDBFF;
+  border: 2px dashed #888888;
   cursor: auto;
 }
 
 div#add_circle {
+  background-color: #DBDBFF;
+  border: 2px dashed #888888;
   float: left;
   cursor: auto;
 }
