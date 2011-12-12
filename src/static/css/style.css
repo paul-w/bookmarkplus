@@ -63,10 +63,6 @@ div.suggestion {
   border-color: red;
 }
 
-div.accept_suggestion {
-  background-color: yellow;
-}
-
 div.circles_container {
   width: 100%;
   height: 190px;

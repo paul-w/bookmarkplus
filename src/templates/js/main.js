@@ -502,12 +502,10 @@ $(document).ready(function() {
       ui.draggable.remove();
     },
     over: function (event, ui) {
-      ui.helper.addClass('accept_suggestion');
       $('#create_bookmark').addClass('add_bookmark');
       $('#create_bookmark').removeClass('create');
     },
     out: function (event, ui) {
-      ui.helper.removeClass('accept_suggestion');
       $('#create_bookmark').removeClass('add_bookmark');
       $('#create_bookmark').addClass('create');
     },
