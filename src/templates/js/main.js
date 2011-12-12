@@ -22,6 +22,8 @@ On user interaction:
 sorting just re-queries the db with a different sorting parameter
 */
 
+MAIN = {};
+
 $(document).ready(function() {
 
   /* Constants */
@@ -84,7 +86,7 @@ $(document).ready(function() {
 
   // create a new bookmark, and add it to the given circle, if any
   // call onSuccess with bookmarkID if successful
-  var createBookmark = function (bookmarkURI, circleID, onSuccess) {
+  MAIN.createBookmark = function (bookmarkURI, circleID, onSuccess) {
     $.post("{{ url_for('create_bookmark') }}", {
       'uri':bookmarkURI
     }, function (response) {
@@ -94,7 +96,7 @@ $(document).ready(function() {
         UTILS.showMessage('Bookmark successfully created.');
         $('#add_bookmark_uri').val('');
         if (circleID !== '') {
-          addBookmarkToCircle(response.bookmark_id, circleID, function (bookmarkID, circleID) {});
+          MAIN.addBookmarkToCircle(response.bookmark_id, circleID, function (bookmarkID, circleID) {});
         } else {
           drawBookmarksFromServer(selectedCircle);
           drawSuggestionsFromServer();
@@ -105,7 +107,7 @@ $(document).ready(function() {
   }
 
   // delete a bookmark
-  var deleteBookmark = function (bookmarkID) {
+  MAIN.deleteBookmark = function (bookmarkID) {
     $.post("{{ url_for('delete_bookmark') }}", {
       'bookmark_id': bookmarkID
     }, function (response) {
@@ -121,7 +123,7 @@ $(document).ready(function() {
 
   // create a new circle and call on success, call onSuccess with
   // the id of the new circle as argument
-  var createCircle = function (circleName, onSuccess) {
+  MAIN.createCircle = function (circleName, onSuccess) {
     $.post("{{ url_for('create_circle') }}", {
       'name':circleName
     }, function(response) {
@@ -137,7 +139,7 @@ $(document).ready(function() {
   }
 
   // delete a circle
-  var deleteCircle = function (circleID) {
+  MAIN.deleteCircle = function (circleID) {
     $.post("{{ url_for('delete_circle') }}", {
       'circle_id': circleID
     }, function (response) {
@@ -155,7 +157,7 @@ $(document).ready(function() {
   }
 
   // edit the name of a circle and call onSucces if name change succeeds
-  var editCircle = function (name, newName, onSuccess) {
+  MAIN.editCircle = function (name, newName, onSuccess) {
     $.post("{{ url_for('edit_circle') }}", {
       'name':name,
       'new_name':newName
@@ -171,7 +173,7 @@ $(document).ready(function() {
 
   // add a bookmark to a circle and call onSuccess with the
   // bookmarkID and circleID as parameters
-  var addBookmarkToCircle = function (bookmarkID, circleID, onSuccess) {
+  MAIN.addBookmarkToCircle = function (bookmarkID, circleID, onSuccess) {
     $.post("{{ url_for('add_bookmark_to_circle') }}", {
       'bookmark_id':bookmarkID,
       'circle_id':circleID
@@ -187,7 +189,7 @@ $(document).ready(function() {
   }
 
   // remove a bookmark from a circle
-  var removeBookmarkFromCircle = function (bookmarkID, circleID) {
+  MAIN.removeBookmarkFromCircle = function (bookmarkID, circleID) {
     $.post("{{ url_for('remove_bookmark_from_circle') }}", {
         'bookmark_id':bookmarkID,
         'circle_id':circleID
@@ -202,7 +204,7 @@ $(document).ready(function() {
   }
 
   // if the bookmark is in the circle, do |inCircle|, otherwise do |notInCircle|
-  var bookmarkInCircle = function (bookmarkID, circleID, inCircle, notInCircle) {
+  MAIN.bookmarkInCircle = function (bookmarkID, circleID, inCircle, notInCircle) {
         $.post("{{ url_for('is_bookmark_in_circle') }}", {
           bookmark_id:bookmarkID,
           circle_id:circleID
@@ -217,7 +219,7 @@ $(document).ready(function() {
 
   // get all the bookmarks (for the respective circle if given) and
   // call |applyToBookmark| on each
-  var getBookmarks = function (circleID, applyToBookmark) {
+  MAIN.getBookmarks = function (circleID, applyToBookmark) {
     $.post("{{ url_for('get_bookmarks') }}", {
       'circle_id':circleID,
       'sort_by':sortBookmarksBy,
@@ -230,7 +232,7 @@ $(document).ready(function() {
   }
 
   // get all the circles and call |applyToCircle| on each
-  var getCircles = function (applyToCircle) {
+  MAIN.getCircles = function (applyToCircle) {
     $.post("{{ url_for('get_circles') }}", {
     }, function (response) {
       $.each(response.circles, function (index, circle) {
@@ -240,7 +242,7 @@ $(document).ready(function() {
   }
 
   // get all the suggestions and call |applyToSuggestion| on each
-  var getSuggestions = function (applyToSuggestion) {
+  MAIN.getSuggestions = function (applyToSuggestion) {
     $.post("{{ url_for('get_suggestions') }}", {
       'num_sugg':NUM_SUGGESTIONS,
     }, function (response) {
@@ -251,14 +253,14 @@ $(document).ready(function() {
   }
 
   // a bookmark was just clicked, recored data
-  var recordClick = function (bookmarkID) {
+  MAIN.recordClick = function (bookmarkID) {
     $.post("{{ url_for('click') }}", {
       'bookmark_id':bookmarkID
     });
   }
 
   //
-  var getTitleForUrl = function (url, onSuccess) {
+  MAIN.getTitleForUrl = function (url, onSuccess) {
     $.post("{{ url_for('title_for_url') }}", {
       'url':url
     }, function (response) {
@@ -279,7 +281,7 @@ $(document).ready(function() {
       if (bookmarkURI == '') {
         UTILS.showMessage('Please provide a bookmark URI.');
       } else {
-        createBookmark(bookmarkURI, selectedCircle, function (bookmarkID) {});
+        MAIN.createBookmark(bookmarkURI, selectedCircle, function (bookmarkID) {});
       }
     }
   });
@@ -291,7 +293,7 @@ $(document).ready(function() {
       if (circleName == '') {
         UTILS.showMessage('Please provide a circle name.');
       } else {
-        createCircle(circleName, function (circleID) {});
+        MAIN.createCircle(circleName, function (circleID) {});
       }
     }
   });
@@ -307,9 +309,9 @@ $(document).ready(function() {
         $("#add_circle").hide();
         $("#create_circle").show();
         var bookmarkID = bookmark.attr('bookmark_id');
-        getCircles(function (circle) {
+        MAIN.getCircles(function (circle) {
           var circleDiv = $('div[circle_id=' + circle.id + ']');
-          bookmarkInCircle(bookmarkID, circle.id,
+          MAIN.bookmarkInCircle(bookmarkID, circle.id,
             function () {
               circleDiv.addClass('closed');
             }, function () {
@@ -324,7 +326,7 @@ $(document).ready(function() {
         $("#delete_bookmark").hide();
         $("#add_circle").show();
         $("#create_circle").hide();
-        getCircles(function (circle) {
+        MAIN.getCircles(function (circle) {
           var circleDiv = $('div[circle_id=' + circle.id + ']');
           circleDiv.removeClass('open');
           circleDiv.removeClass('closed');
@@ -391,16 +393,16 @@ $(document).ready(function() {
     circle.droppable({
       drop: function (event, ui) {
         if (ui.draggable.hasClass('suggestion')) {
-          createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {});
+          MAIN.createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {});
           ui.draggable.remove();
         } else {
           var bookmarkID = ui.draggable.attr('bookmark_id');
-          bookmarkInCircle(bookmarkID, circleID,
+          MAIN.bookmarkInCircle(bookmarkID, circleID,
             function () {
-              removeBookmarkFromCircle(bookmarkID, circleID);
+              MAIN.removeBookmarkFromCircle(bookmarkID, circleID);
             },
             function () {
-              addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {});
+              MAIN.addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {});
             });
         }
         circle.removeClass('add_bookmark');
@@ -408,7 +410,7 @@ $(document).ready(function() {
       },
       over: function (event, ui) {
         var bookmarkID = ui.draggable.attr('bookmark_id');
-        bookmarkInCircle(bookmarkID, circleID,
+        MAIN.bookmarkInCircle(bookmarkID, circleID,
           function () {
             circle.addClass('remove_bookmark');
           }, function () {
@@ -429,7 +431,7 @@ $(document).ready(function() {
     drop: function (event, ui) {
       if (ui.draggable.hasClass('bookmark')) {
         var bookmarkID = ui.draggable.attr('bookmark_id');
-        deleteBookmark(bookmarkID);
+        MAIN.deleteBookmark(bookmarkID);
       } else {
         UTILS.showMessage("That is not a bookmark.");
       }
@@ -448,7 +450,7 @@ $(document).ready(function() {
     drop: function (event, ui) {
       if (ui.draggable.hasClass('circle')) {
         var circleID = ui.draggable.attr('circle_id');
-        deleteCircle(circleID);
+        MAIN.deleteCircle(circleID);
       } else {
         UTILS.showMessage("That is not a circle.");
       }
@@ -470,16 +472,16 @@ $(document).ready(function() {
       // TODO(mikemeko): date object doesn't work correctly
       var circleName = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay();
       if (ui.draggable.hasClass('suggestion')) {
-        createCircle(circleName, function (circleID) {
-          createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {
+        MAIN.createCircle(circleName, function (circleID) {
+          MAIN.createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {
             $('div[circle_id="' + circleID + '"]').find('input').val('');
             $('div[circle_id="' + circleID + '"]').find('input').select();
           });
         });
       } else {
         var bookmarkID = ui.draggable.attr('bookmark_id');
-        createCircle(circleName, function (circleID) {
-          addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {
+        MAIN.createCircle(circleName, function (circleID) {
+          MAIN.addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {
             $('div[circle_id="' + circleID + '"]').find('input').val('');
             $('div[circle_id="' + circleID + '"]').find('input').select();
           });
@@ -500,7 +502,7 @@ $(document).ready(function() {
 
   $('#create_bookmark').droppable({
     drop: function (event, ui) {
-      createBookmark(ui.draggable.attr('uri'), selectedCircle, function (bookmarkID) {});
+      MAIN.createBookmark(ui.draggable.attr('uri'), selectedCircle, function (bookmarkID) {});
       ui.draggable.remove();
     },
     over: function (event, ui) {
@@ -594,7 +596,7 @@ $(document).ready(function() {
     var uriLink = $('<a/>');
     uriLink.addClass('bookmark_text');
     uriLink.text(URI);
-    getTitleForUrl(URI, function (title) {
+    MAIN.getTitleForUrl(URI, function (title) {
       uriLink.text(title);
     });
     var textContainer = $('<div/>');
@@ -615,7 +617,7 @@ $(document).ready(function() {
     bookmarkContainer.attr('bookmark_id', bookmarkID);
     bookmarkContainer.click(function () {
       window.open(bookmarkURI);
-      recordClick(bookmarkID);
+      MAIN.recordClick(bookmarkID);
     });
     makeBookmarkDraggable(bookmarkContainer);
     $('#bookmarks_container').append(bookmarkContainer);
@@ -650,7 +652,7 @@ $(document).ready(function() {
         } else if (newCircleName === circleName) {
           UTILS.showMessage('Please enter a different circle name.');
         } else {
-          editCircle(circleName, newCircleName, function () {
+          MAIN.editCircle(circleName, newCircleName, function () {
             circleName = newCircleName;
             input.val(newCircleName);
             input.blur();
@@ -676,7 +678,7 @@ $(document).ready(function() {
   // 2) after a user interaction that modifies the circles
   var drawCirclesFromServer = function () {
     clearCircleContainer();
-    getCircles(function (circle) {
+    MAIN.getCircles(function (circle) {
       drawCircle(circle.id, circle.name);
     });
     // if a circle is selected, show that it is selected
@@ -694,7 +696,7 @@ $(document).ready(function() {
   // 4) after a user interaction that modifies bookmarks
   var drawBookmarksFromServer = function (circleID) {
     clearBookmarkContainer();
-    getBookmarks(circleID, function (bookmark) {
+    MAIN.getBookmarks(circleID, function (bookmark) {
       drawBookmark(bookmark.id, bookmark.url);
     });
   };
@@ -702,7 +704,7 @@ $(document).ready(function() {
   // populates suggestion bookmarks
   var drawSuggestionsFromServer = function() {
     clearSuggestionContainer();
-    getSuggestions(function (suggestion) {
+    MAIN.getSuggestions(function (suggestion) {
       drawSuggestion(suggestion.url);
     });
   };

@@ -6,7 +6,7 @@ test('testRoutes()', function() {
     ];
     
     $.each(test_urls, function(url, i) {
-        //createBookmark(url, 0);
+        MAIN.createBookmark(url, 0);
     
     //ok(yowattup===7);
 
