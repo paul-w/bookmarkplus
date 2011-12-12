@@ -331,31 +331,33 @@ class Database():
     circle.save()
 
   def get_suggestions(self, user_id, limit):
-        suggestions = []
-        user_id = unicode(user_id)
-        if limit == 0:
-            return suggestions
-
-        user_bookmarks = self._mk.Bookmark.find(
-                {'owner':user_id})
-        user_bookmarks = [u_b for u_b in user_bookmarks]
-        user_urls = [u_b.url for u_b in user_bookmarks]
-        for bookmark in user_bookmarks:
-            same_urls = self._mk.Bookmark.find(
-            {'url': bookmark.url })
-            for same_url in same_urls:
-                if same_url.owner == user_id:
-                    continue
-                for circle_id in same_url.circles:
-                    circle = self.get_circle(circle_id)
-                    for suggested_id in circle.bookmarks:
-                        suggestion = self.get_bookmark(suggested_id)
-                        if suggestion.url in user_urls:
-                            continue
-                        if suggestion.url in suggestions:
-                            continue
-                        suggestions.append(suggestion.url)
-                        if len(suggestions) >= limit:
-                            return suggestions
-
-        return suggestions
+    """
+    Returns a list of |limit| or less suggested bookmarks using data for
+    other users.
+    """
+    suggestions = []
+    user_id = unicode(user_id)
+    if limit == 0:
+      return suggestions
+    user_bookmarks = self._mk.Bookmark.find(
+        {'owner':user_id})
+    user_bookmarks = [u_b for u_b in user_bookmarks]
+    user_urls = [u_b.url for u_b in user_bookmarks]
+    for bookmark in user_bookmarks:
+      same_urls = self._mk.Bookmark.find(
+          {'url': bookmark.url })
+      for same_url in same_urls:
+        if same_url.owner == user_id:
+          continue
+        for circle_id in same_url.circles:
+          circle = self.get_circle(circle_id)
+          for suggested_id in circle.bookmarks:
+            suggestion = self.get_bookmark(suggested_id)
+            if suggestion.url in user_urls:
+              continue
+            if suggestion.url in suggestions:
+              continue
+            suggestions.append(suggestion.url)
+            if len(suggestions) >= limit:
+              return suggestions
+    return suggestions
