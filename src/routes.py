@@ -98,6 +98,30 @@ def favicon():
 ##                      ##
 ##########################
 
+@app.route('/tests_html', methods=['GET'])
+def tests_html():
+  """
+  Returns the landing page for users not logged in and the main page for users
+  logged in.
+  """
+  return render_template('tests/tests.html')
+
+@app.route('/tests_js', methods=['GET'])
+def tests_js():
+  """
+  Returns the landing page for users not logged in and the main page for users
+  logged in.
+  """
+  return render_template('tests/tests.js')
+
+   
+@app.route('/landing.js', methods=['GET'])
+def landing_js():
+  """
+  Renders and returns the landing page JavaScript.
+  """
+  return render_template('qunit/qunit.js')
+
 @app.route('/landing.js', methods=['GET'])
 def landing_js():
   """

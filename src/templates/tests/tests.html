@@ -2,14 +2,18 @@
 
 <! adapted from http://net.tutsplus.com/tutorials/javascript-ajax/how-to-test-your-javascript-code-with-qunit/>
 
+
 <html>  
 <head>  
     <title>QUnit Test Suite</title>  
     <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-git.css" type="text/css" media="screen">  
-    <script type="text/javascript" src="static/js/jquery-1.7.1.min.js" </script>
-    <script type="text/javascript" src="static/js/jquery-ui-1.8.16.custom.min.js"> </script>
     <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"</script>  
-    <script type="text/javascript" src="tests.js"></script>  
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.7.1.min.js') }}"> </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui-1.8.16.custom.min.js') }}"> </script>
+    <script type="text/javascript" src="{{ url_for('main_js') }}"></script>
+{% endblock %}
+    <script type="text/javascript" src="{{ url_for('tests_js') }}"></script>  
 </head>  
 <body>  
     <h1 id="qunit-header">QUnit Test Suite</h1>  
