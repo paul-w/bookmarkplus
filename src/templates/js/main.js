@@ -115,7 +115,6 @@ $(document).ready(function() {
         UTILS.showMessage("Bookmark successfully deleted.");
         $('div[bookmark_id=' + bookmarkID + ']').remove();
         drawBookmarksFromServer(selectedCircle);
-        drawSuggestionsFromServer();
       }
     });
   }
@@ -702,7 +701,6 @@ $(document).ready(function() {
   // display bookmarks, circles, and suggestions
   drawBookmarksFromServer(selectedCircle);
   drawCirclesFromServer();
-  drawSuggestionsFromServer();
 
   // clear all inputs
   $('input').val('');
