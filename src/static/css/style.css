@@ -54,7 +54,7 @@ div.favicon_container {
 div.bookmark {
   display: inline-block;
   float: left;
-  background-color: silver;
+  background-color: #CCCCFF;
   width: 200px;
   height: 35px;
   margin: 2%;
@@ -88,34 +88,39 @@ div.circle {
   margin: 10px 20px;
   -moz-border-radius: 100px;
   -webkit-border-radius: 100px;
-  background-color: silver;
+  background-color: #CCCCFF;
   border: 2.5px solid black;
   text-align: center;
   cursor: url(../img/openhand.png), pointer;
 }
 
 div.open {
-  border-color: green;
+  border-color: #71BC78;
 }
 
 div.selected {
-  background-color: orange;
+  background-color: #417DC1;
+  box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+  -webkit-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+  -moz-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
 }
 
 div.closed {
-  border-color: red;
+  border-color: #F88379;
 }
 
 div.add_bookmark {
-  background-color: green;
+  background-color: #71BC78;
+  border-color: black;
 }
 
 div.remove_bookmark {
-  background-color: red;
+  background-color: #F88379;
+  border-color: black;
 }
 
 div.new_circle {
-  background-color: green;
+  background-color: #71BC78;
   cursor: auto;
 }
 
@@ -182,8 +187,8 @@ div.selected_sort{
 }
 
 div.unique {
-  background-color: #00CED1;
   border: 2.5px dashed black;
+  opacity: 0.7;
 }
 
 div.delete {
