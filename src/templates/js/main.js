@@ -93,7 +93,7 @@ $(document).ready(function() {
         UTILS.showMessage('Bookmark successfully created.');
         $('#create_bookmark_uri').val('');
         if (circleID !== '') {
-          addBookmarkToCircle(response.bookmark_id, circleID);
+          addBookmarkToCircle(response.bookmark_id, circleID, function (bookmarkID, circleID) {});
         } else {
           drawBookmarksFromServer(selectedCircle);
         }
@@ -127,8 +127,8 @@ $(document).ready(function() {
       } else if (response.type == 'success') {
         UTILS.showMessage('Circle successfully created.');
         $('#create_circle_name').val('');
-        onSuccess(response.circle_id);
         drawCirclesFromServer();
+        onSuccess(response.circle_id);
       }
     });
   }
@@ -165,8 +165,9 @@ $(document).ready(function() {
     });
   }
 
-  // add a bookmark to a circle
-  var addBookmarkToCircle = function (bookmarkID, circleID) {
+  // add a bookmark to a circle and call onSuccess with the
+  // bookmarkID and circleID as parameters
+  var addBookmarkToCircle = function (bookmarkID, circleID, onSuccess) {
     $.post("{{ url_for('add_bookmark_to_circle') }}", {
       'bookmark_id':bookmarkID,
       'circle_id':circleID
@@ -179,6 +180,7 @@ $(document).ready(function() {
           // this is for the case where we add a suggestion to a circle
           drawBookmarksFromServer(selectedCircle);
         }
+        onSuccess(bookmarkID, circleID);
       }
     });
   }
@@ -384,7 +386,7 @@ $(document).ready(function() {
               removeBookmarkFromCircle(bookmarkID, circleID);
             },
             function () {
-              addBookmarkToCircle(bookmarkID, circleID);
+              addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {});
             });
         }
         circle.removeClass('add_bookmark');
@@ -424,7 +426,7 @@ $(document).ready(function() {
     out: function (event, ui) {
       ui.helper.removeClass("faded");
     },
-    tolerance: 'touch'
+    tolerance: 'intersect'
   });
 
   // if a circle is dropped in the delete_circle div, delete it
@@ -443,7 +445,7 @@ $(document).ready(function() {
     out: function (event, ui) {
       ui.helper.removeClass("faded");
     },
-    tolerance: 'touch'
+    tolerance: 'intersect'
   });
 
   // if a bookmark is dragged to the add_circle div, create
@@ -451,13 +453,14 @@ $(document).ready(function() {
   $('#add_circle').droppable({
     drop: function (event, ui) {
       var bookmarkID = ui.draggable.attr('bookmark_id');
-      var bookmarkURI = ui.draggable.attr('uri');
-      // TODO(mikemeko): making the name of the new circle the bookmark
-      // uri could be trouble!
-      // NOTE: possible advantage of this is that if user tries to make another
-      // circle with the same bookmark, it won't let him (discuss this)
-      createCircle(bookmarkURI, function (circleID) {
-        addBookmarkToCircle(bookmarkID, circleID);
+      var date = new Date();
+      // date object doesn't work correctly
+      var circleName = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay();
+      createCircle(circleName, function (circleID) {
+        addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {
+          $('div[circle_id="' + circleID + '"]').find('input').val('');
+          $('div[circle_id="' + circleID + '"]').find('input').select();
+        });
       });
       $('#add_circle').find('input').show();
       $('#add_circle').removeClass('new_circle');
@@ -495,11 +498,16 @@ $(document).ready(function() {
   // binds listeners to |circle| to make it behave like a circle
   var bindCircleEventListeners = function (circle) {
     var circle_id = circle.attr('circle_id');
+    circle.hover(function() {
+      circle.addClass('circle_hover');
+    }, function() {
+      circle.removeClass('circle_hover');
+    });
     circle.click(function() {
       if (selectedCircle != circle_id) {
         selectedCircle = circle_id;
         $('.circle').each(function (index, circle_) {
-          circle.removeClass('selected');
+          $(circle_).removeClass('selected');
         });
         circle.addClass('selected');
       } else {
@@ -571,6 +579,11 @@ $(document).ready(function() {
     textContainer.append(uriLink);
     textContainer.addClass('bookmark_text_container');
     container.append(textContainer);
+    container.hover(function() {
+      container.addClass('bookmark_hover');
+    }, function() {
+      container.removeClass('bookmark_hover');
+    });
     return container;
   }
 
@@ -626,6 +639,9 @@ $(document).ready(function() {
     });
     input.click(function (event) {
       event.stopPropagation();
+    });
+    input.blur(function (event) {
+      input.val(circleName);
     });
     bindCircleEventListeners(div);
     $('#inner_circles_container').append(div);

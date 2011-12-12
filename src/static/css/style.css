@@ -54,7 +54,7 @@ div.favicon_container {
 div.bookmark {
   display: inline-block;
   float: left;
-  background-color: silver;
+  background-color: #CCCCFF;
   width: 200px;
   height: 35px;
   margin: 2%;
@@ -88,40 +88,56 @@ div.circle {
   margin: 10px 20px;
   -moz-border-radius: 100px;
   -webkit-border-radius: 100px;
-  background-color: silver;
+  background-color: #CCCCFF;
   border: 2.5px solid black;
   text-align: center;
   cursor: url(../img/openhand.png), pointer;
 }
 
+div.bookmark_hover {
+  opacity: 0.8;
+}
+
+div.circle_hover {
+  opacity: 0.8;
+  box-shadow: 0 0 30px rgba(0, 0, 255, 0.7);
+  -webkit-box-shadow: 0 0 30px rgba(0, 0, 255, 0.7);
+  -moz-box-shadow: 0 0 30px rgba(0, 0, 255, 0.7);
+}
+
 div.open {
-  border-color: green;
+  border-color: #71BC78;
 }
 
 div.selected {
-  background-color: orange;
+  background-color: #417DC1;
+  box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+  -webkit-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
+  -moz-box-shadow: 0 0 30px rgba(0, 0, 255, 1);
 }
 
 div.closed {
-  border-color: red;
+  border-color: #F88379;
 }
 
 div.add_bookmark {
-  background-color: green;
+  background-color: #71BC78;
+  border-color: black;
 }
 
 div.remove_bookmark {
-  background-color: red;
+  background-color: #F88379;
+  border-color: black;
 }
 
 div.new_circle {
-  background-color: green;
+  background-color: #71BC78;
   cursor: auto;
 }
 
 div.column {
-  margin: 50px auto 0px auto;
-  width: 70%;
+  margin: 40px auto 0px auto;
+  width: 95%;
 }
 
 div.header {
@@ -137,7 +153,7 @@ div.landing_container {
   margin-top: 20px;
   width: 300px;
   padding: 10px 30px;
-  background-color: #FFA500;
+  background-color: #CCCCFF;
   border: solid black 1px;
 }
 
@@ -159,8 +175,8 @@ div.text_container {
 
 div.message {
   padding: 5px;
-  background-color: #B0B0B0;
-  border: ridge 5px red;
+  background-color: #CCCCFF;
+  border: 2px solid black;
 }
 
 div.sort {
@@ -182,8 +198,8 @@ div.selected_sort{
 }
 
 div.unique {
-  background-color: #00CED1;
-  border: 2.5px dashed black;
+  background-color: #DBDBFF;
+  border: 2.5px dashed #888888;
 }
 
 div.delete {
