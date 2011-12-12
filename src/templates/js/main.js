@@ -486,9 +486,11 @@ $(document).ready(function() {
     },
     over: function (event, ui) {
       $('#create_circle').addClass('add_bookmark');
+      $('#create_circle').removeClass('create');
     },
     out: function (event, ui) {
       $('#create_circle').removeClass('add_bookmark');
+      $('#create_circle').addClass('create');
     },
     tolerance: 'intersect',
     accept: '.bookmark'
@@ -502,10 +504,12 @@ $(document).ready(function() {
     over: function (event, ui) {
       ui.helper.addClass('accept_suggestion');
       $('#create_bookmark').addClass('add_bookmark');
+      $('#create_bookmark').removeClass('create');
     },
     out: function (event, ui) {
       ui.helper.removeClass('accept_suggestion');
       $('#create_bookmark').removeClass('add_bookmark');
+      $('#create_bookmark').addClass('create');
     },
     tolerance: 'intersect',
     accept: '.suggestion'

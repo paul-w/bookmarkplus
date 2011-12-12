@@ -186,9 +186,9 @@ div.selected_sort{
   font-weight: bold;
 }
 
-div.unique {
+div.create {
+  border: 2px dashed #71BC78;
   background-color: #DBDBFF;
-  border: 2.5px dashed #888888;
 }
 
 div.delete {
@@ -247,12 +247,7 @@ div#add_circle {
   cursor: auto;
 }
 
-div#create_bookmark {
-  background-color: #71BC78;
-}
-
 div#create_circle {
-  background-color: #71BC78;
   float: left;
 }
 
