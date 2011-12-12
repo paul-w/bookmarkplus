@@ -26,7 +26,7 @@ $(document).ready(function() {
 
   /* Constants */
 
-  var NUM_SUGGESTIONS = 3;
+  var NUM_SUGGESTIONS = 1;
   var ENTER_KEY_CODE = 13;
   var DRAG_REVERT_DURATION = 100;
 

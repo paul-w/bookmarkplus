@@ -30,7 +30,6 @@ from flaskext.mongokit import MongoKit
 from functools import wraps
 from models.bookmark import BOOKMARK_SORT_OPTIONS
 from models.bookmark import BOOKMARK_SORT_OPTIONS_REVERSE
-from utils import NUM_SUGGESTIONS
 from utils import MAX_CIRCLE_NAME_LENGTH
 from utils import check_circle_name
 from utils import check_email

@@ -27,8 +27,6 @@ MAX_CIRCLE_NAME_LENGTH = 10
 # the front end and the database should not be aware of the
 # user facing text
 
-NUM_SUGGESTIONS = 3
-
 def get_hashed_password(raw_password):
   return unicode(sha256(raw_password + SALT).hexdigest())
 
