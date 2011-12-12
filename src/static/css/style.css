@@ -48,9 +48,9 @@ div.bookmark {
   display: inline-block;
   float: left;
   background-color: #CCCCFF;
-  width: 200px;
+  width: 14.2%;
   height: 35px;
-  margin: 1%;
+  margin: 10px 0.8%;
   padding-top: 15px;
   border: 2px solid black;
   z-index: 1;
@@ -227,6 +227,10 @@ img.trash {
 }
 
 /* IDs */
+div#delete_circle_text {
+  margin-top: 50px;
+}
+
 div#messages {
   position: fixed;
   top: 10px;
@@ -264,7 +268,7 @@ input#add_circle_name {
 }
 
 input#add_bookmark_uri {
-  width: 180px;
+  width: 90%;
 }
 
 ul#inner_circles_container {
