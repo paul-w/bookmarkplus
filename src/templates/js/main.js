@@ -615,7 +615,7 @@ $(document).ready(function() {
     suggestionContainer = drawUrlContainer(suggestionURI);
     suggestionContainer.addClass('suggestion');
     suggestionContainer.click(function () {
-      window.open(suggestionURL);
+      window.open(suggestionURI);
     });
     makeSuggestionDraggable(suggestionContainer);
     $('#suggestions_container').append(suggestionContainer);
