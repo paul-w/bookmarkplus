@@ -178,11 +178,12 @@ div.text_container {
 div.message {
   padding: 5px;
   background-color: #CCCCFF;
-  border: 2px solid black;
+  border: 2px solid #F88379;
 }
 
 div.sort {
-    margin-right:10px;
+    cursor: pointer;
+    margin: 0px 10px;
     display:inline-block;
 }
 
