@@ -175,8 +175,8 @@ div.text_container {
 
 div.message {
   padding: 5px;
-  background-color: #B0B0B0;
-  border: ridge 5px red;
+  background-color: #CCCCFF;
+  border: 2px solid black;
 }
 
 div.sort {
