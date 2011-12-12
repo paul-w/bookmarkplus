@@ -20,9 +20,11 @@ p {
 
 /* Classes. */
 a.bookmark_text {
-  text-decoration:underline;
-  color:blue;
-  border-color: red}
+  cursor: pointer;
+  text-decoration: underline;
+  color: black;
+  border-color: #F88379;
+}
 
 div.bookmarks_container {
   display: inline-block;
@@ -67,7 +69,7 @@ div.bookmark {
 }
 
 div.suggestion {
-  border-color: red;
+  border-color: #;
 }
 
 div.accept_suggestion {
