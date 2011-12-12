@@ -338,7 +338,6 @@ class Database():
                 {'owner':user_id})
         user_bookmarks = [u_b for u_b in user_bookmarks]
         user_urls = [u_b.url for u_b in user_bookmarks]
-        print user_urls
         for bookmark in user_bookmarks:
             same_urls = self._mk.Bookmark.find(
             {'url': bookmark.url })
@@ -349,7 +348,6 @@ class Database():
                     circle = self.get_circle(circle_id)
                     for suggested_id in circle.bookmarks:
                         suggestion = self.get_bookmark(suggested_id)
-                        print suggestion.url
                         if suggestion.url in user_urls:
                             continue
                         if suggestion.url in suggestions:
