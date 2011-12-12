@@ -14,14 +14,16 @@
   color:white;
   display:none;
   font-family:'Linden Hill', serif;
+  font-size:1.2em;
   right:10px;
   opacity:0.9;
   padding:20px;
   position:fixed;
+  text-align:center;
   top:10px;
-  width:180px
-  -moz-border-radius:20px;
-  -webkit-border-radius:20px;
-  -khtml-border-radius:20px;
-  border-radius:20px
+  width:300px;
+  -moz-border-radius:10px;
+  -webkit-border-radius:10px;
+  -khtml-border-radius:10px;
+  border-radius:10px
 }
