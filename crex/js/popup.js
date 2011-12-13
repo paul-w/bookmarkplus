@@ -7,7 +7,6 @@
  **/
 
 $(document).ready(function() {
-  // TODO(jven): this domain must be granted permissions in manifest.json
   var DOMAIN = 'http://jasper.xvm.mit.edu/';
   var not_logged_in = function() {
     $('#logged_in').hide();

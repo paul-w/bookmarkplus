@@ -18,7 +18,6 @@ from pymongo.objectid import ObjectId
 from utils import get_hashed_password
 from utils import get_unicode_datetime
 
-# TODO(jven): each model must be registered here
 MODELS = [Bookmark, Circle, User]
 
 class Database():
@@ -261,6 +260,8 @@ class Database():
         'A circle already eixsts for this user with that name.')
     circle = self._mk.Circle.find_one(
         {'owner':unicode(user_id), 'name':name})
+    assert circle.owner == unicode(user_id), ('ASSERTION ERROR: '
+        'User does not own that circle.')
     circle.name = new_name
     circle.save()
     return circle
@@ -270,11 +271,12 @@ class Database():
     Gets all the bookmarks in the circle in the specified sort order. Requires
     bookmark_exists(url) for each url in circle.bookmarks.
     """
-    # TODO(jven): Make sure user owns the circle
     user = self.get_user_by_id(user_id)
     assert user is not None, 'ASSERTION ERROR: No such user exists.'
     user.bookmark_sort_key, user.bookmark_sort_order = sort_by
     circle = self.get_circle(circle_id)
+    assert circle.owner == unicode(user_id), ('ASSERTION ERROR: User does '
+        'not own this circle.')
     if circle is None:
       return []
     return self._mk.Bookmark.find({
@@ -329,31 +331,58 @@ class Database():
     circle.save()
 
   def get_suggestions(self, user_id, limit):
-        suggestions = []
-        user_id = unicode(user_id)
-        if limit == 0:
-            return suggestions
+    """
+    Returns a list of |limit| or less suggested bookmarks using data for
+    other users.
+    """
+    suggestions = []
+    user_id = unicode(user_id)
+    if limit == 0:
+      return suggestions
+    user_bookmarks = self._mk.Bookmark.find(
+        {'owner':user_id})
+    user_bookmarks = [u_b for u_b in user_bookmarks]
+    user_urls = [u_b.url for u_b in user_bookmarks]
+    for bookmark in user_bookmarks:
+      same_urls = self._mk.Bookmark.find(
+          {'url': bookmark.url })
+      for same_url in same_urls:
+        if same_url.owner == user_id:
+          continue
+        for circle_id in same_url.circles:
+          circle = self.get_circle(circle_id)
+          for suggested_id in circle.bookmarks:
+            suggestion = self.get_bookmark(suggested_id)
+            if suggestion.url in user_urls:
+              continue
+            if suggestion.url in suggestions:
+              continue
+            suggestions.append(suggestion.url)
+            if len(suggestions) >= limit:
+              return suggestions
+    return suggestions
 
-        user_bookmarks = self._mk.Bookmark.find(
-                {'owner':user_id})
-        user_bookmarks = [u_b for u_b in user_bookmarks]
-        user_urls = [u_b.url for u_b in user_bookmarks]
-        for bookmark in user_bookmarks:
-            same_urls = self._mk.Bookmark.find(
-            {'url': bookmark.url })
-            for same_url in same_urls:
-                if same_url.owner == user_id:
-                    continue
-                for circle_id in same_url.circles:
-                    circle = self.get_circle(circle_id)
-                    for suggested_id in circle.bookmarks:
-                        suggestion = self.get_bookmark(suggested_id)
-                        if suggestion.url in user_urls:
-                            continue
-                        if suggestion.url in suggestions:
-                            continue
-                        suggestions.append(suggestion.url)
-                        if len(suggestions) >= limit:
-                            return suggestions
-
-        return suggestions
+  def check_parameters(self, user_id, bookmark_id, circle_id):
+    """
+    Checks that:
+      - |bookmark_id| is a non-empty id
+      - |circle_id| is a non-empty id
+      - the user owns a bookmark with the given id
+      - the user owns a circle with the given id
+    Returns an error if a check fails, or None if all checks pass
+    """
+    if not bookmark_id:
+      return 'Invalid bookmark ID.'
+    if not circle_id:
+      return 'Invalid circle ID.'
+    bookmark = self.get_bookmark(bookmark_id)
+    if bookmark is None:
+      return 'Invalid bookmark.'
+    circle = self.get_circle(circle_id)
+    if circle is None:
+      return 'Invalid circle.'
+    if bookmark.owner != user_id:
+      return 'You don\'t own that bookmark.'
+    if circle.owner != user_id:
+      return 'You don\'t own that circle.'
+    return None

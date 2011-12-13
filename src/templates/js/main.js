@@ -22,7 +22,7 @@ On user interaction:
 sorting just re-queries the db with a different sorting parameter
 */
 
-MAIN = {};
+MAIN = {}
 
 $(document).ready(function() {
 
@@ -31,7 +31,6 @@ $(document).ready(function() {
   var NUM_SUGGESTIONS = 1;
   var ENTER_KEY_CODE = 13;
   var DRAG_REVERT_DURATION = 100;
-
   var ASC_TEXT = ['<', '>']
 
   /* Variables */
@@ -42,46 +41,9 @@ $(document).ready(function() {
   // 1 indicaets ascending, -1 descending
   var bAscending = "{{ bookmark_sort_order }}";
 
-  /* Add missing elements to page */
-
-  // sorting options
-  b_options_div = $('#bookmark_sort_options')
-  {% for option in bookmark_sort_options %}
-    var div = $('<div/>');
-    div.text("{{ option }}");
-    div.addClass('sort');
-    div.click(function() {
-      text =  $(this).text();
-      $.each(sortBookmarksDivs, function(index, sortBookmarkDiv) {
-        sortBookmarkDiv.removeClass('selected_sort');
-      });
-      $(this).addClass('selected_sort');
-      if (text ===  sortBookmarksBy) {
-        bAscending = -bAscending;
-        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
-
-      }
-      else {
-        bAscending = 1;
-        sortBookmarksBy =  text
-        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
-      }
-      drawBookmarksFromServer(selectedCircle);
-    });
-    b_options_div.append(div);
-    sortBookmarksDivs.push(div);
-  {% endfor %}
-
-    var ascDiv = $('<div/>');
-    ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
-    ascDiv.addClass('sort');
-    ascDiv.addClass('selected_sort');
-    b_options_div.append(ascDiv);
-
-
   /*
     Ajax calls
-    Each of these methods should make the respective change on the page
+    Each of these methods should make the appropriate change on the page
   */
 
   // create a new bookmark, and add it to the given circle, if any
@@ -99,8 +61,8 @@ $(document).ready(function() {
           MAIN.addBookmarkToCircle(response.bookmark_id, circleID, function (bookmarkID, circleID) {});
         } else {
           drawBookmarksFromServer(selectedCircle);
-          drawSuggestionsFromServer();
         }
+        drawSuggestionsFromServer();
         onSuccess(response.bookmark_id);
       }
     });
@@ -121,7 +83,7 @@ $(document).ready(function() {
     });
   }
 
-  // create a new circle and call on success, call onSuccess with
+  // create a new circle and on success, call onSuccess with
   // the id of the new circle as argument
   MAIN.createCircle = function (circleName, onSuccess) {
     $.post("{{ url_for('create_circle') }}", {
@@ -203,7 +165,7 @@ $(document).ready(function() {
     });
   }
 
-  // if the bookmark is in the circle, do |inCircle|, otherwise do |notInCircle|
+  // if the bookmark is in the circle, call inCircle, otherwise call notInCircle
   var bookmarkInCircle = function (bookmarkID, circleID, inCircle, notInCircle) {
         $.post("{{ url_for('is_bookmark_in_circle') }}", {
           bookmark_id:bookmarkID,
@@ -218,7 +180,7 @@ $(document).ready(function() {
   }
 
   // get all the bookmarks (for the respective circle if given) and
-  // call |applyToBookmark| on each
+  // call applyToBookmark on each
   MAIN.getBookmarks = function (circleID, applyToBookmark) {
     $.post("{{ url_for('get_bookmarks') }}", {
       'circle_id':circleID,
@@ -231,7 +193,7 @@ $(document).ready(function() {
     });
   }
 
-  // get all the circles and call |applyToCircle| on each
+  // get all the circles and call applyToCircle on each
   MAIN.getCircles = function (applyToCircle) {
     $.post("{{ url_for('get_circles') }}", {
     }, function (response) {
@@ -241,7 +203,7 @@ $(document).ready(function() {
     });
   }
 
-  // get all the suggestions and call |applyToSuggestion| on each
+  // get all the suggestions and call applyToSuggestion on each
   MAIN.getSuggestions = function (applyToSuggestion) {
     $.post("{{ url_for('get_suggestions') }}", {
       'num_sugg':NUM_SUGGESTIONS,
@@ -259,8 +221,8 @@ $(document).ready(function() {
     });
   }
 
-  //
-  MAIN.getTitleForUrl = function (url, onSuccess) {
+  // gets the title of the given page and call onSuccess with the title
+  MAIN.getTitleForURL = function (url, onSuccess) {
     $.post("{{ url_for('title_for_url') }}", {
       'url':url
     }, function (response) {
@@ -270,11 +232,7 @@ $(document).ready(function() {
 
   /* Bind page elements to Ajax calls */
 
-  // bind sort option toggler
-  // TODO(mikemeko, pauL): do we still need this?
-
-
-  // bind create bookmark input box
+  // bind add bookmark input box
   $('#add_bookmark_uri').keydown(function(event) {
     if (event.keyCode == ENTER_KEY_CODE) {
       var bookmarkURI = $('#add_bookmark_uri').val();
@@ -286,7 +244,7 @@ $(document).ready(function() {
     }
   });
 
-  // bind create circle input box
+  // bind add circle input box
   $('#add_circle_name').keydown(function(event) {
     if (event.keyCode == ENTER_KEY_CODE) {
       var circleName = $('#add_circle_name').val();
@@ -298,7 +256,7 @@ $(document).ready(function() {
     }
   });
 
-  // make |bookmark| draggable so that it can be added to circle or deleted
+  // make bookmark draggable so that it can be added to circle or deleted
   var makeBookmarkDraggable = function (bookmark) {
     bookmark.draggable({
       start: function (event, ui) {
@@ -339,7 +297,7 @@ $(document).ready(function() {
     });
   }
 
-  // make |suggestion| draggable so that it can be added as a bookmark
+  // make suggestion draggable so that it can be added as a bookmark
   var makeSuggestionDraggable = function (suggestion) {
     suggestion.draggable({
       start: function (event, ui) {
@@ -364,7 +322,7 @@ $(document).ready(function() {
     });
   }
 
-  // make |circle| draggable so that it can be deleted
+  // make circle draggable so that it can be deleted
   var makeCircleDraggable = function (circle) {
     circle.draggable({
       start: function (event, ui) {
@@ -386,36 +344,49 @@ $(document).ready(function() {
     });
   }
 
-  // makes a circle a droppable element so that if a bookmark is dropped
-  // into it, that bookmark is added to it
+  // makes a circle a droppable element so that:
+  //  - if a suggestion is dropped, add that suggestion to the circle
+  //  - if a bookmark is dropped
+  //    - add it if it is not in the circle
+  //    - remove it if it is in the circle
   var makeCircleDroppable = function (circle) {
     var circleID = circle.attr('circle_id');
     circle.droppable({
       drop: function (event, ui) {
         if (ui.draggable.hasClass('suggestion')) {
-          MAIN.createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {});
+          // suggestion
+          MAIN.createBookmark(ui.draggable.attr('uri'), circleID,
+              function (bookmarkID) {});
           ui.draggable.remove();
         } else {
+          // bookmark
           var bookmarkID = ui.draggable.attr('bookmark_id');
           bookmarkInCircle(bookmarkID, circleID,
             function () {
               MAIN.removeBookmarkFromCircle(bookmarkID, circleID);
             },
             function () {
-              MAIN.addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {});
+              MAIN.addBookmarkToCircle(bookmarkID, circleID,
+                  function (bookmarkID, circleID) {});
             });
         }
         circle.removeClass('add_bookmark');
         circle.removeClass('remove_bookmark');
       },
       over: function (event, ui) {
-        var bookmarkID = ui.draggable.attr('bookmark_id');
-        bookmarkInCircle(bookmarkID, circleID,
-          function () {
-            circle.addClass('remove_bookmark');
-          }, function () {
-            circle.addClass('add_bookmark');
-          });
+        if (ui.draggable.hasClass('suggestion')) {
+          // suggestion
+          circle.addClass('add_bookmark');
+        } else {
+          // bookmark
+          var bookmarkID = ui.draggable.attr('bookmark_id');
+          bookmarkInCircle(bookmarkID, circleID,
+            function () {
+              circle.addClass('remove_bookmark');
+            }, function () {
+              circle.addClass('add_bookmark');
+            });
+        }
       },
       out: function (event, ui) {
         circle.removeClass('add_bookmark');
@@ -429,12 +400,8 @@ $(document).ready(function() {
   // if a bookmark is dropped in the delete_bookmark div, delete it
   $('#delete_bookmark').droppable({
     drop: function (event, ui) {
-      if (ui.draggable.hasClass('bookmark')) {
-        var bookmarkID = ui.draggable.attr('bookmark_id');
-        MAIN.deleteBookmark(bookmarkID);
-      } else {
-        UTILS.showMessage("That is not a bookmark.");
-      }
+      var bookmarkID = ui.draggable.attr('bookmark_id');
+      MAIN.deleteBookmark(bookmarkID);
     },
     over: function (event, ui) {
       ui.helper.addClass("faded");
@@ -442,18 +409,15 @@ $(document).ready(function() {
     out: function (event, ui) {
       ui.helper.removeClass("faded");
     },
+    accept: '.bookmark',
     tolerance: 'intersect'
   });
 
   // if a circle is dropped in the delete_circle div, delete it
   $('#delete_circle').droppable({
     drop: function (event, ui) {
-      if (ui.draggable.hasClass('circle')) {
-        var circleID = ui.draggable.attr('circle_id');
-        MAIN.deleteCircle(circleID);
-      } else {
-        UTILS.showMessage("That is not a circle.");
-      }
+      var circleID = ui.draggable.attr('circle_id');
+      MAIN.deleteCircle(circleID);
     },
     over: function (event, ui) {
       ui.helper.addClass("faded");
@@ -461,27 +425,35 @@ $(document).ready(function() {
     out: function (event, ui) {
       ui.helper.removeClass("faded");
     },
+    accpet: '.circle',
     tolerance: 'intersect'
   });
 
-  // if a bookmark is dragged to the add_circle div, create
-  // a new circle containing that bookmark
+  // if a suggestion or bookmark is dragged to the add_circle div, create
+  // a new circle containig it
   $('#create_circle').droppable({
     drop: function (event, ui) {
       var date = new Date();
-      // TODO(mikemeko): date object doesn't work correctly
-      var circleName = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay();
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      // temporary circle name
+      var circleName = year + '/' + month + '/' + day;
       if (ui.draggable.hasClass('suggestion')) {
+        // suggestion
         MAIN.createCircle(circleName, function (circleID) {
-          MAIN.createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {
+          MAIN.createBookmark(ui.draggable.attr('uri'), circleID,
+              function (bookmarkID) {
             $('div[circle_id="' + circleID + '"]').find('input').val('');
             $('div[circle_id="' + circleID + '"]').find('input').select();
           });
         });
       } else {
+        // bookmark
         var bookmarkID = ui.draggable.attr('bookmark_id');
         MAIN.createCircle(circleName, function (circleID) {
-          MAIN.addBookmarkToCircle(bookmarkID, circleID, function (bookmarkID, circleID) {
+          MAIN.addBookmarkToCircle(bookmarkID, circleID,
+              function (bookmarkID, circleID) {
             $('div[circle_id="' + circleID + '"]').find('input').val('');
             $('div[circle_id="' + circleID + '"]').find('input').select();
           });
@@ -500,9 +472,11 @@ $(document).ready(function() {
     accept: '.bookmark'
   });
 
+  // if a suggestion is dropped on the create bookmark div, make it a bookmark
   $('#create_bookmark').droppable({
     drop: function (event, ui) {
-      MAIN.createBookmark(ui.draggable.attr('uri'), selectedCircle, function (bookmarkID) {});
+      MAIN.createBookmark(ui.draggable.attr('uri'), selectedCircle,
+          function (bookmarkID) {});
       ui.draggable.remove();
     },
     over: function (event, ui) {
@@ -517,7 +491,10 @@ $(document).ready(function() {
     accept: '.suggestion'
   });
 
-  // binds listeners to |circle| to make it behave like a circle
+  // binds listeners to circle so that:
+  //   - if clicked, it filters in to/out of to the bookmarks it contains
+  //   - it is draggable
+  //   - it is droppabl
   var bindCircleEventListeners = function (circle) {
     var circle_id = circle.attr('circle_id');
     circle.hover(function() {
@@ -544,7 +521,8 @@ $(document).ready(function() {
 
   // clears the circle container, leaving only the circle adder / deleter
   var clearCircleContainer = function () {
-    $.each($('#inner_circles_container').children(), function (index, circle) {
+    $.each($('#inner_circles_container').children(),
+        function (index, circle) {
       if ($(circle).attr('id') !== 'add_circle' &&
           $(circle).attr('id') !== 'delete_circle' &&
           $(circle).attr('id') !== 'create_circle') {
@@ -564,15 +542,8 @@ $(document).ready(function() {
     });
   }
 
-  // clears the suggestions container
-  var clearSuggestionContainer = function () {
-    $.each($('#suggestions_container').children(), function (index, suggestion) {
-      $(suggestion).remove();
-    });
-  }
-
-  // returns a URI containing the favicon for |URI|
-  // |URI| should contain '://'
+  // returns a URI containing the favicon for URI
+  // URI should contain '://'
   var faviconFor = function (URI) {
     var schemeSeparator = URI.indexOf('://');
     var hierPart = URI.substring(schemeSeparator + '://'.length);
@@ -596,7 +567,7 @@ $(document).ready(function() {
     var uriLink = $('<a/>');
     uriLink.addClass('bookmark_text');
     uriLink.text(URI);
-    MAIN.getTitleForUrl(URI, function (title) {
+    MAIN.getTitleForURL(URI, function (title) {
       uriLink.text(title);
     });
     var textContainer = $('<div/>');
@@ -703,12 +674,45 @@ $(document).ready(function() {
 
   // populates suggestion bookmarks
   var drawSuggestionsFromServer = function() {
-    clearSuggestionContainer();
     MAIN.getSuggestions(function (suggestion) {
       drawSuggestion(suggestion.url);
     });
   };
 
+  /* Add missing elements to page */
+
+  // sorting options
+  b_options_div = $('#bookmark_sort_options')
+  {% for option in bookmark_sort_options %}
+    var div = $('<div/>');
+    div.text("{{ option }}");
+    div.addClass('sort');
+    div.click(function() {
+      text =  $(this).text();
+      $.each(sortBookmarksDivs, function(index, sortBookmarkDiv) {
+        sortBookmarkDiv.removeClass('selected_sort');
+      });
+      $(this).addClass('selected_sort');
+      if (text ===  sortBookmarksBy) {
+        bAscending = -bAscending;
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+      }
+      else {
+        bAscending = 1;
+        sortBookmarksBy =  text
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+      }
+      drawBookmarksFromServer(selectedCircle);
+    });
+    b_options_div.append(div);
+    sortBookmarksDivs.push(div);
+  {% endfor %}
+
+  var ascDiv = $('<div/>');
+  ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+  ascDiv.addClass('sort');
+  ascDiv.addClass('selected_sort');
+  b_options_div.append(ascDiv);
 
   /* Initialization */
 

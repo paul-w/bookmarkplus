@@ -226,6 +226,13 @@ img.trash {
   height: 35px;
 }
 
+p.description {
+  margin: 5px auto;
+  font-size: 1.4em;
+  text-align: center;
+  width: 75%;
+}
+
 /* IDs */
 div#messages {
   position: fixed;

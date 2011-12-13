@@ -11,10 +11,15 @@ __author__ = (
 from datetime import datetime
 from flaskext.mongokit import Document
 
+# defines which parameters of the Bookmark structure are sortable
+# Bookmark structure --> user facing text
+# the Bookmark structure paramters should not be exposed to
+# the front end and the database should not be aware of the
+# user facing text
 BOOKMARK_SORT_OPTIONS = {
-        unicode('uri') : 'URI',
-            unicode('clicks'): 'TotalVisits',
-                unicode('date_last_clicked'): 'LastVisited'
+    unicode('uri') : 'URI',
+    unicode('clicks'): 'TotalVisits',
+    unicode('date_last_clicked'): 'LastVisited'
 }
 
 BOOKMARK_SORT_OPTIONS_REVERSE =  dict(
