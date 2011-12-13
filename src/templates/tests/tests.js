@@ -22,6 +22,8 @@ module("testMethods", {
 });
 
 test('createBookmarks', function() { 
+
+    // createBookmark
     count = 0;
     $.each(this.testURLs, function(i, url) {
         MAIN.createBookmark(url, '', function(id) {
@@ -30,17 +32,58 @@ test('createBookmarks', function() {
            count = count + 1;
            if(count===numURLs){
                 ok(bookmarkIDs.length==numURLs);
+                deleteBookmarkTest(bookmarkIDs);
            }
         });
     });
     stop(numURLs);
-
 });
 
-test('deleteBookmarks', function() { 
-    MAIN.deleteBookmark(bookmarkIDs[0]);
+var deleteBookmarkTest = function(bookmarkIDs) {
+    // deleteBookmark
+    deletedID = bookmarkIDs[0];
+    MAIN.deleteBookmark(deletedID);
     ok(true);
-});
+
+    bookmarkIDs = $.grep(
+        bookmarkIDs, function(id) {
+          return id != deletedID;
+    });
+    
+    ok(bookmarkIDs.length === numURLs-1) ;
+    getBookmarksTest(bookmarkIDs);
+};
+
+
+var getBookmarksTest = function(bookmarkIDs) {
+    expectedURLs = [
+    'http://dividedhighwayrocks.com/',
+    'http://en.wikipedia.org/wiki/Dual_carriageway',
+    'http://www.thefreedictionary.com/divided+highway',
+    ];
+    resultURLs = [
+
+    ];
+    resultIDs = [
+
+    ];
+    
+    // getBookmarks
+    count = 0;
+    MAIN.getBookmarks(undefined, function(b) {
+        resultURLs.push(b.url);
+        resultIDs.push(b.id);
+        start();
+        count = count + 1;
+        if(count === expectedURLs.length){
+          for(i=0; i<expectedURLs.length; i++){
+                ok(resultURLs[i]===expectedURLs[i]);
+                ok(resultIDs[i]===bookmarkIDs[i]);
+          }
+        }
+    });
+    stop(bookmarkIDs.length);
+};
 
 test('createCircles', function() { 
     $.each(this.testCircles, function(name, i) {
@@ -72,10 +115,7 @@ test('removeBookmarkFromCircle', function() {
 });
 
 test('getBookmarks', function() { 
-    MAIN.getBookmarks(undefined, function(b) {
-    
-    });
-    ok(true);
+        ok(true);
 });
 
 test('getCircles', function() { 
