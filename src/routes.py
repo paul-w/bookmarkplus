@@ -334,7 +334,7 @@ def is_bookmark_in_circle():
   circle_id = request.form.get('circle_id')
   param_errors = db.check_parameters(session['user_id'], bookmark_id, circle_id)
   if param_errors != None:
-    return param_errors
+    return jsonify({'type':'error', 'message':param_errors})
   bookmark_in_circle = db.is_bookmark_in_circle(bookmark_id, circle_id)
   return jsonify({'bookmark_in_circle':bookmark_in_circle})
 
@@ -348,7 +348,7 @@ def add_bookmark_to_circle():
   circle_id = request.form.get('circle_id')
   param_errors = db.check_parameters(session['user_id'], bookmark_id, circle_id)
   if param_errors != None:
-    return param_errors
+    return jsonify({'type':'error', 'message':param_errors})
   if db.is_bookmark_in_circle(bookmark_id, circle_id):
     return jsonify({'type':'error', 'message':'That bookmark is already in '
         'that circle.'})
@@ -365,7 +365,7 @@ def remove_bookmark_from_circle():
   circle_id = request.form.get('circle_id')
   param_errors = db.check_parameters(session['user_id'], bookmark_id, circle_id)
   if param_errors != None:
-    return param_errors
+    return jsonify({'type':'error', 'message':param_errors})
   if not db.is_bookmark_in_circle(bookmark_id, circle_id):
     return jsonify({'type':'error', 'message':'That bookmark is not in that '
         'circle.'})
