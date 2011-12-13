@@ -30,7 +30,6 @@ test('createCircles', function() {
 
     ok(true, 'createCircles');
     //ok(returned == expected, 'createCircles');
-
 });
 
 test('createBookmarks', function() { 
@@ -38,12 +37,13 @@ test('createBookmarks', function() {
     console.log(this.testURLs); 
     $.each(this.testURLs, function(url, i) {
         MAIN.createBookmark(url, 0, function(id) {
+            alert('yo');
            returned.push(id);
         });
     });
 
-    ok(true, 'createBookmarks')
-    //ok(returned.length === this.testURLs.length);
+    //ok(true, 'createBookmarks')
+    ok(returned.length === this.testURLs.length);
 
 });
 
