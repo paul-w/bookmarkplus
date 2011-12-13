@@ -1,3 +1,7 @@
+
+// tests local mongoDB instance
+// clear (manage.py initdb) beforehand
+
 bookmarkIDs = [];
 
 module("testMethods", {
@@ -16,7 +20,7 @@ module("testMethods", {
             }
 });
 
-test('createBookmarks', function() { 
+test('testBookmarks', function() { 
 
     // createBookmark
     count = 0;
@@ -80,7 +84,7 @@ var getBookmarksTest = function(bookmarkIDs) {
     stop(bookmarkIDs.length-1);
 };
 
-var createCircleTest = function(bookmarkIDs) {
+var createCircleTest = function() {
     start();
     start();
     testCircles = [
@@ -101,6 +105,10 @@ var createCircleTest = function(bookmarkIDs) {
         });
     });
 };
+
+test('testCircles', function() { 
+
+});
 
 test('deleteCircles', function() { 
     MAIN.deleteCircle(circleIDs[0]);
