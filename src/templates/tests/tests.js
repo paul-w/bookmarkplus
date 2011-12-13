@@ -6,10 +6,8 @@ bookmarkIDs = [];
 
 module("testMethods", {
       setup: function() {
-          
-         // last two are duplicates 
-                  ok(true, "setup successful");
-            }
+          ok(true, "setup successful");
+      }
 });
 
 test('testBookmarks', function() { 
@@ -18,6 +16,8 @@ test('testBookmarks', function() {
 
 var createBookmarkTest = function()
 {
+
+    // last two are duplicates 
     testURLs = [
             'https://www.google.com/search?gcx=c&sourceid=chrome&ie=UTF-8&q=divided+highway',
             'dividedhighwayrocks.com/',
@@ -52,10 +52,9 @@ var deleteBookmarkTest = function(bookmarkIDs, numURLs) {
           return id != deletedID;
     });
     
-    ok(bookmarkIDs.length === numURLs-1) ;
+    ok(bookmarkIDs.length === numURLs-1);
     getBookmarksTest(bookmarkIDs);
 };
-
 
 var getBookmarksTest = function(bookmarkIDs) {
     expectedURLs = [
@@ -89,7 +88,6 @@ var getBookmarksTest = function(bookmarkIDs) {
 test('testCircles', function() { 
     createCircleTest();
 });
-
 
 var createCircleTest = function() {
     testCircles = [
@@ -148,66 +146,12 @@ var getCirclesTest = function(circleIDs){
 
     stop();
 
-}
-
-test('addBookmarkToCircle', function() { 
-    MAIN.addBookmarkToCircle(bookmarkIDs[0], circleIDs[0]);
-    ok(true);
-});
-
-test('removeBookmarkFromCircle', function() { 
-    MAIN.removeBookmarkFromCircle(bookmarkIDs[0], circleIDs[0]);
-    ok(true);
-});
-
-test('getCircles', function() { 
-    MAIN.getCircles(function(c) {
-    
-    });
-    ok(true);
-});
-
-test('getSuggestions', function() { 
-    MAIN.getCircles(function(s) {
-    
-    });
-    ok(true);
-});
-
-test('recordClick', function() { 
-    MAIN.recordClick(bookmarkIDs[0]);
-    ok(true);
-});
+};
 
 test('getTitleForUrl', function() { 
     expected = 'Google News'
-    MAIN.getTitleForUrl(
+    MAIN.getTitleForURL(
         'http://news.google.com/', function(title) {
             ok(title===expected);
         });
 });
-
-
-/*
-MAIN.getBookmarks(0, function(b) {
-        console.log('called!');
-        returnedBookmarks.push(b.url);
-    });
-
-
-
-*/
-
-
-    //ok(yowattup===7);
-
-    /*
-        $.post("{{ url_for('create_bookmark') }}", {
-             'uri':url,
-         }, function (returned) {
-           ok(returned.type != 'error');
-         });
-
-        */
-
-
