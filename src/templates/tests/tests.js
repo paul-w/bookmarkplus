@@ -155,3 +155,19 @@ test('getTitleForUrl', function() {
             ok(title===expected);
         });
 });
+
+test('bookmarkCircleInteraction', function() { 
+    MAIN.createCircle(name, function(circleId) {
+        ok(circleId!=undefined)
+        MAIN.createBookmark(url, '', function(bId) {
+            ok(bookmarkId!=undefined)
+            MAIN.addBookmarkToCircle(bId, circleId, 
+                function(b, c) {
+                    ok(b===bookmarkId);
+                    ok(c===circleId);
+                MAIN.removeBookmarkFromCircle(b, c);
+                    ok(true);
+                });
+        });
+    });
+});
