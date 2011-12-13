@@ -1,5 +1,9 @@
+bookmarkIDs = [];
+
 module("testMethods", {
       setup: function() {
+          
+         // last two are duplicates 
          this.testURLs = [
             'https://www.google.com/search?gcx=c&sourceid=chrome&ie=UTF-8&q=divided+highway',
             'dividedhighwayrocks.com/',
@@ -7,29 +11,35 @@ module("testMethods", {
             'http://www.thefreedictionary.com/divided+highway',
             'www.thefreedictionary.com/divided+highway'
                         ];
+         numURLs = this.testURLs.length -1;
          this.testCircles = [
             'circle1',
             'circle2'
          ];
          this.expected = this.testURLs.slice(0, 4);
          ok(true, "setup successful");
-         this.bookmarkIDs = [];
             }
 });
 
 test('createBookmarks', function() { 
-    $.each(this.testURLs, function(url, i) {
-        MAIN.createBookmark(url, 0, function(id) {
-           alert(id);
-           this.bookmarkIDs.push(id);
+
+
+    $.each(this.testURLs, function(i, url) {
+        MAIN.createBookmark(url, '', function(id) {
+           alert(url);
+           bookmarkIDs.push(id);
+           start();
+           if(i===numURLs-1){
+                ok(bookmarkIDs.length==numURLs);
+           }
         });
     });
-    alert(this.bookmarkIDs);
-    ok(true);
+    stop(numURLs);
+
 });
 
 test('deleteBookmarks', function() { 
-    MAIN.deleteBookmark(this.bookmarkIDs[0]);
+    MAIN.deleteBookmark(bookmarkIDs[0]);
     ok(true);
 });
 
