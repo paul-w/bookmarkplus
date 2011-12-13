@@ -12,11 +12,6 @@ module("testMethods", {
             'www.thefreedictionary.com/divided+highway'
                         ];
          numURLs = this.testURLs.length -1;
-         this.testCircles = [
-            'circle1',
-            'circle2'
-         ];
-         this.expected = this.testURLs.slice(0, 4);
          ok(true, "setup successful");
             }
 });
@@ -82,20 +77,33 @@ var getBookmarksTest = function(bookmarkIDs) {
           }
         }
     });
-    stop(bookmarkIDs.length);
+    stop(bookmarkIDs.length-1);
 };
 
-test('createCircles', function() { 
-    $.each(this.testCircles, function(name, i) {
+var createCircleTest = function(bookmarkIDs) {
+    start();
+    start();
+    testCircles = [
+    'circle1',
+    'circle2',
+    ];
+    circleIDs = [];
+    count = 0;
+    $.each(testCircles, function(i, name) {
+        //stop();
         MAIN.createCircle(name, function(circleId) {
-           this.circleIDs.push(circleId); 
+           //start();
+           circleIDs.push(circleId); 
+           count = count + 1;
+           if(count===testCircles.length){
+              ok(circleIDs.length===testCircles.length); 
+           };
         });
     });
-    ok(true);
-});
+};
 
 test('deleteCircles', function() { 
-    MAIN.deleteCircle(this.circleIDs[0]);
+    MAIN.deleteCircle(circleIDs[0]);
     ok(true);
 });
 
