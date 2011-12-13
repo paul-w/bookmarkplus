@@ -8,21 +8,25 @@ module("testMethods", {
       setup: function() {
           
          // last two are duplicates 
-         this.testURLs = [
+                  ok(true, "setup successful");
+            }
+});
+
+test('testBookmarks', function() { 
+    createBookmarkTest();
+});
+
+var createBookmarkTest = function()
+{
+    testURLs = [
             'https://www.google.com/search?gcx=c&sourceid=chrome&ie=UTF-8&q=divided+highway',
             'dividedhighwayrocks.com/',
             'en.wikipedia.org/wiki/Dual_carriageway',
             'http://www.thefreedictionary.com/divided+highway',
             'www.thefreedictionary.com/divided+highway'
                         ];
-         numURLs = this.testURLs.length -1;
-         ok(true, "setup successful");
-            }
-});
+     numURLs = testURLs.length -1;
 
-test('testBookmarks', function() { 
-
-    // createBookmark
     count = 0;
     $.each(this.testURLs, function(i, url) {
         MAIN.createBookmark(url, '', function(id) {
@@ -31,15 +35,14 @@ test('testBookmarks', function() {
            count = count + 1;
            if(count===numURLs){
                 ok(bookmarkIDs.length==numURLs);
-                deleteBookmarkTest(bookmarkIDs);
+                deleteBookmarkTest(bookmarkIDs, numURLs);
            }
         });
     });
     stop(numURLs);
-});
+};
 
-var deleteBookmarkTest = function(bookmarkIDs) {
-    // deleteBookmark
+var deleteBookmarkTest = function(bookmarkIDs, numURLs) {
     deletedID = bookmarkIDs[0];
     MAIN.deleteBookmark(deletedID);
     ok(true);
@@ -67,7 +70,6 @@ var getBookmarksTest = function(bookmarkIDs) {
 
     ];
     
-    // getBookmarks
     count = 0;
     MAIN.getBookmarks(undefined, function(b) {
         resultURLs.push(b.url);
@@ -84,9 +86,12 @@ var getBookmarksTest = function(bookmarkIDs) {
     stop(bookmarkIDs.length-1);
 };
 
+test('testCircles', function() { 
+    createCircleTest();
+});
+
+
 var createCircleTest = function() {
-    start();
-    start();
     testCircles = [
     'circle1',
     'circle2',
@@ -94,31 +99,56 @@ var createCircleTest = function() {
     circleIDs = [];
     count = 0;
     $.each(testCircles, function(i, name) {
-        //stop();
         MAIN.createCircle(name, function(circleId) {
-           //start();
+           start();
            circleIDs.push(circleId); 
            count = count + 1;
            if(count===testCircles.length){
               ok(circleIDs.length===testCircles.length); 
+              deleteCircleTest(circleIDs);
            };
         });
     });
+    stop(testCircles.length-1);
 };
 
-test('testCircles', function() { 
 
-});
-
-test('deleteCircles', function() { 
+var deleteCircleTest = function(circleIDs) {
     MAIN.deleteCircle(circleIDs[0]);
+    circleIDs = circleIDs.splice(1,circleIDs.length);
     ok(true);
-});
+    editCircleTest(circleIDs);
+};
 
-test('editCircles', function() { 
-    MAIN.editCircle('circle1', 'sparkly');
+var editCircleTest = function(circleIDs){
+    MAIN.editCircle('circle2', 'sparkly', function(){});
     ok(true);
-});
+    getCirclesTest(circleIDs);
+};
+
+var getCirclesTest = function(circleIDs){
+    expectedNames = ['sparkly'];
+    resultNames = [];
+    resultIDs = [];
+
+    MAIN.getCircles(function(c) {
+       start();
+       resultNames.push(c.name);
+       resultIDs.push(c.id);
+       console.log(resultNames);
+       console.log(resultIDs);
+       console.log(circleIDs);
+        for(i=0; i<expectedNames.length; i++){
+                ok(resultNames[i]===expectedNames[i]);
+                ok(resultIDs[i]===circleIDs[i]);
+          }
+
+        
+    });
+
+    stop();
+
+}
 
 test('addBookmarkToCircle', function() { 
     MAIN.addBookmarkToCircle(bookmarkIDs[0], circleIDs[0]);
@@ -128,10 +158,6 @@ test('addBookmarkToCircle', function() {
 test('removeBookmarkFromCircle', function() { 
     MAIN.removeBookmarkFromCircle(bookmarkIDs[0], circleIDs[0]);
     ok(true);
-});
-
-test('getBookmarks', function() { 
-        ok(true);
 });
 
 test('getCircles', function() { 
