@@ -5,28 +5,31 @@ module("testMethods", {
             'dividedhighwayrocks.com/',
             'en.wikipedia.org/wiki/Dual_carriageway',
             'http://www.thefreedictionary.com/divided+highway',
-            'www.thefreedictionary.com/divided+highway',
+            'www.thefreedictionary.com/divided+highway'
                         ];
          this.testCircles = [
             'circle1',
-            'circle2',
+            'circle2'
          ];
          this.expected = this.testURLs.slice(0, 4);
          ok(true, "setup successful");
+         this.bookmarkIDs = [];
             }
 });
 
 test('createBookmarks', function() { 
     $.each(this.testURLs, function(url, i) {
         MAIN.createBookmark(url, 0, function(id) {
+           alert(id);
            this.bookmarkIDs.push(id);
         });
     });
+    alert(this.bookmarkIDs);
     ok(true);
 });
 
 test('deleteBookmarks', function() { 
-    MAIN.deleteBookmark(bookmarkIDs[0]);
+    MAIN.deleteBookmark(this.bookmarkIDs[0]);
     ok(true);
 });
 
