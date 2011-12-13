@@ -22,14 +22,13 @@ module("testMethods", {
 });
 
 test('createBookmarks', function() { 
-
-
+    count = 0;
     $.each(this.testURLs, function(i, url) {
         MAIN.createBookmark(url, '', function(id) {
-           alert(url);
            bookmarkIDs.push(id);
            start();
-           if(i===numURLs-1){
+           count = count + 1;
+           if(count===numURLs){
                 ok(bookmarkIDs.length==numURLs);
            }
         });
