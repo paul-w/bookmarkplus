@@ -459,6 +459,8 @@ $(document).ready(function() {
           });
         });
       }
+      $('#create_circle').removeClass('add_bookmark');
+      $('#create_circle').addClass('create');
     },
     over: function (event, ui) {
       $('#create_circle').addClass('add_bookmark');
