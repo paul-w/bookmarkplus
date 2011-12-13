@@ -26,7 +26,6 @@ def get_hashed_password(raw_password):
 def get_unicode_datetime():
   return unicode(datetime.utcnow().isoformat())
 
-# TODO(mikemeko): unittest this
 def check_name(name):
   """
   Checks if |name| is a well formed name for a user:
@@ -37,7 +36,6 @@ def check_name(name):
     return 'Names must use only letters and numbers.'
   return None
 
-# TODO(mikemeko): unittest this
 def check_email(email):
   """
   Checks if |email| is a well formed e-mail:
@@ -51,7 +49,6 @@ def check_email(email):
     return 'Invalid e-mail address.'
   return None
 
-# TODO(mikemeko): unittest this
 def check_password(password, repassword):
   """
   Checks that |password| and |repassword| are the same.
@@ -67,7 +64,6 @@ def check_password(password, repassword):
         MIN_PASSWORD_LENGTH)
   return None
 
-# TODO(mikemeko): unittest this
 def check_circle_name(circle_name):
   """
   Checks that |circle_name| has at most |MAX_CIRCLE_NAME_LENGTH| characters
@@ -77,7 +73,6 @@ def check_circle_name(circle_name):
         MAX_CIRCLE_NAME_LENGTH)
   return None
 
-# TODO(mikemeko): unittest this
 def url_title(url):
   """
   Returns the title of the web page with the given url
