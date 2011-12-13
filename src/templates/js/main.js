@@ -29,7 +29,6 @@ $(document).ready(function() {
   var NUM_SUGGESTIONS = 1;
   var ENTER_KEY_CODE = 13;
   var DRAG_REVERT_DURATION = 100;
-
   var ASC_TEXT = ['<', '>']
 
   /* Variables */
@@ -39,43 +38,6 @@ $(document).ready(function() {
   var sortBookmarksBy = "{{ bookmark_sort_key }}";
   // 1 indicaets ascending, -1 descending
   var bAscending = "{{ bookmark_sort_order }}";
-
-  /* Add missing elements to page */
-
-  // sorting options
-  b_options_div = $('#bookmark_sort_options')
-  {% for option in bookmark_sort_options %}
-    var div = $('<div/>');
-    div.text("{{ option }}");
-    div.addClass('sort');
-    div.click(function() {
-      text =  $(this).text();
-      $.each(sortBookmarksDivs, function(index, sortBookmarkDiv) {
-        sortBookmarkDiv.removeClass('selected_sort');
-      });
-      $(this).addClass('selected_sort');
-      if (text ===  sortBookmarksBy) {
-        bAscending = -bAscending;
-        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
-
-      }
-      else {
-        bAscending = 1;
-        sortBookmarksBy =  text
-        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
-      }
-      drawBookmarksFromServer(selectedCircle);
-    });
-    b_options_div.append(div);
-    sortBookmarksDivs.push(div);
-  {% endfor %}
-
-    var ascDiv = $('<div/>');
-    ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
-    ascDiv.addClass('sort');
-    ascDiv.addClass('selected_sort');
-    b_options_div.append(ascDiv);
-
 
   /*
     Ajax calls
@@ -257,7 +219,7 @@ $(document).ready(function() {
     });
   }
 
-  //
+  // gets the title of the given page
   var getTitleForUrl = function (url, onSuccess) {
     $.post("{{ url_for('title_for_url') }}", {
       'url':url
@@ -267,10 +229,6 @@ $(document).ready(function() {
   }
 
   /* Bind page elements to Ajax calls */
-
-  // bind sort option toggler
-  // TODO(mikemeko, pauL): do we still need this?
-
 
   // bind create bookmark input box
   $('#add_bookmark_uri').keydown(function(event) {
@@ -467,8 +425,10 @@ $(document).ready(function() {
   $('#create_circle').droppable({
     drop: function (event, ui) {
       var date = new Date();
-      // TODO(mikemeko): date object doesn't work correctly
-      var circleName = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay();
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var circleName = year + '/' + month + '/' + day;
       if (ui.draggable.hasClass('suggestion')) {
         createCircle(circleName, function (circleID) {
           createBookmark(ui.draggable.attr('uri'), circleID, function (bookmarkID) {
@@ -707,6 +667,40 @@ $(document).ready(function() {
     });
   };
 
+  /* Add missing elements to page */
+
+  // sorting options
+  b_options_div = $('#bookmark_sort_options')
+  {% for option in bookmark_sort_options %}
+    var div = $('<div/>');
+    div.text("{{ option }}");
+    div.addClass('sort');
+    div.click(function() {
+      text =  $(this).text();
+      $.each(sortBookmarksDivs, function(index, sortBookmarkDiv) {
+        sortBookmarkDiv.removeClass('selected_sort');
+      });
+      $(this).addClass('selected_sort');
+      if (text ===  sortBookmarksBy) {
+        bAscending = -bAscending;
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+      }
+      else {
+        bAscending = 1;
+        sortBookmarksBy =  text
+        ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+      }
+      drawBookmarksFromServer(selectedCircle);
+    });
+    b_options_div.append(div);
+    sortBookmarksDivs.push(div);
+  {% endfor %}
+
+  var ascDiv = $('<div/>');
+  ascDiv.text(ASC_TEXT[(parseInt(bAscending)+1)/2]);
+  ascDiv.addClass('sort');
+  ascDiv.addClass('selected_sort');
+  b_options_div.append(ascDiv);
 
   /* Initialization */
 
