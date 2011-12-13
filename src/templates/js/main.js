@@ -204,7 +204,7 @@ $(document).ready(function() {
   }
 
   // if the bookmark is in the circle, do |inCircle|, otherwise do |notInCircle|
-  MAIN.bookmarkInCircle = function (bookmarkID, circleID, inCircle, notInCircle) {
+  var bookmarkInCircle = function (bookmarkID, circleID, inCircle, notInCircle) {
         $.post("{{ url_for('is_bookmark_in_circle') }}", {
           bookmark_id:bookmarkID,
           circle_id:circleID
@@ -311,7 +311,7 @@ $(document).ready(function() {
         var bookmarkID = bookmark.attr('bookmark_id');
         MAIN.getCircles(function (circle) {
           var circleDiv = $('div[circle_id=' + circle.id + ']');
-          MAIN.bookmarkInCircle(bookmarkID, circle.id,
+          bookmarkInCircle(bookmarkID, circle.id,
             function () {
               circleDiv.addClass('closed');
             }, function () {
@@ -397,7 +397,7 @@ $(document).ready(function() {
           ui.draggable.remove();
         } else {
           var bookmarkID = ui.draggable.attr('bookmark_id');
-          MAIN.bookmarkInCircle(bookmarkID, circleID,
+          bookmarkInCircle(bookmarkID, circleID,
             function () {
               MAIN.removeBookmarkFromCircle(bookmarkID, circleID);
             },
@@ -410,7 +410,7 @@ $(document).ready(function() {
       },
       over: function (event, ui) {
         var bookmarkID = ui.draggable.attr('bookmark_id');
-        MAIN.bookmarkInCircle(bookmarkID, circleID,
+        bookmarkInCircle(bookmarkID, circleID,
           function () {
             circle.addClass('remove_bookmark');
           }, function () {
