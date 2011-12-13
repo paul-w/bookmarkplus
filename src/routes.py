@@ -330,23 +330,11 @@ def is_bookmark_in_circle():
   """
   Returns whether the bookmark is in the given circle.
   """
-  # TODO(mikemeko): this code is repeated a lot, we should write helpers
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
-  if not bookmark_id:
-    return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
-  if not circle_id:
-    return jsonify({'type':'error', 'message':'Invalid circle ID.'})
-  bookmark = db.get_bookmark(bookmark_id)
-  circle = db.get_circle(circle_id)
-  if bookmark is None:
-    return jsonify({'type':'error', 'message':'Invalid bookmark.'})
-  if circle is None:
-    return jsonify({'type':'error', 'message':'Invalid circle.'})
-  if bookmark.owner != session['user_id']:
-    return jsonify({'type':'error', 'message':'You don\'t own that bookmark.'})
-  if circle.owner != session['user_id']:
-    return jsonify({'type':'error', 'message':'You don\'t own that circle.'})
+  param_errors = db.check_parameters(session['user_id'], bookmark_id, circle_id)
+  if param_errors != None:
+    return param_errors
   bookmark_in_circle = db.is_bookmark_in_circle(bookmark_id, circle_id)
   return jsonify({'bookmark_in_circle':bookmark_in_circle})
 
@@ -358,20 +346,9 @@ def add_bookmark_to_circle():
   """
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
-  if not bookmark_id:
-    return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
-  if not circle_id:
-    return jsonify({'type':'error', 'message':'Invalid circle ID.'})
-  bookmark = db.get_bookmark(bookmark_id)
-  circle = db.get_circle(circle_id)
-  if bookmark is None:
-    return jsonify({'type':'error', 'message':'Invalid bookmark.'})
-  if circle is None:
-    return jsonify({'type':'error', 'message':'Invalid circle.'})
-  if bookmark.owner != session['user_id']:
-    return jsonify({'type':'error', 'message':'You don\'t own that bookmark.'})
-  if circle.owner != session['user_id']:
-    return jsonify({'type':'error', 'message':'You don\'t own that circle.'})
+  param_errors = db.check_parameters(session['user_id'], bookmark_id, circle_id)
+  if param_errors != None:
+    return param_errors
   if db.is_bookmark_in_circle(bookmark_id, circle_id):
     return jsonify({'type':'error', 'message':'That bookmark is already in '
         'that circle.'})
@@ -384,23 +361,11 @@ def remove_bookmark_from_circle():
   """
   Removes the bookmark from the given circle.
   """
-  # TODO(mikemeko): this code is repeated a lot, we should write helpers
   bookmark_id = request.form.get('bookmark_id')
   circle_id = request.form.get('circle_id')
-  if not bookmark_id:
-    return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
-  if not circle_id:
-    return jsonify({'type':'error', 'message':'Invalid circle ID.'})
-  bookmark = db.get_bookmark(bookmark_id)
-  circle = db.get_circle(circle_id)
-  if bookmark is None:
-    return jsonify({'type':'error', 'message':'Invalid bookmark.'})
-  if circle is None:
-    return jsonify({'type':'error', 'message':'Invalid circle.'})
-  if bookmark.owner != session['user_id']:
-    return jsonify({'type':'error', 'message':'You don\'t own that bookmark.'})
-  if circle.owner != session['user_id']:
-    return jsonify({'type':'error', 'message':'You don\'t own that circle.'})
+  param_errors = db.check_parameters(session['user_id'], bookmark_id, circle_id)
+  if param_errors != None:
+    return param_errors
   if not db.is_bookmark_in_circle(bookmark_id, circle_id):
     return jsonify({'type':'error', 'message':'That bookmark is not in that '
         'circle.'})

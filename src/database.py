@@ -8,6 +8,7 @@ __author__ = (
     'Paul Woods (pwoods@mit.edu)'
 )
 
+from flask import jsonify
 from flaskext.mongokit import MongoKit
 from models.bookmark import Bookmark
 from models.bookmark import DEFAULT_BOOKMARK_SORT_KEY
@@ -361,3 +362,29 @@ class Database():
             if len(suggestions) >= limit:
               return suggestions
     return suggestions
+
+  def check_parameters(self, user_id, bookmark_id, circle_id):
+    """
+    Checks that:
+      - |bookmark_id| is a non-empty id
+      - |circle_id| is a non-empty id
+      - the user owns a bookmark with the given id
+      - the user owns a circle with the given id
+    Returns a jasonified error if a check fails, or None if all checks pass
+    """
+    if not bookmark_id:
+      return jsonify({'type':'error', 'message':'Invalid bookmark ID.'})
+    if not circle_id:
+      return jsonify({'type':'error', 'message':'Invalid circle ID.'})
+    bookmark = self.get_bookmark(bookmark_id)
+    if bookmark is None:
+      return jsonify({'type':'error', 'message':'Invalid bookmark.'})
+    circle = self.get_circle(circle_id)
+    if circle is None:
+      return jsonify({'type':'error', 'message':'Invalid circle.'})
+    if bookmark.owner != user_id:
+      return jsonify({'type':'error',
+                      'message':'You don\'t own that bookmark.'})
+    if circle.owner != user_id:
+      return jsonify({'type':'error', 'message':'You don\'t own that circle.'})
+    return None
