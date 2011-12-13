@@ -17,7 +17,7 @@ from flaskext.mongokit import Document
 # the front end and the database should not be aware of the
 # user facing text
 BOOKMARK_SORT_OPTIONS = {
-    unicode('uri') : 'URI',
+    unicode('url') : 'URI',
     unicode('clicks'): 'TotalVisits',
     unicode('date_last_clicked'): 'LastVisited'
 }
